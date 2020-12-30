@@ -1,0 +1,21 @@
+/*Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE*/
+.gradient {
+    background: #f5f5f5;
+    border: 1px solid #FFF;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    box-shadow: 1px 2px 4px rgba(0,0,0,.4);
+    max-width: 00px;
+}
+@media only screen and (max-width : 500px) {
+    .gradient{
+        max-width: 80vw;
+    }
+}
+
+@media only screen and (min-width : 501px) {
+    .gradient{
+        max-width: 30vw;
+    }
+}

@@ -1,0 +1,64 @@
+<!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
+<aol-map #map id="map" class="map">
+  <aol-interaction-default>
+  </aol-interaction-default>
+  <aol-interaction-select onselect="mapOnClick($event)"></aol-interaction-select>
+  <aol-view [zoom]="9" #mapView>
+    <aol-coordinate #mapCoord [x]="lat" [y]="long" [srid]="'EPSG:4326'"></aol-coordinate>
+  </aol-view>
+  <aol-layer-tile [opacity]="1">
+    <aol-source-osm #sourceLayer>
+      <aol-attributions>
+        <aol-attribution #myAttribution id="attribution">
+          &copy;&nbsp;2020 Nico Rath, Openlayers and OpenStreetMaps
+        </aol-attribution>
+      </aol-attributions>
+    </aol-source-osm>
+  </aol-layer-tile>
+  <aol-layer-tile [opacity]="1">
+      <aol-source-xyz>
+        <aol-attributions>
+          <aol-attribution id="attribution">
+            &copy;&nbsp;2020 Nico Rath, Openlayers and OpenStreetMaps
+          </aol-attribution>
+        </aol-attributions>
+      </aol-source-xyz>
+    </aol-layer-tile>
+  <aol-overlay>
+    <aol-coordinate [x]="infoboxLat" [y]="infoboxLong" [srid]="'EPSG:4326'">
+    </aol-coordinate>
+    <aol-content>
+      <div [ngStyle]="{'display': overlayVisible ? 'block' : 'none'}">
+        <showpoint-component #showPointOverlayComponent></showpoint-component>
+      </div>
+    </aol-content>
+  </aol-overlay>
+  <aol-overlay>
+    <aol-coordinate [x]="addPointOverlayLat" [y]="addPointOverlayLong" [srid]="'EPSG:4326'">
+    </aol-coordinate>
+    <aol-content>
+      <addpointeroverlay-component #addPointOverlayComponent></addpointeroverlay-component>
+    </aol-content>
+  </aol-overlay>
+  <aol-layer-vector [opacity]="1.0">
+    <aol-source-vector #sourceWaypointVector>
+    </aol-source-vector>
+  </aol-layer-vector>
+</aol-map>
+<div #overlay id="overlay">
+  <div #backgroundOverlayDiv id="backgroundOverlayDiv">
+  </div>
+  <button mat-raised-button color="primary" (click)="toggleOverlay()">
+    <fa-icon [icon]="alignJustifyIcon"></fa-icon>
+  </button>
+  <div #adminButton id="adminButton">
+    <button mat-raised-button color="{{adminButtonColor}}" (click)="toggleAdminMode()">
+      <fa-icon [icon]="usersCog"></fa-icon>
+    </button>
+  </div>
+  <div flex fxLayout="row" fxLayout.xs="column" fxLayoutWrap #filterOverlay id="filterOverlay">
+    <criteria-filter-component #criteriaFilterComponent></criteria-filter-component>
+  </div>
+</div>
+
+<router-outlet></router-outlet>

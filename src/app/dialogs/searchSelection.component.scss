@@ -1,0 +1,10 @@
+//Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE
+@import '~@angular/material/theming';
+
+.clickable {
+    margin-bottom: 10px;
+  cursor: pointer;
+  &:hover {
+    @include mat-elevation(8);
+  }
+}

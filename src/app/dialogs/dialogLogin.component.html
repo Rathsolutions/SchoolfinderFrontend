@@ -1,0 +1,17 @@
+<!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
+<h1 mat-dialog-title>Admin-Login</h1>
+<div mat-dialog-content>
+  <p>Bitte die Administratordaten eingeben</p>
+  <mat-form-field>
+    <mat-label>Benutzername</mat-label>
+    <input matInput [(ngModel)]="data.username">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Passwort</mat-label>
+    <input type="password" matInput [(ngModel)]="data.password">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Abbruch</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>

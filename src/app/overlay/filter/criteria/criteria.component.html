@@ -1,0 +1,30 @@
+<!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
+<div>
+    <mat-form-field *ngIf="isAdmin()">
+        <mat-label>Schulname</mat-label>
+        <input [(ngModel)]="schoolname" matInput>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Stadtname</mat-label>
+        <input [(ngModel)]="city" matInput>
+    </mat-form-field>
+    <div>
+        <button mat-raised-button color="primary" cdkFocusInitial (click)="search()">Suche</button>
+    </div>
+    <hr>
+    <mat-form-field>
+        <mat-label>Filterkriterien</mat-label>
+        <mat-select #selectMat multiple (selectionChange)="selectChange($event.value)">
+            <mat-option *ngFor="let criteria of allCriterias" [value]="criteria">{{criteria.criteriaName}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <div>
+        <mat-slide-toggle (change)="toggleSearchType()" [(ngModel)]="exclusiveSearch">
+            Inklusive Suche
+        </mat-slide-toggle>
+    </div>
+    <strong>Aktive Filter:</strong>
+    <div *ngFor="let criteria of selectedCriterias">
+        <i>{{criteria.criteriaName}}</i>
+    </div>
+</div>

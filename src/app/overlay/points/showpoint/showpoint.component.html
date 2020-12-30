@@ -1,0 +1,80 @@
+<!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
+<div [ngStyle]="{'visibility': visible ? 'visible' : 'hidden'}">
+    <div class="gradient">
+        <div>
+            <mat-card class="example-card">
+                <mat-card-header>
+                    <mat-card-title>{{schoolName.value}}</mat-card-title>
+                    <mat-card-subtitle>Informationen zur Schule</mat-card-subtitle>
+                </mat-card-header>
+                <img #schoolPicture mat-card-image [src]="image" *ngIf="image">
+                <mat-card-content>
+                    <mat-accordion>
+                        <mat-expansion-panel *ngIf="arPerson.isFilled()">
+                            <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
+                                <mat-panel-title>
+                                    AR
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Weitere Infos zu AR
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <div>
+                                <h4>Vorname: {{arPerson.prename.value}}</h4>
+                            </div>
+                            <div>
+                                <h4>Nachname: {{arPerson.lastname.value}}</h4>
+                            </div>
+                            <div>
+                                <h4>Email-Adresse: {{arPerson.email.value}}</h4>
+                            </div>
+                            <div>
+                                <h4>Telefonnummer: {{arPerson.phonenumber.value}}</h4>
+                            </div>
+                            <div>
+                                <h4>Verfügbarer AR-Content: {{arContent.value}}</h4>
+                            </div>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel *ngIf="makerspacePerson.isFilled()">
+                            <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
+                                <mat-panel-title>
+                                    Makerspace
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Weitere Infos zum Makerspace
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <div>
+                                <h4>Vorname: {{makerspacePerson.prename.value}}</h4>
+                            </div>
+                            <div>
+                                <h4>Nachname: {{makerspacePerson.lastname.value}}</h4>
+                            </div>
+                            <div>
+                                <h4>Email-Adresse: {{makerspacePerson.email.value}}</h4>
+                            </div>
+                            <div>
+                                <h4>Telefonnummer: {{makerspacePerson.phonenumber.value}}</h4>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </mat-card-content>
+            </mat-card>
+        </div>
+        <!-- <div mat-dialog-content>
+                                            <p>Bitte die Administratordaten eingeben</p>
+                                            <mat-form-field>
+                                                <mat-label>Benutzername</mat-label>
+                                                <input matInput [(ngModel)]="data.username">
+                                            </mat-form-field>
+                                            <mat-form-field>
+                                                <mat-label>Passwort</mat-label>
+                                                <input matInput [(ngModel)]="data.password">
+                                            </mat-form-field>
+                                        </div> -->
+        <!-- <div mat-dialog-actions>
+                                            <button mat-button (click)="onNoClick()">Abbruch</button>
+                                            <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+                                        </div> -->
+    </div>
+</div>

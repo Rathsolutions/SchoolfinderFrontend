@@ -1,0 +1,12 @@
+<!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
+<h1 mat-dialog-title>Passende Werte</h1>
+<div mat-dialog-content>
+    <p>Bitte wählen Sie aus den gefunden Ergebnissen das Passende aus</p>
+    <div *ngFor="let entry of entries.result; let i = index">
+        <mat-card matRipple class="clickable" (click)="onCardClick(i)" >
+            <mat-card-header>
+                <mat-card-title>{{entry.schoolName}} {{entry.city}}</mat-card-title>
+            </mat-card-header>
+        </mat-card>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+<!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
+<mat-expansion-panel>
+    <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
+        <mat-panel-title>
+            Kriterium
+        </mat-panel-title>
+        <mat-panel-description>
+            Ein Filterkriterium dieser Schule
+        </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div>
+        <mat-form-field>
+            <mat-label>Kriteriumsname</mat-label>
+            <input (click)="criteriaClicked()" matInput [formControl]="criteriaName" required [matAutocomplete]="auto">
+        </mat-form-field>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="autocompleteChoosen($event.option.value)">
+            <mat-option *ngFor="let criteria of possibleCriterias" [value]="criteria">{{criteria}}
+            </mat-option>
+        </mat-autocomplete>
+    </div>
+</mat-expansion-panel>
