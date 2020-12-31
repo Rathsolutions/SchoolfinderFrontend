@@ -42,36 +42,36 @@ export class CriteriaFilterComponent implements OnInit {
         });
     }
 
-    public search(): void {
-        if (!this.isAdmin()) {
-            var foundOsmEntity = this.citiesService.searchCityInOsmFile(this.city, 10).subscribe(result => {
-                if (result.length == 1) {
-                    this.renderNewPositionInMainApp(result[0]);
-                } else {
-                    const dialog = this.dialog.open(SearchSelectionComponent, {
-                        width: '250px',
-                        data: { result }
-                    });
-                    dialog.afterClosed().subscribe(result => {
-                        this.renderNewPositionInMainApp(result);
-                    });
-                }
-            });
-        } else {
-            var foundOsmEntity = this.schoolService.searchSchoolInOsmFile(this.schoolname, this.city, 10).subscribe(result => {
-                if (result.length == 1) {
-                    this.renderNewPositionInMainApp(result[0]);
-                } else {
-                    const dialog = this.dialog.open(SearchSelectionComponent, {
-                        width: '250px',
-                        data: { result }
-                    });
-                    dialog.afterClosed().subscribe(result => {
-                        this.renderNewPositionInMainApp(result);
-                    });
-                }
-            });
-        }
+    public searchCity(): void {
+        var foundOsmEntity = this.citiesService.searchCityInOsmFile(this.city, 10).subscribe(result => {
+            if (result.length == 1) {
+                this.renderNewPositionInMainApp(result[0]);
+            } else {
+                const dialog = this.dialog.open(SearchSelectionComponent, {
+                    width: '250px',
+                    data: { result }
+                });
+                dialog.afterClosed().subscribe(result => {
+                    this.renderNewPositionInMainApp(result);
+                });
+            }
+        });
+    }
+
+    public searchSchool(): void {
+        var foundOsmEntity = this.schoolService.searchSchoolInOsmFile(this.schoolname, this.city, 10).subscribe(result => {
+            if (result.length == 1) {
+                this.renderNewPositionInMainApp(result[0]);
+            } else {
+                const dialog = this.dialog.open(SearchSelectionComponent, {
+                    width: '250px',
+                    data: { result }
+                });
+                dialog.afterClosed().subscribe(result => {
+                    this.renderNewPositionInMainApp(result);
+                });
+            }
+        });
     }
 
     private renderNewPositionInMainApp(result: OsmPOIEntity) {

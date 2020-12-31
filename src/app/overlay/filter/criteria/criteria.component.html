@@ -8,8 +8,11 @@
         <mat-label>Stadtname</mat-label>
         <input [(ngModel)]="city" matInput>
     </mat-form-field>
+    <div *ngIf="isAdmin()" style="margin-bottom: 10px;">
+        <button mat-raised-button color="primary" cdkFocusInitial (click)="searchSchool()">Suche nach Schule</button>
+    </div>
     <div>
-        <button mat-raised-button color="primary" cdkFocusInitial (click)="search()">Suche</button>
+        <button mat-raised-button color="primary" cdkFocusInitial (click)="searchCity()">Suche nach Stadt</button>
     </div>
     <hr>
     <mat-form-field>
