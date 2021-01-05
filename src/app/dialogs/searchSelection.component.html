@@ -3,9 +3,10 @@
 <div mat-dialog-content>
     <p>Bitte wählen Sie aus den gefunden Ergebnissen das Passende aus</p>
     <div *ngFor="let entry of entries.result; let i = index">
-        <mat-card matRipple class="clickable" (click)="onCardClick(i)" >
+        <mat-card matRipple class="clickable" (click)="onCardClick(i)">
             <mat-card-header>
-                <mat-card-title>{{entry.schoolName}} {{entry.city}}</mat-card-title>
+                <mat-card-title>{{entry.primaryValue}}</mat-card-title>
+                <mat-card-subtitle>{{entry.secondaryValue}}</mat-card-subtitle>
             </mat-card-header>
         </mat-card>
     </div>
