@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { CriteriaService } from '../../../../services/criteria.service';
+import { AddPointOverlay } from '../addpointoverlay.component';
 
 @Component({
     selector: 'addcriteria-component',
@@ -37,7 +38,7 @@ export class AddCriteriaComponent {
         this.updateCriteriaCache('');
     }
 
-    private updateCriteriaCache(data:string): void {
+    private updateCriteriaCache(data: string): void {
         this.criteriaService.getPossibleCriterias(data, 5).subscribe(result => {
             this.possibleCriterias = [];
             console.log(result);

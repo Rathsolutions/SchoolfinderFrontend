@@ -262,6 +262,7 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
 
     removeCriteriaButton() {
         this.criteriaPlaceholder.remove();
+        this.criterias.splice(this.criterias.length-1,1);
     }
 
     removeAllCriteriaButtons() {
