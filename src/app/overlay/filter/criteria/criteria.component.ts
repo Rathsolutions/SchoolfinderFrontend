@@ -28,6 +28,8 @@ export class CriteriaFilterComponent implements OnInit {
     selectedCriterias: CriteriaEntity[] = [];
     mainAppComponent: AppComponent;
     schoolname: string;
+    streetname:string;
+    housenumber: string;
     city: string = "";
     amount: number;
     exclusiveSearch: boolean = false;
@@ -44,33 +46,35 @@ export class CriteriaFilterComponent implements OnInit {
 
     public searchCity(): void {
         var foundOsmEntity = this.citiesService.searchCityInOsmFile(this.city, 10).subscribe(result => {
-            if (result.length == 1) {
-                this.renderNewPositionInMainApp(result[0]);
-            } else {
-                const dialog = this.dialog.open(SearchSelectionComponent, {
-                    width: '250px',
-                    data: { result }
-                });
-                dialog.afterClosed().subscribe(result => {
-                    this.renderNewPositionInMainApp(result);
-                });
-            }
+            this.renderResult(result);
+        });
+    }
+
+    private renderResult(result: OsmPOIEntity[]) {
+        if (result.length == 1) {
+            this.renderNewPositionInMainApp(result[0]);
+        }
+        else {
+            const dialog = this.dialog.open(SearchSelectionComponent, {
+                width: '250px',
+                data: { result }
+            });
+            dialog.afterClosed().subscribe(result => {
+                this.renderNewPositionInMainApp(result);
+            });
+        }
+    }
+
+    public searchStreet(): void {
+        this.citiesService.searchCityAndStreetInOsmFile(this.city, this.streetname, this.housenumber, 10).subscribe(result => {
+            console.log(result);
+            this.renderResult(result);
         });
     }
 
     public searchSchool(): void {
         var foundOsmEntity = this.schoolService.searchSchoolInOsmFile(this.schoolname, this.city, 10).subscribe(result => {
-            if (result.length == 1) {
-                this.renderNewPositionInMainApp(result[0]);
-            } else {
-                const dialog = this.dialog.open(SearchSelectionComponent, {
-                    width: '250px',
-                    data: { result }
-                });
-                dialog.afterClosed().subscribe(result => {
-                    this.renderNewPositionInMainApp(result);
-                });
-            }
+            this.renderResult(result);
         });
     }
 

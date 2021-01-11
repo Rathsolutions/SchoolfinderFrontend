@@ -23,4 +23,15 @@ export class CitiesService extends BaseService<CriteriaEntity> {
             }
         });
     }
+
+    public searchCityAndStreetInOsmFile(cityname:string, street:string, housenumber:string, amount:number): Observable<OsmPOIEntity[]>{
+        return this.http.get<OsmPOIEntity[]>(this.requestURL + "/search/findCityStreetPositionByName", {
+            params: {
+                city: cityname,
+                street: street,
+                housenumber: housenumber,
+                amount: amount.toString()
+            }
+        });
+    }
 }

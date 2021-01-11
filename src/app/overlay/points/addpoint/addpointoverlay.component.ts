@@ -60,6 +60,7 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
             arPerson: this.arPerson,
             makerspacePerson: this.makerspacePerson
         });
+        this.criterias = [];
         this.arPerson.setNewPointForm(this.newPointForm);
         this.makerspacePerson.setNewPointForm(this.newPointForm);
         this.prefilled = false;
@@ -162,6 +163,7 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
             this.schoolName.reset();
             this.arContent.reset()
             this.newPointForm.reset();
+            this.criterias = [];
             this.toastr.success("Die Schule wurde erfolgreich " + successMessage);
             this.setVisible(false);
         }, error => {
@@ -207,7 +209,6 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
                     }
                 });
             }
-            console.log(arPerson);
             var currentPersonFunctionalityEntity = new PersonFunctionalityEntity(personSchoolMappingId, functionality, new PersonEntity(arPerson.id));
             return new Promise<PersonFunctionalityEntity>((resolve, reject) => {
                 if (!errorInCallback) {
