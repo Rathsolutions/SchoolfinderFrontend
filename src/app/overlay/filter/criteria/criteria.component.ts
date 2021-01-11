@@ -28,13 +28,13 @@ export class CriteriaFilterComponent implements OnInit {
     selectedCriterias: CriteriaEntity[] = [];
     mainAppComponent: AppComponent;
     schoolname: string;
-    streetname:string;
+    streetname: string;
     housenumber: string;
     city: string = "";
     amount: number;
     exclusiveSearch: boolean = false;
 
-    constructor(private criteriaService: CriteriaService, private schoolService: SchoolsService, private citiesService: CitiesService, private dialog: MatDialog) {
+    constructor(private criteriaService: CriteriaService, private toastr: ToastrService, private schoolService: SchoolsService, private citiesService: CitiesService, private dialog: MatDialog) {
 
     }
     ngOnInit(): void {
@@ -53,6 +53,8 @@ export class CriteriaFilterComponent implements OnInit {
     private renderResult(result: OsmPOIEntity[]) {
         if (result.length == 1) {
             this.renderNewPositionInMainApp(result[0]);
+        } else if (result.length == 0) {
+            this.toastr.error("Es wurden leider keine Ergebnisse gefunden. Bitte überprüfen Sie die eingegebenen Werte!")
         }
         else {
             const dialog = this.dialog.open(SearchSelectionComponent, {
