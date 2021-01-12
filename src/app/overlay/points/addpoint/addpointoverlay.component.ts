@@ -1,6 +1,6 @@
 //Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE
 import { ComponentFactoryResolver, Component, ComponentRef, Type, OnDestroy, AfterViewInit, ViewChild, ElementRef, Input, Inject, OnInit, ViewContainerRef } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -16,6 +16,7 @@ import { AbstractPersonViewData } from "../../../viewdata/AbstractPersonViewData
 import { EditablePersonViewData } from "../../../viewdata/EditablePersonViewData";
 import { CriteriaEntity } from 'src/app/entities/CriteriaEntity';
 import { AppComponent } from 'src/app/app.component';
+import { ThemePalette } from '@angular/material/core';
 
 @Component({
     selector: 'addpointeroverlay-component',
@@ -31,6 +32,9 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
     long: number;
 
     collapsedHeight = '10vh';
+
+    public color: ThemePalette = 'primary';
+    public touchUi = false;
 
     visible: boolean;
     prefilled: boolean = false;
@@ -58,7 +62,8 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
             schoolName: this.schoolName,
             arContent: this.arContent,
             arPerson: this.arPerson,
-            makerspacePerson: this.makerspacePerson
+            makerspacePerson: this.makerspacePerson,
+            colorCtr: this.colorCtr
         });
         this.criterias = [];
         this.arPerson.setNewPointForm(this.newPointForm);
@@ -72,12 +77,18 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
     }
     setVisible(visible: boolean) {
         this.visible = visible;
+        this.resetForm();
+    }
+
+    resetForm() {
         this.criteriaPlaceholder.clear();
         this.arPerson.resetValues();
         this.makerspacePerson.resetValues();
         this.schoolName.reset();
         this.arContent.reset();
+        this.colorCtr.reset();
         this.newPointForm.reset();
+        this.criterias = [];
     }
 
     handleFileInput(files: FileList) {
@@ -123,6 +134,7 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
         school.longitude = this.long;
         school.schoolName = this.schoolName.value;
         school.arContent = this.arContent.value;
+        school.color = this.colorCtr.value.hex;
         var errorInCallback = false;
         await this.getOrInsertPerson(this.arPerson, school, PersonFunctionality.AR).then(val => {
             if (val != null) {
@@ -157,15 +169,11 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
             successMessage = "eingetragen!";
         }
         observableSchool.subscribe(result => {
-            this.criteriaPlaceholder.clear();
-            this.arPerson.resetValues();
-            this.makerspacePerson.resetValues();
-            this.schoolName.reset();
-            this.arContent.reset()
-            this.newPointForm.reset();
-            this.criterias = [];
+            this.resetForm();
             this.toastr.success("Die Schule wurde erfolgreich " + successMessage);
             this.setVisible(false);
+            this.mainApp.resetAllWaypoint();
+            this.mainApp.updateWaypoints();
         }, error => {
             if (error.status == 409) {
                 this.toastr.error("Diese Schule existiert schon! Bitte an anderer Stelle löschen und erneut versuchen");
@@ -262,7 +270,7 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
 
     removeCriteriaButton() {
         this.criteriaPlaceholder.remove();
-        this.criterias.splice(this.criterias.length-1,1);
+        this.criterias.splice(this.criterias.length - 1, 1);
     }
 
     removeAllCriteriaButtons() {

@@ -22,6 +22,14 @@
                         <input matInput [formControl]="arContent">
                     </mat-form-field>
                 </div>
+                <div style="margin-left: 20px;">
+                    <mat-form-field>
+                        <mat-label>Punktfarbe</mat-label>
+                        <input matInput [ngxMatColorPicker]="picker" [formControl]="colorCtr">
+                        <ngx-mat-color-toggle matSuffix [for]="picker"></ngx-mat-color-toggle>
+                        <ngx-mat-color-picker #picker [touchUi]="touchUi" [color]="color"></ngx-mat-color-picker>
+                    </mat-form-field>
+                </div>
                 <!-- <input class="ng-hide" id="input-file-id" type="file" [formControl]="schoolPicture" accept="image/*" /> -->
                 <!-- <label for="input-file-id" class="md-button md-raised md-primary"></label> -->
                 <mat-accordion>

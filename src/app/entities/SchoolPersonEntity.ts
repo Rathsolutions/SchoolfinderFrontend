@@ -6,6 +6,7 @@ export class SchoolPersonEntity {
     id: number;
     schoolName: string;
     schoolPicture:string;
+    color:string;
     arContent:string;
     latitude: number;
     longitude: number;

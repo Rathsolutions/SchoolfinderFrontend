@@ -106,7 +106,7 @@ export class AppComponent implements AfterViewInit {
           }),
           image: new Circle({
             radius: 6,
-            fill: new Fill({ color: 'red' }),
+            fill: new Fill({ color: e.color ? "#" + e.color : '#ff0000' }),
             stroke: new Stroke({ color: 'black' })
           })
         });

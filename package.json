@@ -1,7 +1,7 @@
 {
   "name": "simonlmz",
   "version": "0.0.0",
-  "license" : "GPL-3.0",
+  "license": "GPL-3.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -12,6 +12,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-material-components/color-picker": "^5.0.2",
     "@angular/animations": "^9.0.7",
     "@angular/cdk": "^9.2.3",
     "@angular/common": "^9.0.7",
