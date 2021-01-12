@@ -47,10 +47,15 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
             this.schoolName.setValue(result.schoolName);
             this.arContent.setValue(result.arContent);
             console.log(result.color);
-            var r = parseInt(result.color.substr(0, 2), 16);
-            var g = parseInt(result.color.substr(2, 2), 16);
-            var b = parseInt(result.color.substr(4, 2), 16);
-            this.colorCtr.setValue(new Color(r, g, b));
+            if (result.color) {
+
+                var r = parseInt(result.color.substr(0, 2), 16);
+                var g = parseInt(result.color.substr(2, 2), 16);
+                var b = parseInt(result.color.substr(4, 2), 16);
+                this.colorCtr.setValue(new Color(r, g, b));
+            } else {
+                this.colorCtr.setValue(new Color(255, 0, 0));
+            }
             result.personSchoolMapping.forEach(e => {
                 if (e.functionality == PersonFunctionality.AR.toString().toUpperCase()) {
                     this.arPerson = this.getPersonViewDataInstance();
