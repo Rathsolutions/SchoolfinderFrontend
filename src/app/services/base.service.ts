@@ -1,7 +1,7 @@
 //Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE
 import { environment } from '../../environments/environment';
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpXsrfTokenExtractor } from '@angular/common/http';
 
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -24,11 +24,13 @@ export class BaseService<T> {
   protected setUserAndPassword(username: string, password: string) {
     this.username = username;
     this.password = password;
+    const headerName = 'X-XSRF-TOKEN';
     BaseService.HTTP_OPTIONS = {
       withCredentials: true,
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': 'Basic ' + btoa(this.username + ':' + this.password)
+        'Authorization': 'Basic ' + btoa(this.username + ':' + this.password),
+        'X-XSRF-TOKEN': this.tokenExtractor.getToken()
       })
     };
   }
@@ -37,7 +39,7 @@ export class BaseService<T> {
 
   constructor(
     protected http: HttpClient,
-    protected entity
+    protected entity, protected tokenExtractor: HttpXsrfTokenExtractor
   ) {
     this.requestURL = BASE_URL + entity;
   }

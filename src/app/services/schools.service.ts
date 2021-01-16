@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
 import { SchoolPersonEntity } from '../entities/SchoolPersonEntity';
 import { OsmPOIEntity } from '../entities/OsmPOIEntity';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpXsrfTokenExtractor } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { CriteriaEntity } from '../entities/CriteriaEntity';
@@ -13,8 +13,8 @@ import { CriteriaEntity } from '../entities/CriteriaEntity';
 })
 export class SchoolsService extends BaseService<SchoolPersonEntity> {
     constructor(
-        http: HttpClient) {
-        super(http, "schools");
+        http: HttpClient,protected tokenExtractor: HttpXsrfTokenExtractor) {
+        super(http, "schools", tokenExtractor);
     }
 
     public putNewSchool(school: SchoolPersonEntity): Observable<SchoolPersonEntity> {

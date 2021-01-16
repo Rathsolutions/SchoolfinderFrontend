@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
 import { CriteriaEntity } from '../entities/CriteriaEntity';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpXsrfTokenExtractor } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { OsmPOIEntity } from '../entities/OsmPOIEntity';
@@ -11,8 +11,8 @@ import { OsmPOIEntity } from '../entities/OsmPOIEntity';
 })
 export class CitiesService extends BaseService<CriteriaEntity> {
     constructor(
-        http: HttpClient) {
-        super(http, "cities");
+        http: HttpClient, protected tokenExtractor: HttpXsrfTokenExtractor) {
+        super(http, "cities", tokenExtractor);
     }
 
     public searchCityInOsmFile(cityname: string, amount:number): Observable<OsmPOIEntity[]> {

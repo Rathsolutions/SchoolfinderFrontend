@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
 import { UserEntity } from '../entities/UserEntity';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpXsrfTokenExtractor } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
@@ -11,8 +11,8 @@ import { Observable } from 'rxjs';
 })
 export class UserService extends BaseService<UserEntity> {
   constructor(
-    http: HttpClient) {
-    super(http, "users");
+    http: HttpClient, protected tokenExtractor: HttpXsrfTokenExtractor) {
+    super(http, "users", tokenExtractor);
   }
 
   public login(username: string, password: string): Observable<UserEntity> {

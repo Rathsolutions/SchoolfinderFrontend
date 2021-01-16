@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
 import { CriteriaEntity } from '../entities/CriteriaEntity';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpXsrfTokenExtractor } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
@@ -11,8 +11,8 @@ import { Observable } from 'rxjs';
 })
 export class CriteriaService extends BaseService<CriteriaEntity> {
     constructor(
-        http: HttpClient) {
-        super(http, "criterias");
+        http: HttpClient,protected tokenExtractor: HttpXsrfTokenExtractor) {
+        super(http, "criterias",tokenExtractor);
     }
 
     public getPossibleCriterias(criteria: string, amount: number): Observable<CriteriaEntity[]> {

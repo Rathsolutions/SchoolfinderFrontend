@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
 import { SchoolPersonEntity } from '../entities/SchoolPersonEntity';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpXsrfTokenExtractor } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { PersonEntity } from '../entities/PersonEntity';
@@ -12,8 +12,8 @@ import { PersonEntity } from '../entities/PersonEntity';
 })
 export class PersonsService extends BaseService<PersonEntity> {
     constructor(
-        http: HttpClient) {
-        super(http, "persons");
+        http: HttpClient,protected tokenExtractor: HttpXsrfTokenExtractor) {
+        super(http, "persons", tokenExtractor);
     }
 
     public putNewPerson(person: PersonEntity): Observable<PersonEntity> {
