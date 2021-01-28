@@ -11,8 +11,8 @@ import { OsmPOIEntity } from '../entities/OsmPOIEntity';
 })
 export class CitiesService extends BaseService<CriteriaEntity> {
     constructor(
-        http: HttpClient, protected tokenExtractor: HttpXsrfTokenExtractor) {
-        super(http, "cities", tokenExtractor);
+        http: HttpClient) {
+        super(http, "cities");
     }
 
     public searchCityInOsmFile(cityname: string, amount:number): Observable<OsmPOIEntity[]> {

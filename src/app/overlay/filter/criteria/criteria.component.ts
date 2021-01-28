@@ -45,9 +45,15 @@ export class CriteriaFilterComponent implements OnInit {
     }
 
     public searchCity(): void {
+        this.mainAppComponent.setCalculationInProgress(true);
         var foundOsmEntity = this.citiesService.searchCityInOsmFile(this.city, 10).subscribe(result => {
             this.renderResult(result);
-        });
+        }, err => this.errorOnRequest(err));
+    }
+
+    private errorOnRequest(err) {
+        this.mainAppComponent.setCalculationInProgress(false);
+        this.toastr.error("Es ist ein Fehler aufgetreten! Bitte kontaktieren Sie den Betreiber");
     }
 
     private renderResult(result: OsmPOIEntity[]) {
@@ -68,19 +74,22 @@ export class CriteriaFilterComponent implements OnInit {
     }
 
     public searchStreet(): void {
+        this.mainAppComponent.setCalculationInProgress(true);
         this.citiesService.searchCityAndStreetInOsmFile(this.city, this.streetname, this.housenumber, 10).subscribe(result => {
             console.log(result);
             this.renderResult(result);
-        });
+        }, err => this.errorOnRequest(err));
     }
 
     public searchSchool(): void {
+        this.mainAppComponent.setCalculationInProgress(true);
         var foundOsmEntity = this.schoolService.searchSchoolInOsmFile(this.schoolname, this.city, 10).subscribe(result => {
             this.renderResult(result);
-        });
+        }, err => this.errorOnRequest(err));
     }
 
     private renderNewPositionInMainApp(result: OsmPOIEntity) {
+        this.mainAppComponent.setCalculationInProgress(false);
         this.mainAppComponent.zoomTo(result.latVal, result.longVal, 17);
         this.mainAppComponent.resetAllWaypoint();
         this.mainAppComponent.updateWaypoints();

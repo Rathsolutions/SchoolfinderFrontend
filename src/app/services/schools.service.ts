@@ -13,8 +13,8 @@ import { CriteriaEntity } from '../entities/CriteriaEntity';
 })
 export class SchoolsService extends BaseService<SchoolPersonEntity> {
     constructor(
-        http: HttpClient,protected tokenExtractor: HttpXsrfTokenExtractor) {
-        super(http, "schools", tokenExtractor);
+        http: HttpClient) {
+        super(http, "schools");
     }
 
     public putNewSchool(school: SchoolPersonEntity): Observable<SchoolPersonEntity> {

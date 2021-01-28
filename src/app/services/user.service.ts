@@ -11,8 +11,8 @@ import { Observable } from 'rxjs';
 })
 export class UserService extends BaseService<UserEntity> {
   constructor(
-    http: HttpClient, protected tokenExtractor: HttpXsrfTokenExtractor) {
-    super(http, "users", tokenExtractor);
+    http: HttpClient) {
+    super(http, "users");
   }
 
   public login(username: string, password: string): Observable<UserEntity> {

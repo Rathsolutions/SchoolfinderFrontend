@@ -62,5 +62,8 @@
     <criteria-filter-component #criteriaFilterComponent></criteria-filter-component>
   </div>
 </div>
-
+<div id="progressOverlay" *ngIf="calculationInProgress" #progressDiv id="progressOverlay">
+  <mat-progress-spinner id="progressSpinner" class="example-margin" color="primary" mode="indeterminate">
+  </mat-progress-spinner>
+</div>
 <router-outlet></router-outlet>

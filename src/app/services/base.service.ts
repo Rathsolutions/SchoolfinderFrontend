@@ -24,13 +24,11 @@ export class BaseService<T> {
   protected setUserAndPassword(username: string, password: string) {
     this.username = username;
     this.password = password;
-    const headerName = 'X-XSRF-TOKEN';
     BaseService.HTTP_OPTIONS = {
       withCredentials: true,
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         'Authorization': 'Basic ' + btoa(this.username + ':' + this.password),
-        'X-XSRF-TOKEN': this.tokenExtractor.getToken()
       })
     };
   }
@@ -39,7 +37,7 @@ export class BaseService<T> {
 
   constructor(
     protected http: HttpClient,
-    protected entity, protected tokenExtractor: HttpXsrfTokenExtractor
+    protected entity
   ) {
     this.requestURL = BASE_URL + entity;
   }

@@ -42,6 +42,7 @@ export class AppComponent implements AfterViewInit {
   @ViewChild('criteriaFilterComponent') criteriasObject: CriteriaFilterComponent;
 
 
+  calculationInProgress:boolean = false;
   lat: number;
   long: number
   infoboxLat: number;
@@ -198,5 +199,9 @@ export class AppComponent implements AfterViewInit {
     } else {
       this.overlayVisible = false;
     }
+  }
+
+  public setCalculationInProgress(val:boolean):void{
+    this.calculationInProgress = val;
   }
 }

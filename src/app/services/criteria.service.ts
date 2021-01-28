@@ -11,8 +11,8 @@ import { Observable } from 'rxjs';
 })
 export class CriteriaService extends BaseService<CriteriaEntity> {
     constructor(
-        http: HttpClient,protected tokenExtractor: HttpXsrfTokenExtractor) {
-        super(http, "criterias",tokenExtractor);
+        http: HttpClient) {
+        super(http, "criterias");
     }
 
     public getPossibleCriterias(criteria: string, amount: number): Observable<CriteriaEntity[]> {

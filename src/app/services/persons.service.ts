@@ -12,8 +12,8 @@ import { PersonEntity } from '../entities/PersonEntity';
 })
 export class PersonsService extends BaseService<PersonEntity> {
     constructor(
-        http: HttpClient,protected tokenExtractor: HttpXsrfTokenExtractor) {
-        super(http, "persons", tokenExtractor);
+        http: HttpClient) {
+        super(http, "persons");
     }
 
     public putNewPerson(person: PersonEntity): Observable<PersonEntity> {
