@@ -102,7 +102,7 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
 
     deleteCurrent(): void {
         this.schoolService.deleteSchool(this.schoolId).subscribe(result => {
-            this.toastr.success("Die Schule '" + this.schoolName.value + "' wurde erfolgreich gelöscht!");
+            this.toastr.success("Die Institution '" + this.schoolName.value + "' wurde erfolgreich gelöscht!");
             this.setVisible(false);
             this.mainApp.resetAllWaypoint();
             this.mainApp.updateWaypoints();
@@ -117,15 +117,15 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
             return;
         }
         if (!this.arPerson.isFilled() && !this.makerspacePerson.isFilled()) {
-            this.toastr.error("Bitte mindestens eine Ansprechperson für entweder AR oder Makerspace eintragen!");
+            this.toastr.error("Bitte mindestens eine Ansprechperson für entweder XR oder 3D-Makerspace eintragen!");
             return;
         }
         if (this.arPerson.isAtLeastOneFilled() && !this.arPerson.isFilled()) {
-            this.toastr.error("Bitte füllen Sie die AR-Person vollständig aus!");
+            this.toastr.error("Bitte füllen Sie die XR-Person vollständig aus!");
             return;
         }
         if (this.makerspacePerson.isAtLeastOneFilled() && !this.makerspacePerson.isFilled()) {
-            this.toastr.error("Bitte füllen Sie die Makerspace-Person vollständig aus!");
+            this.toastr.error("Bitte füllen Sie die 3D-Makerspace-Person vollständig aus!");
             return;
         }
         var school: SchoolPersonEntity = new SchoolPersonEntity;
@@ -136,7 +136,7 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
         school.arContent = this.arContent.value;
         school.color = this.colorCtr.value.hex;
         var errorInCallback = false;
-        await this.getOrInsertPerson(this.arPerson, school, PersonFunctionality.AR).then(val => {
+        await this.getOrInsertPerson(this.arPerson, school, PersonFunctionality.XR).then(val => {
             if (val != null) {
                 school.personSchoolMapping.push(val);
             }
@@ -170,13 +170,13 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
         }
         observableSchool.subscribe(result => {
             this.resetForm();
-            this.toastr.success("Die Schule wurde erfolgreich " + successMessage);
+            this.toastr.success("Die Institution wurde erfolgreich " + successMessage);
             this.setVisible(false);
             this.mainApp.resetAllWaypoint();
             this.mainApp.updateWaypoints();
         }, error => {
             if (error.status == 409) {
-                this.toastr.error("Diese Schule existiert schon! Bitte an anderer Stelle löschen und erneut versuchen");
+                this.toastr.error("Diese Institution existiert schon! Bitte an anderer Stelle löschen und erneut versuchen");
             } else {
                 this.toastr.error("Es ist ein Fehler aufgetreten, bitte alle Werte überprüfen!");
             }
@@ -192,14 +192,14 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
                 if (err.status == 404) {
                     personNotExisting = true;
                 } else if (err.status == 400) {
-                    this.toastr.error("Die E-Mail Adresse der AR Person stimmt nicht mit den bereits gespeicherten Angaben von Vor - und Nachnahmen sowie Telefonnummer überein!");
+                    this.toastr.error("Die E-Mail Adresse der XR Person stimmt nicht mit den bereits gespeicherten Angaben von Vor - und Nachnahmen sowie Telefonnummer überein!");
                     errorInCallback = true;
                 }
             });
             if (personNotExisting) {
                 await this.persistPerson(personToInsert.toPersonEntity()).then(result => arPerson = result).catch(err => {
                     if (err.status == 400) {
-                        this.toastr.error("Die E-Mail Adresse der AR Person stimmt nicht mit den bereits gespeicherten Angaben von Vor - und Nachnahmen sowie Telefonnummer überein!");
+                        this.toastr.error("Die E-Mail Adresse der XR Person stimmt nicht mit den bereits gespeicherten Angaben von Vor - und Nachnahmen sowie Telefonnummer überein!");
                         errorInCallback = true;
                     }
                 });

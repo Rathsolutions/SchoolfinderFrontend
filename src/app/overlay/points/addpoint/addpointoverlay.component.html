@@ -1,7 +1,7 @@
 <!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
 <div [ngStyle]="{'display': visible ? 'block' : 'none'}">
     <div class="gradient" style="max-width: 400px;">
-        <h3>Schule hinzufügen</h3>
+        <h3>Institution hinzufügen</h3>
         <form [formGroup]="newPointForm" (ngSubmit)="onSubmit()">
             <div>
                 <mat-form-field style="margin-left: 20px;">
@@ -12,13 +12,13 @@
                     style="max-width: 80px;max-height: 80px;margin-left: 20px;position: absolute;">
                 <div style="margin-left: 20px;">
                     <label class="mdl-button mdl-js-button mdl-button--icon mdl-button--file">
-                        <i class="material-icons">attach_file</i>Bild der Schule hochladen<input
+                        <i class="material-icons">attach_file</i>Bild der Institution hochladen<input
                             (change)="handleFileInput($event.target.files)" type="file" id="file" accept="image/*">
                     </label>
                 </div>
                 <div style="margin-left: 20px;">
                     <mat-form-field>
-                        <mat-label>Schulspezifischer AR-Inhalt (wenn verfügbar)</mat-label>
+                        <mat-label>Schulspezifischer XR-Inhalt (wenn verfügbar)</mat-label>
                         <input matInput [formControl]="arContent">
                     </mat-form-field>
                 </div>
@@ -36,10 +36,10 @@
                     <mat-expansion-panel>
                         <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
                             <mat-panel-title>
-                                AR-Ansprechperson
+                                XR-Ansprechperson
                             </mat-panel-title>
                             <mat-panel-description>
-                                Die Rubrik der AR-Ansprechperson
+                                Die Rubrik der XR-Ansprechperson
                             </mat-panel-description>
                         </mat-expansion-panel-header>
                         <div>
@@ -76,10 +76,10 @@
                     <mat-expansion-panel>
                         <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
                             <mat-panel-title>
-                                Makerspace-Ansprechperson
+                                3D-Makerspace-Ansprechperson
                             </mat-panel-title>
                             <mat-panel-description>
-                                Die Rubrik der Makerspace-Ansprechperson
+                                Die Rubrik der 3D-Makerspace-Ansprechperson
                             </mat-panel-description>
                         </mat-expansion-panel-header>
                         <div>

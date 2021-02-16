@@ -57,7 +57,7 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
                 this.colorCtr.setValue(new Color(255, 0, 0));
             }
             result.personSchoolMapping.forEach(e => {
-                if (e.functionality == PersonFunctionality.AR.toString().toUpperCase()) {
+                if (e.functionality == PersonFunctionality.XR.toString().toUpperCase()) {
                     this.arPerson = this.getPersonViewDataInstance();
                     this.arPerson.prefill(e.person);
                 } else if (e.functionality == PersonFunctionality.MAKERSPACE.toString().toUpperCase()) {

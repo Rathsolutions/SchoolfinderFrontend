@@ -5,7 +5,7 @@
             <mat-card class="example-card">
                 <mat-card-header>
                     <mat-card-title>{{schoolName.value}}</mat-card-title>
-                    <mat-card-subtitle>Informationen zur Schule</mat-card-subtitle>
+                    <mat-card-subtitle>Informationen zur Institution</mat-card-subtitle>
                 </mat-card-header>
                 <img #schoolPicture mat-card-image [src]="image" *ngIf="image">
                 <mat-card-content>
@@ -13,10 +13,10 @@
                         <mat-expansion-panel *ngIf="arPerson.isFilled()">
                             <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
                                 <mat-panel-title>
-                                    AR
+                                    XR
                                 </mat-panel-title>
                                 <mat-panel-description>
-                                    Weitere Infos zu AR
+                                    Weitere Infos zu XR
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
                             <div>
@@ -32,16 +32,16 @@
                                 <h4>Telefonnummer: {{arPerson.phonenumber.value}}</h4>
                             </div>
                             <div>
-                                <h4>Verfügbarer AR-Content: {{arContent.value}}</h4>
+                                <h4>Verfügbarer XR-Content: {{arContent.value}}</h4>
                             </div>
                         </mat-expansion-panel>
                         <mat-expansion-panel *ngIf="makerspacePerson.isFilled()">
                             <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
                                 <mat-panel-title>
-                                    Makerspace
+                                    3D-Makerspace
                                 </mat-panel-title>
                                 <mat-panel-description>
-                                    Weitere Infos zum Makerspace
+                                    Weitere Infos zum 3D-Makerspace
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
                             <div>

@@ -17,7 +17,7 @@
         <input [(ngModel)]="housenumber" matInput>
     </mat-form-field>
     <div *ngIf="isAdmin()" style="margin-bottom: 10px;">
-        <button mat-raised-button color="primary" cdkFocusInitial (click)="searchSchool()">Suche nach Schule</button>
+        <button mat-raised-button color="primary" cdkFocusInitial (click)="searchSchool()">Suche nach Institution</button>
     </div>
     <div *ngIf="isAdmin()" style="margin-bottom: 10px;">
         <button mat-raised-button color="primary" cdkFocusInitial (click)="searchStreet()">Suche nach

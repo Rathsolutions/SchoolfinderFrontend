@@ -15,6 +15,6 @@ export class PersonFunctionalityEntity {
 }
 
 export enum PersonFunctionality {
-    AR = "AR",
-    MAKERSPACE = "Makerspace"
+    XR = "XR",
+    MAKERSPACE = "MAKERSPACE"
 }
