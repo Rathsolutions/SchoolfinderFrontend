@@ -61,6 +61,7 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
         this.newPointForm = this.formBuilder.group({
             schoolName: this.schoolName,
             arContent: this.arContent,
+            makerspaceContent: this.makerspaceContent,
             arPerson: this.arPerson,
             makerspacePerson: this.makerspacePerson,
             colorCtr: this.colorCtr
@@ -85,6 +86,7 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
         this.arPerson.resetValues();
         this.makerspacePerson.resetValues();
         this.schoolName.reset();
+        this.makerspaceContent.reset();
         this.arContent.reset();
         this.colorCtr.reset();
         this.newPointForm.reset();
@@ -134,6 +136,7 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
         school.longitude = this.long;
         school.schoolName = this.schoolName.value;
         school.arContent = this.arContent.value;
+        school.makerspaceContent = this.makerspaceContent.value;
         school.color = this.colorCtr.value.hex;
         var errorInCallback = false;
         await this.getOrInsertPerson(this.arPerson, school, PersonFunctionality.XR).then(val => {

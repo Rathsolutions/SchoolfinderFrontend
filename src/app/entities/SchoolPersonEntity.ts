@@ -8,6 +8,7 @@ export class SchoolPersonEntity {
     schoolPicture:string;
     color:string;
     arContent:string;
+    makerspaceContent:string;
     latitude: number;
     longitude: number;
     personSchoolMapping: PersonFunctionalityEntity[] = [];
