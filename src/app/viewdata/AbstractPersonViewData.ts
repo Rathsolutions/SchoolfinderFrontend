@@ -4,9 +4,9 @@ import { PersonEntity } from '../entities/PersonEntity';
 import { PersonsService } from '../services/persons.service';
 
 export abstract class AbstractPersonViewData {
-    prename: FormControl = new FormControl('');
-    lastname: FormControl = new FormControl('');
-    email: FormControl = new FormControl('', Validators.email);
+    prename: FormControl = new FormControl('', Validators.required);
+    lastname: FormControl = new FormControl('', Validators.required);
+    email: FormControl = new FormControl('', [Validators.required, Validators.email]);
     phonenumber: FormControl = new FormControl('');
 
     newPointForm: FormGroup;
@@ -56,7 +56,7 @@ export abstract class AbstractPersonViewData {
     }
 
     public isFilled(): boolean {
-        return this.prename.status === 'VALID' && this.lastname.status === 'VALID' && this.email.status === 'VALID' && this.phonenumber.status === 'VALID' && this.prename.value !== "" && this.lastname.value !== "" && this.email.value !== "" && this.phonenumber.value !== "";
+        return this.prename.status === 'VALID' && this.lastname.status === 'VALID' && this.email.status === 'VALID' && this.prename.value !== "" && this.lastname.value !== "" && this.email.value !== "";
     }
 
     public isAtLeastOneFilled(): boolean {
