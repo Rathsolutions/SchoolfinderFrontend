@@ -209,7 +209,7 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
             }
             if (errorInCallback) {
                 return new Promise<PersonFunctionalityEntity>((resolve, reject) => {
-                    reject(false);
+                    reject(true);
                 });
             }
             var personSchoolMappingId: number;
@@ -225,7 +225,7 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
                 if (!errorInCallback) {
                     resolve(currentPersonFunctionalityEntity);
                 } else {
-                    reject(false);
+                    reject(true);
                 }
             });
 
