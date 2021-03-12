@@ -24,6 +24,7 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
     public arContent: FormControl = new FormControl('');
     public makerspaceContent: FormControl = new FormControl('');
     image: string = null;
+    public alternativePictureText: FormControl = new FormControl('');
     protected schoolId: number;
 
     constructor(protected schoolsService: SchoolsService, protected personsService: PersonsService) {
@@ -40,6 +41,7 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
         this.schoolName = new FormControl('', Validators.required);
         this.arContent = new FormControl('');
         this.makerspaceContent = new FormControl('');
+        this.alternativePictureText = new FormControl('');
     }
 
     async loadNewSchool(id: number) {
@@ -75,6 +77,7 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
                     intArray[i] = result.schoolPicture.charCodeAt(i);
                 }
                 this.image = result.schoolPicture;
+                this.alternativePictureText.setValue(result.alternativePictureText);
             } else {
                 this.image = null;
             }

@@ -15,7 +15,7 @@ import { PointOverlay } from '../pointoverlay.component';
 import { AbstractPersonViewData } from "../../../viewdata/AbstractPersonViewData";
 import { EditablePersonViewData } from "../../../viewdata/EditablePersonViewData";
 import { CriteriaEntity } from 'src/app/entities/CriteriaEntity';
-import { AppComponent } from 'src/app/app.component';
+import { MainComponent } from 'src/app/overlay/main/main.component';
 import { ThemePalette } from '@angular/material/core';
 
 @Component({
@@ -46,7 +46,7 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
         protected personsService: PersonsService,
         private toastr: ToastrService,
         private componentFactoryResolver: ComponentFactoryResolver,
-        private mainApp: AppComponent
+        private mainApp: MainComponent
     ) {
         super(schoolService, personsService);
     }
@@ -64,7 +64,9 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
             makerspaceContent: this.makerspaceContent,
             arPerson: this.arPerson,
             makerspacePerson: this.makerspacePerson,
-            colorCtr: this.colorCtr
+            colorCtr: this.colorCtr,
+            schoolPicture: this.schoolPicture,
+            alternativePictureText: this.alternativePictureText
         });
         this.criterias = [];
         this.arPerson.setNewPointForm(this.newPointForm);
@@ -90,6 +92,8 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
         this.arContent.reset();
         this.colorCtr.reset();
         this.newPointForm.reset();
+        this.schoolPicture.reset();
+        this.alternativePictureText.reset();
         this.criterias = [];
     }
 
@@ -161,7 +165,10 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
             criteriaEntity.criteriaName = e.criteriaName.value;
             school.matchingCriterias.push(criteriaEntity);
         })
-        school.schoolPicture = this.image;
+        if (this.image) {
+            school.schoolPicture = this.image;
+            school.alternativePictureText = this.alternativePictureText.value
+        }
         var observableSchool;
         var successMessage;
         if (this.prefilled) {

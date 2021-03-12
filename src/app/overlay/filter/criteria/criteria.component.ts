@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 
 import { CriteriaService } from '../../../services/criteria.service';
 import { CriteriaEntity } from 'src/app/entities/CriteriaEntity';
-import { AppComponent } from '../../../app.component';
+import { MainComponent } from 'src/app/overlay/main/main.component';
 import { SchoolsService } from '../../../services/schools.service';
 import { BaseService } from 'src/app/services/base.service';
 import { UserService } from 'src/app/services/user.service';
@@ -26,7 +26,7 @@ export class CriteriaFilterComponent implements OnInit {
 
     allCriterias: CriteriaEntity[] = [];
     selectedCriterias: CriteriaEntity[] = [];
-    mainAppComponent: AppComponent;
+    mainAppComponent: MainComponent;
     schoolname: string;
     streetname: string;
     housenumber: string;

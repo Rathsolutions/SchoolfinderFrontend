@@ -30,10 +30,16 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MAT_COLOR_FORMATS, NgxMatColorPickerModule, NGX_MAT_COLOR_FORMATS } from '@angular-material-components/color-picker';
+import { MainComponent } from './overlay/main/main.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatListModule } from '@angular/material/list';
+import { BarrierFree } from './overlay/barrierfree/barrierfree.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    BarrierFree,
+    MainComponent,
     DialogLogin,
     AddPointOverlay,
     ShowPointOverlay,
@@ -61,6 +67,8 @@ import { MAT_COLOR_FORMATS, NgxMatColorPickerModule, NGX_MAT_COLOR_FORMATS } fro
     MatCardModule,
     MatCheckboxModule,
     MatSlideToggleModule,
+    MatTableModule,
+    MatListModule,
     MatProgressSpinnerModule,
     NgxMatColorPickerModule,
     ToastrModule.forRoot()

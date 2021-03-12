@@ -16,6 +16,12 @@
                             (change)="handleFileInput($event.target.files)" type="file" id="file" accept="image/*">
                     </label>
                 </div>
+                <div style="margin-left: 20px;" *ngIf="image">
+                    <mat-form-field>
+                        <mat-label>Alternativtext des Bildes</mat-label>
+                        <input matInput [formControl]="alternativePictureText">
+                    </mat-form-field>
+                </div>
                 <div style="margin-left: 20px;">
                     <mat-form-field>
                         <mat-label>Spezifischer XR-Inhalt (wenn verfügbar)</mat-label>

@@ -1,0 +1,17 @@
+#overallContent{
+    /* margin-left: 20px; */
+    /* margin-right: 30px; */
+}
+h1,h3{
+    text-align: center;
+}
+.contentTable{
+    /* background-color: rgba(0, 0, 0, 0.3); */
+    margin-left: 10px;
+    overflow: auto;
+    max-height: 80vh;
+}
+  table td, table th {
+    padding: 2px 10px;
+  }
+  

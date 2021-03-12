@@ -6,6 +6,7 @@ export class SchoolPersonEntity {
     id: number;
     schoolName: string;
     schoolPicture:string;
+    alternativePictureText:string;
     color:string;
     arContent:string;
     makerspaceContent:string;
