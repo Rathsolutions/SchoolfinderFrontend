@@ -92,16 +92,31 @@ export class MainComponent implements AfterViewInit {
     public updateWaypoints(): void {
         var glbox = this.mapObject.getView().calculateExtent(this.mapObject.getSize());
         var box = proj.transformExtent(glbox, 'EPSG:3857', 'EPSG:4326');
+        var replaceRegex = "/(.{5})/g,  $1\n";
         this.schoolsService.getSchoolsByBoundsAndCriterias(box[0], box[2], box[1], box[3], this.criteriasObject.selectedCriterias, this.criteriasObject.exclusiveSearch).subscribe(success => {
             success.forEach(e => {
                 var waypoint = new Feature({
                     geometry: new geom.Point(proj.transform([e.latitude, e.longitude], 'EPSG:4326', 'EPSG:3857'))
                 });
+                var schoolNameReplaced = e.schoolName;
+                var splitPoint = 0;
+                if (e.schoolName.length > 5) {
+                    schoolNameReplaced = e.schoolName.replace(/(.{1})/g, "$1\n");
+                    splitPoint = schoolNameReplaced.split("\n").length;
+                    if (schoolNameReplaced.charAt(schoolNameReplaced.length-1) == '\n') {
+                        schoolNameReplaced = schoolNameReplaced.substring(0, schoolNameReplaced.length - 1);
+                        splitPoint = splitPoint-1;
+                    }
+                }
+                // var p = splitPoint % 2 == 0 ? ; 
+                var offset = (-20 - (Math.pow(splitPoint+1,1.8)));
+                // console.log(offset);
+                // console.log(schoolNameReplaced + "len:" + splitPoint)
                 var style = new Style({
                     text: new Text({
-                        text: e.schoolName,
-                        offsetY: '-20',
-                        font: 'bold italic 14px sans-serif'
+                        text: schoolNameReplaced,
+                        offsetY: offset,
+                        font: 'bold italic 14px/1.0 sans-serif',
                     }),
                     image: new Circle({
                         radius: 6,
