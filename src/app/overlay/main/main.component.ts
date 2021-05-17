@@ -3,7 +3,9 @@ import { SimpleChanges, ComponentFactoryResolver, Component, ViewChild, ViewCont
 import { MapComponent, SourceComponent, SourceVectorTileComponent, ViewComponent, CoordinateComponent, OverlayComponent, SourceVectorComponent, FeatureComponent } from 'ngx-openlayers';
 import * as proj from 'ol/proj';
 import * as geom from 'ol/geom';
+import Map from 'ol/Map';
 import { Style, Text, Circle, Fill, Stroke } from 'ol/style';
+import Overlay from 'ol/Overlay';
 import { Feature } from 'ol';
 import { faAlignJustify, faUserCog } from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder } from '@angular/forms';
@@ -38,6 +40,7 @@ export class MainComponent implements AfterViewInit {
     @ViewChild('showPointOverlayComponent') showPointOverlayPlaceholder: ShowPointOverlay;
     @ViewChild('criteriaPlaceholder', { read: ViewContainerRef }) criteriaPlaceholder: ViewContainerRef;
     @ViewChild('criteriaFilterComponent') criteriasObject: CriteriaFilterComponent;
+    @ViewChild('showpointOverlay') showpointOverlayOpenlayersComponent: Overlay
 
 
     calculationInProgress: boolean = false;
@@ -103,19 +106,19 @@ export class MainComponent implements AfterViewInit {
                 if (e.schoolName.length > 5) {
                     schoolNameReplaced = e.schoolName.replace(/(.{1})/g, "$1\n");
                     splitPoint = schoolNameReplaced.split("\n").length;
-                    if (schoolNameReplaced.charAt(schoolNameReplaced.length-1) == '\n') {
+                    if (schoolNameReplaced.charAt(schoolNameReplaced.length - 1) == '\n') {
                         schoolNameReplaced = schoolNameReplaced.substring(0, schoolNameReplaced.length - 1);
-                        splitPoint = splitPoint-1;
+                        splitPoint = splitPoint - 1;
                     }
                 }
                 // var p = splitPoint % 2 == 0 ? ; 
-                var offset = (-20 - (Math.pow(splitPoint+1,1.8)));
+                // var offset = (-20 - (Math.pow(splitPoint+1,1.8)));
                 // console.log(offset);
                 // console.log(schoolNameReplaced + "len:" + splitPoint)
                 var style = new Style({
                     text: new Text({
-                        text: schoolNameReplaced,
-                        offsetY: offset,
+                        text: e.schoolName,
+                        offsetY: -20,
                         font: 'bold italic 14px/1.0 sans-serif',
                     }),
                     image: new Circle({
@@ -184,7 +187,7 @@ export class MainComponent implements AfterViewInit {
     }
 
     public mapOnClick(evt): void {
-        const map = evt.map;
+        const map: Map = evt.map as Map;
         const point = map.forEachFeatureAtPixel(evt.pixel,
             function (feature, layer) {
                 return feature;
@@ -207,7 +210,15 @@ export class MainComponent implements AfterViewInit {
             this.infoboxLat = latlong[0];
             this.infoboxLong = latlong[1];
             this.overlayVisible = true;
-            this.showPointOverlayPlaceholder.loadNewSchool(point.getId());
+            this.showPointOverlayPlaceholder.loadNewSchool(point.getId()).then(res => {
+                var zoom = map.getView().getZoom();
+                var pixel = map.getPixelFromCoordinate(evt.coordinate);
+                pixel[0] += 130;
+                pixel[1] += 300;
+                var box = map.getCoordinateFromPixel(pixel);
+                console.log(box);
+                this.mapView.instance.animate({ center: box });
+            });
             this.showPointOverlayPlaceholder.setVisible(true);
         } else {
             this.overlayVisible = false;

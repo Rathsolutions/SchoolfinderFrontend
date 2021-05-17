@@ -4,10 +4,12 @@
         <div>
             <mat-card class="example-card">
                 <mat-card-header>
-                    <mat-card-title>{{schoolName.value}}</mat-card-title>
+                    <mat-card-title [ngStyle]="{'font-size': 20 * currentFontRatio + 'px'}">{{schoolName.value}}
+                    </mat-card-title>
                     <mat-card-subtitle>Informationen zur Institution</mat-card-subtitle>
                 </mat-card-header>
-                <img #schoolPicture mat-card-image [src]="image" *ngIf="image" [alt]="alternativePictureText.value">
+                <img maxHeight="200px" #schoolPicture mat-card-image [src]="image" *ngIf="image"
+                    [alt]="alternativePictureText.value">
                 <mat-card-content>
                     <mat-accordion>
                         <mat-expansion-panel *ngIf="arPerson.isFilled()">

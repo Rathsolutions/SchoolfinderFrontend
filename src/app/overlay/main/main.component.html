@@ -26,7 +26,7 @@
             </aol-attributions>
         </aol-source-xyz>
     </aol-layer-tile>
-    <aol-overlay [autoPan]="true" [autoPanAnimation]>
+    <aol-overlay #showpointOverlay [autoPan]="true" [autoPanAnimation]>
         <aol-coordinate [x]="infoboxLat" [y]="infoboxLong" [srid]="'EPSG:4326'">
         </aol-coordinate>
         <aol-content>
