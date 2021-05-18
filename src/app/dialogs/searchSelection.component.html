@@ -1,12 +1,12 @@
 <!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
-<h1 mat-dialog-title>Passende Werte</h1>
+<h1 mat-dialog-title>{{dialogTitle}}</h1>
 <div mat-dialog-content>
-    <p>Bitte wählen Sie aus den gefunden Ergebnissen das Passende aus</p>
-    <div *ngFor="let entry of entries.result; let i = index">
+    <p>{{dialogUnderline}}</p>
+    <div *ngFor="let entry of entries; let i = index">
         <mat-card matRipple class="clickable" (click)="onCardClick(i)">
             <mat-card-header>
-                <mat-card-title>{{entry.primaryValue}}</mat-card-title>
-                <mat-card-subtitle>{{entry.secondaryValue}}</mat-card-subtitle>
+                <mat-card-title>{{entry.title}}</mat-card-title>
+                <mat-card-subtitle>{{entry.subtitle}}</mat-card-subtitle>
             </mat-card-header>
         </mat-card>
     </div>

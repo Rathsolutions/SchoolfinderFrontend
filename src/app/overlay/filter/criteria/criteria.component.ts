@@ -16,6 +16,7 @@ import { CitiesService } from 'src/app/services/cities.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SearchSelectionComponent } from '../../..//dialogs/searchSelection.component';
 import { OsmPOIEntity } from '../../../entities/OsmPOIEntity';
+import { SelectionDialogViewData } from 'src/app/viewdata/SelectionDialogViewData';
 
 @Component({
     selector: 'criteria-filter-component',
@@ -47,7 +48,38 @@ export class CriteriaFilterComponent implements OnInit {
     public searchCity(): void {
         this.mainAppComponent.setCalculationInProgress(true);
         var foundOsmEntity = this.citiesService.searchCityInOsmFile(this.city, 10).subscribe(result => {
-            this.renderResult(result);
+            var dialogViewdata: SelectionDialogViewData[] = this.convertOsmPoiEntityArrayToSelectionDialogViewDataArray(result);
+            this.renderResult(dialogViewdata);
+        }, err => this.errorOnRequest(err));
+    }
+
+    private convertOsmPoiEntityArrayToSelectionDialogViewDataArray(result: OsmPOIEntity[]) {
+        var dialogViewdata: SelectionDialogViewData[] = [];
+        result.forEach(e => {
+            dialogViewdata.push(new SelectionDialogViewData(e.primaryValue, e.secondaryValue, e.latVal, e.longVal));
+        });
+        return dialogViewdata;
+    }
+
+    public showAllInstitutions(): void {
+        this.mainAppComponent.setCalculationInProgress(true);
+        var foundOsmEntity = this.schoolService.getAllSchools().subscribe(result => {
+            var dialogViewdata: SelectionDialogViewData[] = [];
+            result.forEach(e => {
+                var subtitle = "";
+                if (e.arContent && e.makerspaceContent) {
+                    subtitle = "XR & Makerspace";
+                } else if (e.arContent) {
+                    subtitle = "XR";
+                } else if (e.makerspaceContent) {
+                    subtitle = "Makerspace";
+                } else {
+                    subtitle = "Für weitere Informationen klicken"
+                }
+                //Seems like latlong are swapped for schools. be careful when fixing this
+                dialogViewdata.push(new SelectionDialogViewData(e.schoolName, subtitle, e.longitude, e.latitude));
+            })
+            this.showSelectDialog(dialogViewdata);
         }, err => this.errorOnRequest(err));
     }
 
@@ -56,41 +88,46 @@ export class CriteriaFilterComponent implements OnInit {
         this.toastr.error("Es ist ein Fehler aufgetreten! Bitte kontaktieren Sie den Betreiber");
     }
 
-    private renderResult(result: OsmPOIEntity[]) {
+    private renderResult(result: SelectionDialogViewData[]) {
         if (result.length == 1) {
             this.renderNewPositionInMainApp(result[0]);
         } else if (result.length == 0) {
             this.toastr.error("Es wurden leider keine Ergebnisse gefunden. Bitte überprüfen Sie die eingegebenen Werte!")
         }
         else {
-            const dialog = this.dialog.open(SearchSelectionComponent, {
-                width: '250px',
-                data: { result }
-            });
-            dialog.afterClosed().subscribe(result => {
-                this.renderNewPositionInMainApp(result);
-            });
+            this.showSelectDialog(result);
         }
+    }
+
+    private showSelectDialog(result) {
+        const dialog = this.dialog.open(SearchSelectionComponent, {
+            width: '250px',
+            data: { cardData: result, headline: "Passende Werte", underheadline: "Bitte wählen Sie aus den gefunden Ergebnissen das Passende aus" }
+        });
+        dialog.afterClosed().subscribe(result => {
+            this.renderNewPositionInMainApp(result);
+        });
     }
 
     public searchStreet(): void {
         this.mainAppComponent.setCalculationInProgress(true);
         this.citiesService.searchCityAndStreetInOsmFile(this.city, this.streetname, this.housenumber, 10).subscribe(result => {
-            console.log(result);
-            this.renderResult(result);
+            var dialogViewdata: SelectionDialogViewData[] = this.convertOsmPoiEntityArrayToSelectionDialogViewDataArray(result);
+            this.renderResult(dialogViewdata);
         }, err => this.errorOnRequest(err));
     }
 
     public searchSchool(): void {
         this.mainAppComponent.setCalculationInProgress(true);
         var foundOsmEntity = this.schoolService.searchSchoolInOsmFile(this.schoolname, this.city, 10).subscribe(result => {
-            this.renderResult(result);
+            var dialogViewdata: SelectionDialogViewData[] = this.convertOsmPoiEntityArrayToSelectionDialogViewDataArray(result);
+            this.renderResult(dialogViewdata);
         }, err => this.errorOnRequest(err));
     }
 
-    private renderNewPositionInMainApp(result: OsmPOIEntity) {
+    private renderNewPositionInMainApp(result: SelectionDialogViewData) {
         this.mainAppComponent.setCalculationInProgress(false);
-        this.mainAppComponent.zoomTo(result.latVal, result.longVal, 17);
+        this.mainAppComponent.zoomTo(result.getLatitude(), result.getLongitude(), 17);
         this.mainAppComponent.resetAllWaypoint();
         this.mainAppComponent.updateWaypoints();
     }
