@@ -122,9 +122,9 @@ export class MainComponent implements AfterViewInit {
                     this.existingWaypointAtGeometry.push([e.latitude, e.longitude]);
                 } else {
                     this.sourceWaypointVector.instance.getFeatures().forEach(element => {
-                        if((element.id_ == e.id)){
+                        if ((element.id_ == e.id)) {
                             element.setStyle(this.getStyleForWaypoint(e, zoom));
-                        }                        
+                        }
                     });
                 }
             });
@@ -139,7 +139,7 @@ export class MainComponent implements AfterViewInit {
             text: new Text({
                 text: textToSet,
                 offsetY: -20,
-                font: 'bold italic ' + zoom*1.15 + 'px/1.0 sans-serif',
+                font: 'bold italic ' + zoom * 1.15 + 'px/1.0 sans-serif',
             }),
             image: new Circle({
                 radius: 6,
@@ -220,12 +220,10 @@ export class MainComponent implements AfterViewInit {
             this.infoboxLong = latlong[1];
             this.overlayVisible = true;
             this.showPointOverlayPlaceholder.loadNewSchool(point.getId()).then(res => {
-                var zoom = map.getView().getZoom();
                 var pixel = map.getPixelFromCoordinate(evt.coordinate);
-                pixel[0] += 130;
-                pixel[1] += 300;
+                pixel[0] += map.getSize()[0]/4;
+                pixel[1] += map.getSize()[1]/2.5;
                 var box = map.getCoordinateFromPixel(pixel);
-                console.log(box);
                 this.mapView.instance.animate({ center: box });
             });
             this.showPointOverlayPlaceholder.setVisible(true);
