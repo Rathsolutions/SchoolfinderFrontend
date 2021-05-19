@@ -134,11 +134,12 @@ export class MainComponent implements AfterViewInit {
     }
 
     private getStyleForWaypoint(e: SchoolPersonEntity, zoom: any) {
+        var textToSet = zoom <= 9 && e.shortSchoolName ? e.shortSchoolName : e.schoolName;
         return new Style({
             text: new Text({
-                text: e.schoolName,
+                text: textToSet,
                 offsetY: -20,
-                font: 'bold italic ' + zoom*1.1 + 'px/1.0 sans-serif',
+                font: 'bold italic ' + zoom*1.15 + 'px/1.0 sans-serif',
             }),
             image: new Circle({
                 radius: 6,

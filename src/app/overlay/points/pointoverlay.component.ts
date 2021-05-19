@@ -20,6 +20,7 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
     makerspacePerson: AbstractPersonViewData = this.getPersonViewDataInstance();
 
     public schoolName: FormControl = new FormControl('', Validators.required);
+    public shortSchoolName:FormControl = new FormControl('', Validators.required);
     public colorCtr: AbstractControl = new FormControl('#ff0000', [Validators.required, Validators.pattern("^#[0-9A-Fa-f]{6}$")]);
     public arContent: FormControl = new FormControl('');
     public makerspaceContent: FormControl = new FormControl('');
@@ -39,6 +40,7 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
         this.image = null;
         this.schoolId = null;
         this.schoolName = new FormControl('', Validators.required);
+        this.shortSchoolName = new FormControl('', Validators.required);
         this.arContent = new FormControl('');
         this.makerspaceContent = new FormControl('');
         this.alternativePictureText = new FormControl('');
@@ -50,6 +52,7 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
 
             this.schoolsService.getSchoolDetails(id).subscribe(result => {
                 this.schoolId = result.id;
+                this.shortSchoolName.setValue(result.shortSchoolName);
                 this.schoolName.setValue(result.schoolName);
                 this.arContent.setValue(result.arContent);
                 this.makerspaceContent.setValue(result.makerspaceContent);

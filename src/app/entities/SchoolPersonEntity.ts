@@ -4,12 +4,13 @@ import { CriteriaEntity } from './CriteriaEntity';
 
 export class SchoolPersonEntity {
     id: number;
+    shortSchoolName: string;
     schoolName: string;
-    schoolPicture:string;
-    alternativePictureText:string;
-    color:string;
-    arContent:string;
-    makerspaceContent:string;
+    schoolPicture: string;
+    alternativePictureText: string;
+    color: string;
+    arContent: string;
+    makerspaceContent: string;
     latitude: number;
     longitude: number;
     personSchoolMapping: PersonFunctionalityEntity[] = [];
