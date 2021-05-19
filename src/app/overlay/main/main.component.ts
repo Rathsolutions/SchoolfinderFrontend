@@ -1,6 +1,6 @@
 //Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE
 import { SimpleChanges, ComponentFactoryResolver, Component, ViewChild, ViewContainerRef, ElementRef, AfterViewInit, Injectable } from '@angular/core';
-import { MapComponent, SourceComponent, SourceVectorTileComponent, ViewComponent, CoordinateComponent, OverlayComponent, SourceVectorComponent, FeatureComponent } from 'ngx-openlayers';
+import { MapComponent, SourceComponent, SourceVectorTileComponent, ViewComponent, CoordinateComponent, OverlayComponent, SourceVectorComponent, FeatureComponent, ControlScaleLineComponent } from 'ngx-openlayers';
 import * as proj from 'ol/proj';
 import * as geom from 'ol/geom';
 import Map from 'ol/Map';
@@ -17,6 +17,7 @@ import { ShowPointOverlay } from '../points/showpoint/showpoint.component';
 import { ToastrService } from 'ngx-toastr';
 import { SchoolsService } from '../../services/schools.service';
 import { CriteriaFilterComponent } from '../filter/criteria/criteria.component';
+import { SchoolPersonEntity } from 'src/app/entities/SchoolPersonEntity';
 
 @Component({
     selector: 'main-component',
@@ -94,6 +95,7 @@ export class MainComponent implements AfterViewInit {
 
     public updateWaypoints(): void {
         var glbox = this.mapObject.getView().calculateExtent(this.mapObject.getSize());
+        var zoom = this.mapObject.getView().getZoom();
         var box = proj.transformExtent(glbox, 'EPSG:3857', 'EPSG:4326');
         var replaceRegex = "/(.{5})/g,  $1\n";
         this.schoolsService.getSchoolsByBoundsAndCriterias(box[0], box[2], box[1], box[3], this.criteriasObject.selectedCriterias, this.criteriasObject.exclusiveSearch).subscribe(success => {
@@ -111,32 +113,38 @@ export class MainComponent implements AfterViewInit {
                         splitPoint = splitPoint - 1;
                     }
                 }
-                // var p = splitPoint % 2 == 0 ? ; 
-                // var offset = (-20 - (Math.pow(splitPoint+1,1.8)));
-                // console.log(offset);
-                // console.log(schoolNameReplaced + "len:" + splitPoint)
-                var style = new Style({
-                    text: new Text({
-                        text: e.schoolName,
-                        offsetY: -20,
-                        font: 'bold italic 14px/1.0 sans-serif',
-                    }),
-                    image: new Circle({
-                        radius: 6,
-                        fill: new Fill({ color: e.color ? "#" + e.color : '#ff0000' }),
-                        stroke: new Stroke({ color: 'black' })
-                    })
-                });
+                var style = this.getStyleForWaypoint(e, zoom);
                 waypoint.setStyle(style);
                 waypoint.setId(e.id);
                 var res = this.existingWaypointAtGeometry.find(element => element[0] == e.latitude && element[1] == e.longitude);
                 if (!res) {
                     this.sourceWaypointVector.instance.addFeature(waypoint);
                     this.existingWaypointAtGeometry.push([e.latitude, e.longitude]);
+                } else {
+                    this.sourceWaypointVector.instance.getFeatures().forEach(element => {
+                        if((element.id_ == e.id)){
+                            element.setStyle(this.getStyleForWaypoint(e, zoom));
+                        }                        
+                    });
                 }
             });
         }, error => {
             console.log(error);
+        });
+    }
+
+    private getStyleForWaypoint(e: SchoolPersonEntity, zoom: any) {
+        return new Style({
+            text: new Text({
+                text: e.schoolName,
+                offsetY: -20,
+                font: 'bold italic ' + zoom*1.1 + 'px/1.0 sans-serif',
+            }),
+            image: new Circle({
+                radius: 6,
+                fill: new Fill({ color: e.color ? "#" + e.color : '#ff0000' }),
+                stroke: new Stroke({ color: 'black' })
+            })
         });
     }
 
