@@ -3,6 +3,8 @@ import { Component, Type, OnDestroy, AfterViewInit, ViewChild, ElementRef, Input
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { OsmPOIEntity } from '../entities/OsmPOIEntity';
+import { SelectionDialogViewData } from '../viewdata/SelectionDialogViewData';
 
 @Component({
     selector: 'search-selection-component',
@@ -11,17 +13,24 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class SearchSelectionComponent implements OnInit {
 
+    dialogTitle: string = "";
+    dialogUnderline:string = "";
+    entries:SelectionDialogViewData[];
+
     constructor(
         public dialogRef: MatDialogRef<SearchSelectionComponent>,
-        @Inject(MAT_DIALOG_DATA) public entries: any) { }
+        @Inject(MAT_DIALOG_DATA) public data: any) {
+            this.entries = data.cardData;
+            this.dialogTitle = data.headline;
+            this.dialogUnderline = data.underheadline;
+         }
 
     ngOnInit(): void {
         console.log(this.entries);
     }
 
     public onCardClick(indice) {
-        console.log(this.entries.result[indice]);
-        this.dialogRef.close(this.entries.result[indice])
+        this.dialogRef.close(this.entries[indice])
     }
 
 }
