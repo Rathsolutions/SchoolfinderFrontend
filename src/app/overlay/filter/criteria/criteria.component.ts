@@ -79,7 +79,7 @@ export class CriteriaFilterComponent implements OnInit {
                 //Seems like latlong are swapped for schools. be careful when fixing this
                 dialogViewdata.push(new SelectionDialogViewData(e.schoolName, subtitle, e.longitude, e.latitude));
             })
-            this.showSelectDialog(dialogViewdata);
+            this.showSelectDialog(dialogViewdata, "Alle eingetragenen Institutionen", "Bitte wählen Sie die gesuchte Institution aus");
         }, err => this.errorOnRequest(err));
     }
 
@@ -95,14 +95,14 @@ export class CriteriaFilterComponent implements OnInit {
             this.toastr.error("Es wurden leider keine Ergebnisse gefunden. Bitte überprüfen Sie die eingegebenen Werte!")
         }
         else {
-            this.showSelectDialog(result);
+            this.showSelectDialog(result, "Passende Werte", "Bitte wählen Sie aus den gefunden Ergebnissen das Passende aus");
         }
     }
 
-    private showSelectDialog(result) {
+    private showSelectDialog(result, headline: string, underline: string) {
         const dialog = this.dialog.open(SearchSelectionComponent, {
             width: '250px',
-            data: { cardData: result, headline: "Passende Werte", underheadline: "Bitte wählen Sie aus den gefunden Ergebnissen das Passende aus" }
+            data: { cardData: result, headline: headline, underheadline: underline }
         });
         dialog.afterClosed().subscribe(result => {
             this.renderNewPositionInMainApp(result);
