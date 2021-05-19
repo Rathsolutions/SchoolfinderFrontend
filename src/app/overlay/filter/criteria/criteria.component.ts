@@ -63,7 +63,7 @@ export class CriteriaFilterComponent implements OnInit {
 
     public showAllInstitutions(): void {
         this.mainAppComponent.setCalculationInProgress(true);
-        var foundOsmEntity = this.schoolService.getAllSchools().subscribe(result => {
+        var foundOsmEntity = this.schoolService.getAllSchoolsOrderedByName().subscribe(result => {
             var dialogViewdata: SelectionDialogViewData[] = [];
             result.forEach(e => {
                 var subtitle = "";

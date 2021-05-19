@@ -60,6 +60,11 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
         return this.http.get<SchoolPersonEntity[]>(this.requestURL + "/search/findAllSchools");
     }
 
+
+    public getAllSchoolsOrderedByName():Observable<SchoolPersonEntity[]>{
+        return this.http.get<SchoolPersonEntity[]>(this.requestURL + "/search/findAllSchoolsOrderedByName");
+    }
+
     public getSchoolDetails(id: number): Observable<SchoolPersonEntity> {
         return this.http.get<SchoolPersonEntity>(this.requestURL + "/search/findSchoolDetails", {
             params: {
