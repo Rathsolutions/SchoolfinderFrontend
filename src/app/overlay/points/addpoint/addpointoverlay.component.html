@@ -5,7 +5,7 @@
         <form [formGroup]="newPointForm" (ngSubmit)="onSubmit()">
             <div>
                 <mat-form-field style="margin-left: 20px;">
-                    <mat-label>Schulname</mat-label>
+                    <mat-label>Institutionsname</mat-label>
                     <input matInput [formControl]="schoolName">
                 </mat-form-field>
                 <img #schoolPicture mat-card-image [src]="image"
@@ -15,6 +15,12 @@
                         <i class="material-icons">attach_file</i>Bild der Institution hochladen<input
                             (change)="handleFileInput($event.target.files)" type="file" id="file" accept="image/*">
                     </label>
+                </div>
+                <div>
+                    <mat-form-field style="margin-left: 20px;">
+                        <mat-label>Institutionsabkürzung</mat-label>
+                        <input matInput [formControl]="shortSchoolName">
+                    </mat-form-field>
                 </div>
                 <div style="margin-left: 20px;" *ngIf="image">
                     <mat-form-field>

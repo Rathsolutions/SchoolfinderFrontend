@@ -59,6 +59,7 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
 
     private init() {
         this.newPointForm = this.formBuilder.group({
+            shortSchoolName: this.shortSchoolName,
             schoolName: this.schoolName,
             arContent: this.arContent,
             makerspaceContent: this.makerspaceContent,
@@ -138,6 +139,7 @@ export class AddPointOverlay extends PointOverlay implements AfterViewInit, OnDe
         school.id = this.schoolId;
         school.latitude = this.lat;
         school.longitude = this.long;
+        school.shortSchoolName = this.shortSchoolName.value;
         school.schoolName = this.schoolName.value;
         school.arContent = this.arContent.value;
         school.makerspaceContent = this.makerspaceContent.value;
