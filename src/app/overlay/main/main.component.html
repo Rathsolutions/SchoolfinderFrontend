@@ -7,21 +7,12 @@
         <aol-coordinate #mapCoord [x]="lat" [y]="long" [srid]="'EPSG:4326'"></aol-coordinate>
     </aol-view>
     <aol-layer-tile [opacity]="1">
-        <aol-source-osm #sourceLayer>
+        <aol-source-xyz url="http://mapserver.rathsolutions.de/styles/basic-preview/{z}/{x}/{y}.png" #sourceLayer>
             <aol-attributions>
                 <aol-attribution #myAttribution id="attribution">
-                    &copy;&nbsp;2020/21 <a href="https://rathsolutions.de" target="_blank">Nico Rath</a>, Openlayers and
-                    OpenStreetMaps
-                </aol-attribution>
-            </aol-attributions>
-        </aol-source-osm>
-    </aol-layer-tile>
-    <aol-layer-tile [opacity]="1">
-        <aol-source-xyz>
-            <aol-attributions>
-                <aol-attribution id="attribution">
-                    &copy;&nbsp;2020/21 <a href="https://rathsolutions.de" target="_blank">Nico Rath</a>, Openlayers and
-                    OpenStreetMaps
+                    &copy;&nbsp;2020/21 <a href="https://rathsolutions.de" target="_blank">Nico Rath</a>, Openlayers,
+                    OpenStreetMaps, <a href="https://www.openmaptiles.org/" target="_blank">© OpenMapTiles</a> and <a
+                        href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>
                 </aol-attribution>
             </aol-attributions>
         </aol-source-xyz>
