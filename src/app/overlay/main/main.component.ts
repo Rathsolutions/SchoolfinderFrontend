@@ -1,6 +1,6 @@
 //Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE
 import { SimpleChanges, ComponentFactoryResolver, Component, ViewChild, ViewContainerRef, ElementRef, AfterViewInit, Injectable } from '@angular/core';
-import { MapComponent, SourceComponent, SourceVectorTileComponent, ViewComponent, CoordinateComponent, OverlayComponent, SourceVectorComponent, FeatureComponent, ControlScaleLineComponent } from 'ngx-openlayers';
+import { MapComponent, SourceComponent, SourceVectorTileComponent, ViewComponent, CoordinateComponent } from 'ngx-openlayers';
 import * as proj from 'ol/proj';
 import * as geom from 'ol/geom';
 import Map from 'ol/Map';
@@ -18,7 +18,6 @@ import { ToastrService } from 'ngx-toastr';
 import { SchoolsService } from '../../services/schools.service';
 import { CriteriaFilterComponent } from '../filter/criteria/criteria.component';
 import { SchoolPersonEntity } from 'src/app/entities/SchoolPersonEntity';
-
 @Component({
     selector: 'main-component',
     templateUrl: './main.component.html',
@@ -221,8 +220,8 @@ export class MainComponent implements AfterViewInit {
             this.overlayVisible = true;
             this.showPointOverlayPlaceholder.loadNewSchool(point.getId()).then(res => {
                 var pixel = map.getPixelFromCoordinate(evt.coordinate);
-                pixel[0] += map.getSize()[0]/4;
-                pixel[1] += map.getSize()[1]/2.5;
+                pixel[0] += map.getSize()[0] / 4;
+                pixel[1] += map.getSize()[1] / 2.5;
                 var box = map.getCoordinateFromPixel(pixel);
                 this.mapView.instance.animate({ center: box });
             });

@@ -1,5 +1,5 @@
 //Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE
-import { Component, Type, OnDestroy, AfterViewInit, ViewChild, ElementRef, Input, Inject } from '@angular/core';
+import { Component, Type, OnDestroy, AfterViewInit, ViewChild, ElementRef, Input, Inject, Directive } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { PersonEntity } from '../../entities/PersonEntity';
 import { SchoolsService } from '../../services/schools.service';
@@ -10,6 +10,7 @@ import { SchoolPersonEntity } from 'src/app/entities/SchoolPersonEntity';
 import { Color } from '@angular-material-components/color-picker';
 import { parse } from 'url';
 
+@Directive()
 export abstract class PointOverlay implements AfterViewInit, OnDestroy {
 
     collapsedHeight = '50px';
