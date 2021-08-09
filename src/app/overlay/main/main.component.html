@@ -1,5 +1,5 @@
 <!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
-<aol-map #map id="map" class="map">
+<!-- <aol-map #map id="map" class="map">
     <aol-interaction-default>
     </aol-interaction-default>
     <aol-interaction-select onselect="mapOnClick($event)"></aol-interaction-select>
@@ -37,23 +37,46 @@
         <aol-source-vector #sourceWaypointVector>
         </aol-source-vector>
     </aol-layer-vector>
-</aol-map>
+</aol-map> -->
+<app-map-comp [criteriasObject]="criteriasObject"></app-map-comp>
 <div #overlay id="overlay">
-    <div #backgroundOverlayDiv id="backgroundOverlayDiv">
-    </div>
-    <button mat-raised-button color="primary" (click)="toggleOverlay()">
-        <fa-icon [icon]="alignJustifyIcon"></fa-icon>
+  <div #backgroundOverlayDiv id="backgroundOverlayDiv"></div>
+  <button mat-raised-button color="primary" (click)="toggleOverlay()">
+    <fa-icon [icon]="alignJustifyIcon"></fa-icon>
+  </button>
+  <div #adminButton id="adminButton">
+    <button
+      mat-raised-button
+      color="{{ adminButtonColor }}"
+      (click)="toggleAdminMode()"
+    >
+      <fa-icon [icon]="usersCog"></fa-icon>
     </button>
-    <div #adminButton id="adminButton">
-        <button mat-raised-button color="{{adminButtonColor}}" (click)="toggleAdminMode()">
-            <fa-icon [icon]="usersCog"></fa-icon>
-        </button>
-    </div>
-    <div flex fxLayout="row" fxLayout.xs="column" fxLayoutWrap #filterOverlay id="filterOverlay">
-        <criteria-filter-component #criteriaFilterComponent></criteria-filter-component>
-    </div>
+  </div>
+  <div
+    flex
+    fxLayout="row"
+    fxLayout.xs="column"
+    fxLayoutWrap
+    #filterOverlay
+    id="filterOverlay"
+  >
+    <criteria-filter-component
+      #criteriaFilterComponent
+    ></criteria-filter-component>
+  </div>
 </div>
-<div id="progressOverlay" *ngIf="calculationInProgress" #progressDiv id="progressOverlay">
-    <mat-progress-spinner id="progressSpinner" class="example-margin" color="primary" mode="indeterminate">
-    </mat-progress-spinner>
+<div
+  id="progressOverlay"
+  *ngIf="calculationInProgress"
+  #progressDiv
+  id="progressOverlay"
+>
+  <mat-progress-spinner
+    id="progressSpinner"
+    class="example-margin"
+    color="primary"
+    mode="indeterminate"
+  >
+  </mat-progress-spinner>
 </div>

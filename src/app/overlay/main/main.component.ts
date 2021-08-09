@@ -1,6 +1,5 @@
 //Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE
 import { SimpleChanges, ComponentFactoryResolver, Component, ViewChild, ViewContainerRef, ElementRef, AfterViewInit, Injectable } from '@angular/core';
-import { MapComponent, SourceComponent, SourceVectorTileComponent, ViewComponent, CoordinateComponent } from 'ngx-openlayers';
 import * as proj from 'ol/proj';
 import * as geom from 'ol/geom';
 import Map from 'ol/Map';
@@ -31,11 +30,11 @@ export class MainComponent implements AfterViewInit {
     @ViewChild('adminButton') adminButton: ElementRef;
     @ViewChild('backgroundOverlayDiv') backgroundOverlayDiv: ElementRef;
     @ViewChild('popup') popup: any;
-    @ViewChild('mapCoord') map: CoordinateComponent;
-    @ViewChild('map') mapComp: MapComponent;
-    @ViewChild('mapView') mapView: ViewComponent;
-    @ViewChild('sourceLayer') sourceLayer: SourceComponent;
-    @ViewChild('sourceWaypointVector') sourceWaypointVector: SourceVectorTileComponent;
+    @ViewChild('mapCoord') map;
+    @ViewChild('map') mapComp;
+    @ViewChild('mapView') mapView;
+    @ViewChild('sourceLayer') sourceLayer;
+    @ViewChild('sourceWaypointVector') sourceWaypointVector;
     @ViewChild('addPointOverlayComponent') addPointOverlayPlaceholder: AddPointOverlay;
     @ViewChild('showPointOverlayComponent') showPointOverlayPlaceholder: ShowPointOverlay;
     @ViewChild('criteriaPlaceholder', { read: ViewContainerRef }) criteriaPlaceholder: ViewContainerRef;
@@ -66,15 +65,15 @@ export class MainComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.mapComp.singleClick.subscribe((e => {
-            this.mapOnClick(e);
-        }));
-        this.mapComp.onpostrender.subscribe(e => {
-            this.mapObject = e.map;
-        });
-        this.mapComp.instance.on('moveend', () => {
-            this.updateWaypoints();
-        });
+        // this.mapComp.singleClick.subscribe((e => {
+        //     this.mapOnClick(e);
+        // }));
+        // this.mapComp.onpostrender.subscribe(e => {
+        //     this.mapObject = (e as any).map;
+        // });
+        // this.mapComp.instance.on('moveend', () => {
+        //     this.updateWaypoints();
+        // });
         this.criteriasObject.mainAppComponent = this;
     }
 
@@ -88,7 +87,7 @@ export class MainComponent implements AfterViewInit {
     }
 
     public resetAllWaypoint(): void {
-        this.sourceWaypointVector.instance.clear();
+        (this.sourceWaypointVector.instance as any).clear();
         this.existingWaypointAtGeometry = [];
     }
 
@@ -117,12 +116,12 @@ export class MainComponent implements AfterViewInit {
                 waypoint.setId(e.id);
                 var res = this.existingWaypointAtGeometry.find(element => element[0] == e.latitude && element[1] == e.longitude);
                 if (!res) {
-                    this.sourceWaypointVector.instance.addFeature(waypoint);
+                    (this.sourceWaypointVector.instance as any).addFeature(waypoint);
                     this.existingWaypointAtGeometry.push([e.latitude, e.longitude]);
                 } else {
                     this.sourceWaypointVector.instance.getFeatures().forEach(element => {
-                        if ((element.id_ == e.id)) {
-                            element.setStyle(this.getStyleForWaypoint(e, zoom));
+                        if (((element as any).id_ == e.id)) {
+                            (element as any).setStyle(this.getStyleForWaypoint(e, zoom));
                         }
                     });
                 }
@@ -204,7 +203,7 @@ export class MainComponent implements AfterViewInit {
         if (UserService.isLoggedIn()) {
             this.addPointOverlayPlaceholder.prepareNewSchool();
             if (point) {
-                this.addPointOverlayPlaceholder.prefillByPointId(point.getId());
+                this.addPointOverlayPlaceholder.prefillByPointId((point as any).getId());
             }
             this.addPointOverlayLat = latlong[0];
             this.addPointOverlayLong = latlong[1];
@@ -218,7 +217,7 @@ export class MainComponent implements AfterViewInit {
             this.infoboxLat = latlong[0];
             this.infoboxLong = latlong[1];
             this.overlayVisible = true;
-            this.showPointOverlayPlaceholder.loadNewSchool(point.getId()).then(res => {
+            this.showPointOverlayPlaceholder.loadNewSchool((point as any).getId()).then(res => {
                 var pixel = map.getPixelFromCoordinate(evt.coordinate);
                 pixel[0] += map.getSize()[0] / 4;
                 pixel[1] += map.getSize()[1] / 2.5;
