@@ -1,10 +1,20 @@
-import { Component, Input, OnInit } from "@angular/core";
+import {
+  Component,
+  ComponentFactoryResolver,
+  ElementRef,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+  ViewContainerRef,
+} from "@angular/core";
 import { Feature, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 import Map from "ol/Map";
 import Projection from "ol/proj/Projection";
 import { XYZ } from "ol/source";
+import Overlay from "ol/Overlay";
 import { transform, toLonLat, transformExtent } from "ol/proj";
 import { UserService } from "src/app/services/user.service";
 import { SchoolsService } from "src/app/services/schools.service";
@@ -14,6 +24,9 @@ import { CriteriaFilterComponent } from "../filter/criteria/criteria.component";
 import { Circle, Fill, Stroke, Style, Text } from "ol/style";
 import { SchoolPersonEntity } from "src/app/entities/SchoolPersonEntity";
 import VectorSource from "ol/source/Vector";
+import { AddPointOverlay } from "../points/addpoint/addpointoverlay.component";
+import { ShowPointOverlay } from "../points/showpoint/showpoint.component";
+import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
 
 @Component({
   selector: "app-map-comp",
@@ -25,13 +38,36 @@ export class MapCompComponent implements OnInit {
   private mapLayer: TileLayer;
   private mapSource: XYZ;
 
+  @ViewChild("addPointComponentOverlay", { read: ViewContainerRef })
+  addPointOverlayPlaceholder: ViewContainerRef;
+  addPointOverlay: AddPointOverlay;
+  @ViewChild("showPointComponentOverlay", { read: ViewContainerRef })
+  showPointOverlayPlaceholder: ViewContainerRef;
+  @ViewChild("showPointComponentOverlay")
+  showPointOverlayPlaceholderElement: ElementRef<HTMLElement>;
+  @ViewChild("pointOverlayWrapper")
+  pointOverlayWrapper: ElementRef<HTMLElement>;
+
+  showPointOverlay: ShowPointOverlay;
   private existingWaypointAtGeometry: [number, number][] = [];
 
   @Input()
   private criteriasObject: CriteriaFilterComponent;
+
   sourceWaypointVector: VectorSource;
 
-  constructor(private schoolsService: SchoolsService) {}
+  constructor(
+    private schoolsService: SchoolsService,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private saveEventService: MapUpdateEventService
+  ) {
+    saveEventService.register().subscribe((res) => {
+      if (res) {
+        this.resetAllWaypoint();
+        this.updateWaypoints();
+      }
+    });
+  }
 
   ngOnInit(): void {
     console.log("init");
@@ -54,7 +90,7 @@ export class MapCompComponent implements OnInit {
         zoom: 8,
       }),
     });
-    this.map.on("singleClick", (e) => {
+    this.map.on("click", (e) => {
       this.mapOnClick(e);
     });
     this.map.on("moveend", () => {
@@ -140,6 +176,11 @@ export class MapCompComponent implements OnInit {
     });
   }
 
+  public resetAllWaypoint(): void {
+    this.sourceWaypointVector.clear();
+    this.existingWaypointAtGeometry = [];
+  }
+
   public mapOnClick(evt): void {
     const map: Map = evt.map as Map;
     const point = map.forEachFeatureAtPixel(
@@ -151,35 +192,54 @@ export class MapCompComponent implements OnInit {
     );
     var latlong = toLonLat(evt.coordinate);
     if (UserService.isLoggedIn()) {
-      // this.addPointOverlayPlaceholder.prepareNewSchool();
-      // if (point) {
-      //   this.addPointOverlayPlaceholder.prefillByPointId(
-      //     (point as any).getId()
-      //   );
-      // }
-      // this.addPointOverlayLat = latlong[0];
-      // this.addPointOverlayLong = latlong[1];
-      // this.adminOverlayVisible = true;
-      // this.overlayVisible = false;
-      // this.showPointOverlayPlaceholder.setVisible(false);
-      // this.addPointOverlayPlaceholder.setLat(this.addPointOverlayLat);
-      // this.addPointOverlayPlaceholder.setLong(this.addPointOverlayLong);
-      // this.addPointOverlayPlaceholder.setVisible(true);
+      this.addPointOverlayPlaceholder.clear();
+      var compFactoryAddPoint =
+        this.componentFactoryResolver.resolveComponentFactory(AddPointOverlay);
+      var component =
+        this.addPointOverlayPlaceholder.createComponent(compFactoryAddPoint);
+      this.addPointOverlay = component.instance;
+      var overlayMap = new Overlay({
+        element: this.pointOverlayWrapper.nativeElement,
+        position: evt.coordinate,
+      });
+      if (this.showPointOverlay) {
+        this.showPointOverlay.setVisible(false);
+        this.showPointOverlayPlaceholder.clear();
+      }
+      this.map.addOverlay(overlayMap);
+      this.addPointOverlay.setVisible(true);
+      this.addPointOverlay.prepareNewSchool();
+      if (point) {
+        this.addPointOverlay.prefillByPointId((point as any).getId());
+      }
     } else if (!UserService.isLoggedIn() && point) {
+      this.showPointOverlayPlaceholder.clear();
+      var compFactoryShowPoint =
+        this.componentFactoryResolver.resolveComponentFactory(ShowPointOverlay);
+      var componentShow =
+        this.showPointOverlayPlaceholder.createComponent(compFactoryShowPoint);
+      this.showPointOverlay = componentShow.instance;
+      var overlayMap = new Overlay({
+        element: this.pointOverlayWrapper.nativeElement,
+        position: evt.coordinate,
+      });
       // this.infoboxLat = latlong[0];
       // this.infoboxLong = latlong[1];
       // this.overlayVisible = true;
-      // this.showPointOverlayPlaceholder
-      //   .loadNewSchool((point as any).getId())
-      //   .then((res) => {
-      //     var pixel = map.getPixelFromCoordinate(evt.coordinate);
-      //     pixel[0] += map.getSize()[0] / 4;
-      //     pixel[1] += map.getSize()[1] / 2.5;
-      //     var box = map.getCoordinateFromPixel(pixel);
-      //     this.mapView.instance.animate({ center: box });
-      //   });
-      // this.showPointOverlayPlaceholder.setVisible(true);
+      this.showPointOverlay
+        .loadNewSchool((point as any).getId())
+        .then((res) => {
+          var pixel = map.getPixelFromCoordinate(evt.coordinate);
+          pixel[0] += map.getSize()[0] / 4;
+          pixel[1] += map.getSize()[1] / 2.5;
+          var box = map.getCoordinateFromPixel(pixel);
+          this.map.getView().animate({ center: box });
+        });
+      this.showPointOverlay.setVisible(true);
+      this.map.addOverlay(overlayMap);
     } else {
+      this.showPointOverlayPlaceholder.clear();
+      this.addPointOverlayPlaceholder.clear();
       // this.overlayVisible = false;
     }
   }
