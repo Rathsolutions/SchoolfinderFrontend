@@ -35,7 +35,7 @@ import {
 } from "../../../entities/PersonFunctionalityEntity";
 import { PointOverlay } from "../pointoverlay.component";
 import { AbstractPersonViewData } from "../../../viewdata/AbstractPersonViewData";
-import { EditablePersonViewData } from "../../../viewdata/EditablePersonViewData";
+import { AddPersonComponent } from "../../../viewdata/editable-person/addperson.component";
 import { CriteriaEntity } from "src/app/entities/CriteriaEntity";
 import { MainComponent } from "src/app/overlay/main/main.component";
 import { ThemePalette } from "@angular/material/core";
@@ -53,10 +53,15 @@ export class AddPointOverlay
   @ViewChild("criteriaPlaceholder", { read: ViewContainerRef })
   criteriaPlaceholder: ViewContainerRef;
 
+  @ViewChild("addPersonOverlay", { read: ViewContainerRef })
+  addPersonOverlay: ViewContainerRef;
+
   schoolPicture: FormControl = new FormControl("");
   criterias: AddCriteriaComponent[] = [];
   lat: number;
   long: number;
+
+  private personsComponent: AddPersonComponent[] = [];
 
   collapsedHeight = "10vh";
 
@@ -76,8 +81,6 @@ export class AddPointOverlay
     private saveEventService: MapUpdateEventService
   ) {
     super(schoolService, personsService);
-    this.arPerson = this.getPersonViewDataInstance();
-    this.makerspacePerson = this.getPersonViewDataInstance();
     this.init();
   }
 
@@ -89,15 +92,11 @@ export class AddPointOverlay
       schoolName: this.schoolName,
       arContent: this.arContent,
       makerspaceContent: this.makerspaceContent,
-      arPerson: this.arPerson,
-      makerspacePerson: this.makerspacePerson,
       colorCtr: this.colorCtr,
       schoolPicture: this.schoolPicture,
       alternativePictureText: this.alternativePictureText,
     });
     this.criterias = [];
-    this.arPerson.setNewPointForm(this.newPointForm);
-    this.makerspacePerson.setNewPointForm(this.newPointForm);
     this.prefilled = false;
   }
   public prepareNewSchool() {
@@ -110,12 +109,20 @@ export class AddPointOverlay
     this.resetForm();
   }
 
+  public addPersonButton(): AddPersonComponent {
+    var addPersonComponentFactory =
+      this.componentFactoryResolver.resolveComponentFactory(AddPersonComponent);
+    var personInstance = this.addPersonOverlay.createComponent(
+      addPersonComponentFactory
+    ).instance;
+    this.personsComponent.push(personInstance);
+    return personInstance;
+  }
+
   resetForm() {
     if (this.criteriaPlaceholder) {
       this.criteriaPlaceholder.clear();
     }
-    this.arPerson.resetValues();
-    this.makerspacePerson.resetValues();
     this.schoolName.reset();
     this.makerspaceContent.reset();
     this.arContent.reset();
@@ -157,25 +164,7 @@ export class AddPointOverlay
       this.toastr.error("Das Formular ist nicht vollständig ausgefüllt!");
       return;
     }
-    if (!this.arPerson.isFilled() && !this.makerspacePerson.isFilled()) {
-      this.toastr.error(
-        "Bitte mindestens eine Ansprechperson für entweder XR oder 3D-Makerspace eintragen!"
-      );
-      return;
-    }
-    if (this.arPerson.isAtLeastOneFilled() && !this.arPerson.isFilled()) {
-      this.toastr.error("Bitte füllen Sie die XR-Person vollständig aus!");
-      return;
-    }
-    if (
-      this.makerspacePerson.isAtLeastOneFilled() &&
-      !this.makerspacePerson.isFilled()
-    ) {
-      this.toastr.error(
-        "Bitte füllen Sie die 3D-Makerspace-Person vollständig aus!"
-      );
-      return;
-    }
+
     var school: SchoolPersonEntity = new SchoolPersonEntity();
     school.id = this.schoolId;
     school.latitude = this.lat;
@@ -185,32 +174,17 @@ export class AddPointOverlay
     school.arContent = this.arContent.value;
     school.makerspaceContent = this.makerspaceContent.value;
     school.color = this.colorCtr.value.hex;
-    var errorInCallback = false;
-    await this.getOrInsertPerson(this.arPerson, school, PersonFunctionality.XR)
-      .then((val) => {
-        if (val != null) {
-          school.personSchoolMapping.push(val);
-        }
-      })
-      .catch((err) => {
-        errorInCallback = err;
-      });
-    await this.getOrInsertPerson(
-      this.makerspacePerson,
-      school,
-      PersonFunctionality.MAKERSPACE
-    )
-      .then((val) => {
-        if (val != null) {
-          school.personSchoolMapping.push(val);
-        }
-      })
-      .catch((err) => {
-        errorInCallback = err;
-      });
-    if (errorInCallback) {
-      return;
-    }
+
+    var allPersonViewInstances: PersonFunctionalityEntity[] = [];
+    var promisesToWait: Promise<PersonFunctionalityEntity>[] = [];
+    this.personsComponent.forEach(async (person) => {
+      promisesToWait.push(
+        person.getOrInsertPerson().then((e) => {
+          allPersonViewInstances.push(e);
+          return e;
+        })
+      );
+    });
     this.criterias.forEach((e) => {
       var criteriaEntity = new CriteriaEntity();
       criteriaEntity.criteriaName = e.criteriaName.value;
@@ -220,114 +194,53 @@ export class AddPointOverlay
       school.schoolPicture = this.image;
       school.alternativePictureText = this.alternativePictureText.value;
     }
-    var observableSchool;
-    var successMessage;
-    if (this.prefilled) {
-      observableSchool = this.schoolService.patchSchool(school);
-      successMessage = "aktualisiert!";
-    } else {
-      observableSchool = this.schoolService.putNewSchool(school);
-      successMessage = "eingetragen!";
-    }
-    observableSchool.subscribe(
-      (result) => {
-        this.resetForm();
-        this.toastr.success(
-          "Die Institution wurde erfolgreich " + successMessage
-        );
-        this.setVisible(false);
-        this.saveEventService.emit(true);
-      },
-      (error) => {
-        if (error.status == 409) {
-          this.toastr.error(
-            "Diese Institution existiert schon! Bitte an anderer Stelle löschen und erneut versuchen"
-          );
+    Promise.all(promisesToWait)
+      .then((res) => {
+        res.forEach((e) => {
+          school.personSchoolMapping.push(e);
+        });
+        console.log(school.personSchoolMapping);
+        var observableSchool: Observable<SchoolPersonEntity>;
+        var successMessage: string;
+        if (this.prefilled) {
+          observableSchool = this.schoolService.patchSchool(school);
+          successMessage = "aktualisiert!";
         } else {
-          this.toastr.error(
-            "Es ist ein Fehler aufgetreten, bitte alle Werte überprüfen!"
-          );
+          observableSchool = this.schoolService.putNewSchool(school);
+          successMessage = "eingetragen!";
         }
-      }
-    );
-  }
-
-  private async getOrInsertPerson(
-    personToInsert: AbstractPersonViewData,
-    school: SchoolPersonEntity,
-    functionality: PersonFunctionality
-  ): Promise<PersonFunctionalityEntity> {
-    var errorInCallback = false;
-    if (personToInsert && personToInsert.isFilled()) {
-      var arPerson;
-      var personNotExisting = false;
-      await this.getPersonFromBackend(personToInsert.toPersonEntity())
-        .then((result) => (arPerson = result))
-        .catch((err) => {
-          if (err.status == 404) {
-            personNotExisting = true;
-          } else if (err.status == 400) {
-            this.toastr.error(
-              "Die E-Mail Adresse der XR Person stimmt nicht mit den bereits gespeicherten Angaben von Vor - und Nachnahmen sowie Telefonnummer überein!"
+        observableSchool.subscribe(
+          (result) => {
+            this.resetForm();
+            this.toastr.success(
+              "Die Institution wurde erfolgreich " + successMessage
             );
-            errorInCallback = true;
-          }
-        });
-      if (personNotExisting) {
-        await this.persistPerson(personToInsert.toPersonEntity())
-          .then((result) => (arPerson = result))
-          .catch((err) => {
-            if (err.status == 400) {
+            this.setVisible(false);
+            this.saveEventService.emit(true);
+          },
+          (error) => {
+            if (error.status == 409) {
               this.toastr.error(
-                "Die E-Mail Adresse der XR Person stimmt nicht mit den bereits gespeicherten Angaben von Vor - und Nachnahmen sowie Telefonnummer überein!"
+                "Diese Institution existiert schon! Bitte an anderer Stelle löschen und erneut versuchen"
               );
-              errorInCallback = true;
+            } else {
+              this.toastr.error(
+                "Es ist ein Fehler aufgetreten, bitte alle Werte überprüfen!"
+              );
             }
-          });
-      }
-      if (errorInCallback) {
-        return new Promise<PersonFunctionalityEntity>((resolve, reject) => {
-          reject(true);
-        });
-      }
-      var personSchoolMappingId: number;
-      if (school.id != null && arPerson.id != null) {
-        await this.schoolService
-          .findPersonFunctionalityForPersonSchoolMapping(
-            school.id,
-            arPerson.id,
-            functionality
-          )
-          .toPromise()
-          .then((result) => (personSchoolMappingId = result))
-          .catch((err) => {
-            if (err.status == 404) {
-              personSchoolMappingId = null;
-            }
-          });
-      }
-      var currentPersonFunctionalityEntity = new PersonFunctionalityEntity(
-        personSchoolMappingId,
-        functionality,
-        new PersonEntity(arPerson.id)
-      );
-      return new Promise<PersonFunctionalityEntity>((resolve, reject) => {
-        if (!errorInCallback) {
-          resolve(currentPersonFunctionalityEntity);
-        } else {
-          reject(true);
-        }
+          }
+        );
+      })
+      .catch((err) => {
+        this.toastr.error(err);
       });
-    } else {
-      return new Promise<PersonFunctionalityEntity>((resolve, reject) => {
-        resolve(null);
-      });
+    if (allPersonViewInstances.length <= 0) {
+      this.toastr.error("Bitte mindestens eine Ansprechperson eintragen!");
+      return;
     }
   }
 
   public prefillByPointId(pointId: number): void {
-    this.arPerson = this.getPersonViewDataInstance();
-    this.makerspacePerson = this.getPersonViewDataInstance();
     this.loadNewSchool(pointId);
     this.init();
     this.prefilled = true;
@@ -386,8 +299,8 @@ export class AddPointOverlay
 
   ngOnDestroy() {}
 
-  protected getPersonViewDataInstance(): AbstractPersonViewData {
-    return new EditablePersonViewData(this.personsService);
+  protected appendPersonViewDataInstance(): AbstractPersonViewData {
+    return this.addPersonButton();
   }
 
   public setLat(lat: number): void {

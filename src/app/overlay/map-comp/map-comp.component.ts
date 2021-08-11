@@ -223,9 +223,6 @@ export class MapCompComponent implements OnInit {
         element: this.pointOverlayWrapper.nativeElement,
         position: evt.coordinate,
       });
-      // this.infoboxLat = latlong[0];
-      // this.infoboxLong = latlong[1];
-      // this.overlayVisible = true;
       this.showPointOverlay
         .loadNewSchool((point as any).getId())
         .then((res) => {
@@ -240,7 +237,6 @@ export class MapCompComponent implements OnInit {
     } else {
       this.showPointOverlayPlaceholder.clear();
       this.addPointOverlayPlaceholder.clear();
-      // this.overlayVisible = false;
     }
   }
 }

@@ -1,0 +1,25 @@
+<mat-expansion-panel *ngIf="isFilled()">
+    <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
+        <mat-panel-title>
+            {{functionality.value}}
+        </mat-panel-title>
+        <mat-panel-description>
+            Weitere Infos
+        </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div>
+        <h4>Vorname: {{prename.value}}</h4>
+    </div>
+    <div>
+        <h4>Nachname: {{lastname.value}}</h4>
+    </div>
+    <div>
+        <h4>Email-Adresse: {{email.value}}</h4>
+    </div>
+    <div>
+        <h4>Telefonnummer: {{phonenumber.value}}</h4>
+    </div>
+    <div>
+        <!-- <h4>Verfügbarer XR-Content: {{arContent.value}}</h4> -->
+    </div>
+</mat-expansion-panel>

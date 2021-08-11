@@ -38,6 +38,8 @@ import { MatTableModule } from "@angular/material/table";
 import { MatListModule } from "@angular/material/list";
 import { BarrierFree } from "./overlay/barrierfree/barrierfree.component";
 import { MapCompComponent } from "./overlay/map-comp/map-comp.component";
+import { ShowPersonComponent } from "./viewdata/viewonly-person/showperson.component";
+import { AddPersonComponent } from "./viewdata/editable-person/addperson.component";
 
 @NgModule({
   declarations: [
@@ -51,6 +53,8 @@ import { MapCompComponent } from "./overlay/map-comp/map-comp.component";
     CriteriaFilterComponent,
     SearchSelectionComponent,
     MapCompComponent,
+    ShowPersonComponent,
+    AddPersonComponent,
   ],
   imports: [
     BrowserModule,

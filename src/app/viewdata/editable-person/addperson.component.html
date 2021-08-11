@@ -1,0 +1,47 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
+    <mat-panel-title> XR-Ansprechperson </mat-panel-title>
+    <mat-panel-description>
+      Die Rubrik der XR-Ansprechperson
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <div>
+    <mat-form-field>
+      <mat-label>Vorname</mat-label>
+      <input matInput [formControl]="prename" required />
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field>
+      <mat-label>Nachname</mat-label>
+      <input matInput [formControl]="lastname" required />
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field>
+      <mat-label>E-Mail</mat-label>
+      <input
+        (click)="emailClicked()"
+        matInput
+        [formControl]="email"
+        required
+        [matAutocomplete]="auto"
+      />
+      <mat-error *ngIf="email.invalid"
+        >Bitte tragen Sie hier einen validen Wert ein!
+      </mat-error>
+    </mat-form-field>
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      (optionSelected)="autocompleteChoosen($event.option.value)"
+    >
+      <mat-option *ngFor="let mail of emails" [value]="mail"
+        >{{ mail }}
+      </mat-option>
+    </mat-autocomplete>
+  </div>
+  <mat-form-field>
+    <mat-label>Telefonnummer</mat-label>
+    <input matInput [formControl]="phonenumber" />
+  </mat-form-field>
+</mat-expansion-panel>
