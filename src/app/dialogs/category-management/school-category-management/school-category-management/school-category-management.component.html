@@ -1,0 +1,25 @@
+<!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
+<h1 mat-dialog-title>Institutionskategorie editieren</h1>
+<div mat-dialog-content id="dialogContent">
+  <p>{{ adminNotice }}</p>
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="data.name" />
+  </mat-form-field>
+  <!-- <mat-form-field>
+    <mat-label>Anzeigeicon</mat-label> -->
+    <label class="mdl-button mdl-js-button mdl-button--icon mdl-button--file">
+      <i class="material-icons">attach_file</i>Bild der Institution
+      hochladen<input
+        (change)="handleFileInput($event.target.files)"
+        type="file"
+        id="file"
+        accept="image/*"
+      />
+    </label>
+  <!-- </mat-form-field> -->
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Abbruch</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>

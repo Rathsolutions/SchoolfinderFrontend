@@ -55,7 +55,7 @@ hiddenDiv{
     width: 5%;
     height: 100%; 
     top: 80px;
-    left: -200px;
+    left: -300px;
     right: 0;
     bottom: 0;
     z-index: 2;
@@ -140,12 +140,12 @@ hiddenDiv{
 
 
 @keyframes fadein {
-    from { left:-200px; }
-    to   { left:30px }
+    from { left:-300px; }
+    to   { left:0px }
 }
 @keyframes fadeout {
-    from { left:30px }
-    to   { left:-200px }
+    from { left:0px }
+    to   { left:-300px }
 }
 
 @keyframes fadeInAdminButton {

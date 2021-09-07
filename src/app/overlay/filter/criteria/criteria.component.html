@@ -1,51 +1,139 @@
 <!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
-<div>
-    <div>
+<div id="overlayContainer">
+  <div style="display: flex; flex-direction: column">
+    <h1 id="settingsMenuText">Einstellungsmenü</h1>
+    <div style="margin-top: 10px; align-self: center">
+      <button
+        id="showAllInstitutionsButton"
+        mat-raised-button
+        color="primary"
+        cdkFocusInitial
+        (click)="showAllInstitutions()"
+      >
+        Zeige alle Institution
+      </button>
+    </div>
+    <mat-accordion>
+      <mat-expansion-panel
+        [expanded]="step === 0"
+        (opened)="setStep(0)"
+        hideToggle
+        class="expansion-panel"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title> Suche </mat-panel-title>
+        </mat-expansion-panel-header>
         <mat-form-field *ngIf="isAdmin()">
-            <mat-label>Schulname</mat-label>
-            <input [(ngModel)]="schoolname" matInput>
+          <mat-label>Schulname</mat-label>
+          <input [(ngModel)]="schoolname" matInput />
         </mat-form-field>
         <mat-form-field>
-            <mat-label>Stadtname</mat-label>
-            <input [(ngModel)]="city" matInput>
+          <mat-label>Stadtname</mat-label>
+          <input [(ngModel)]="city" matInput />
         </mat-form-field>
         <mat-form-field *ngIf="isAdmin()">
-            <mat-label>Straßenname</mat-label>
-            <input [(ngModel)]="streetname" matInput>
+          <mat-label>Straßenname</mat-label>
+          <input [(ngModel)]="streetname" matInput />
         </mat-form-field>
         <mat-form-field *ngIf="isAdmin()">
-            <mat-label>Hausnummer</mat-label>
-            <input [(ngModel)]="housenumber" matInput>
+          <mat-label>Hausnummer</mat-label>
+          <input [(ngModel)]="housenumber" matInput />
         </mat-form-field>
-        <div *ngIf="isAdmin()" style="margin-bottom: 10px;">
-            <button mat-raised-button color="primary" cdkFocusInitial (click)="searchSchool()">Suche nach
-                Institution</button>
+        <div *ngIf="isAdmin()" style="margin-bottom: 10px">
+          <button
+            mat-raised-button
+            color="primary"
+            cdkFocusInitial
+            (click)="searchSchool()"
+          >
+            Suche nach Institution
+          </button>
         </div>
-        <div *ngIf="isAdmin()" style="margin-bottom: 10px;">
-            <button mat-raised-button color="primary" cdkFocusInitial (click)="searchStreet()">Suche nach
-                Straßenname</button>
+        <div *ngIf="isAdmin()" style="margin-bottom: 10px">
+          <button
+            mat-raised-button
+            color="primary"
+            cdkFocusInitial
+            (click)="searchStreet()"
+          >
+            Suche nach Straßenname
+          </button>
         </div>
         <div>
-            <button mat-raised-button color="primary" cdkFocusInitial (click)="searchCity()">Suche nach Stadt</button>
+          <button
+            mat-raised-button
+            color="primary"
+            cdkFocusInitial
+            (click)="searchCity()"
+          >
+            Suche nach Stadt
+          </button>
         </div>
-    </div>
-    <div style="margin-top: 10px;">
-        <button mat-raised-button color="primary" cdkFocusInitial (click)="showAllInstitutions()">Zeige alle Institution</button>
-    </div>
-    <hr>
-    <mat-form-field>
-        <mat-label>Filterkriterien</mat-label>
-        <mat-select #selectMat multiple (selectionChange)="selectChange($event.value)">
-            <mat-option *ngFor="let criteria of allCriterias" [value]="criteria">{{criteria.criteriaName}}</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <div>
-        <mat-slide-toggle (change)="toggleSearchType()" [(ngModel)]="exclusiveSearch">
+      </mat-expansion-panel>
+      <!-- <hr /> -->
+      <mat-expansion-panel
+        [expanded]="step === 1"
+        (opened)="setStep(1)"
+        hideToggle
+        class="expansion-panel"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title> Filter </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-form-field>
+          <mat-label>Filterkriterien</mat-label>
+          <mat-select
+            #selectMat
+            multiple
+            (selectionChange)="selectChange($event.value)"
+          >
+            <mat-option
+              *ngFor="let criteria of allCriterias"
+              [value]="criteria"
+              >{{ criteria.criteriaName }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+        <div>
+          <mat-slide-toggle
+            (change)="toggleSearchType()"
+            [(ngModel)]="exclusiveSearch"
+          >
             Inklusive Suche
-        </mat-slide-toggle>
-    </div>
-    <strong>Aktive Filter:</strong>
-    <div *ngFor="let criteria of selectedCriterias">
-        <i>{{criteria.criteriaName}}</i>
-    </div>
+          </mat-slide-toggle>
+        </div>
+        <strong>Aktive Filter:</strong>
+        <div *ngFor="let criteria of selectedCriterias">
+          <i>{{ criteria.criteriaName }}</i>
+        </div>
+      </mat-expansion-panel>
+      <mat-expansion-panel
+        *ngIf="isAdmin()"
+        [expanded]="step === 2"
+        (opened)="setStep(2)"
+        hideToggle
+        class="expansion-panel"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title> Kategorieverwaltung </mat-panel-title>
+          <!-- <mat-panel-description
+            >In diesem Menü können Sie die allgemeine Kategorieverwaltung für Ansprechpersonen einer Institution
+            vornehmen</mat-panel-description
+          > -->
+        </mat-expansion-panel-header>
+        <mat-form-field *ngIf="isAdmin()">
+          <mat-label>Kategoriename</mat-label>
+          <input [(ngModel)]="categoryName" matInput />
+        </mat-form-field>
+        <button
+          mat-raised-button
+          color="primary"
+          #workOnCategoryButton
+          (click)="createCategory()"
+        >
+          Kategorie erstellen/bearbeiten
+        </button>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
 </div>

@@ -43,6 +43,7 @@ import {
   ZoomToEventService,
 } from "src/app/broadcast-event-service/ZoomToEventService";
 import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
+import { SchoolCategoryManagementComponent } from "src/app/dialogs/category-management/school-category-management/school-category-management/school-category-management.component";
 
 @Component({
   selector: "criteria-filter-component",
@@ -59,13 +60,15 @@ export class CriteriaFilterComponent implements OnInit {
   city: string = "";
   amount: number;
   exclusiveSearch: boolean = false;
+  categoryName: string = "";
+  step: number = 0;
 
   constructor(
     private criteriaService: CriteriaService,
     private toastr: ToastrService,
     private criteriaSelectionEventService: CriteriaSelectionEventService,
     private zoomEventService: ZoomToEventService,
-    private mapUpdateEventService:MapUpdateEventService,
+    private mapUpdateEventService: MapUpdateEventService,
     private schoolService: SchoolsService,
     private citiesService: CitiesService,
     private dialog: MatDialog
@@ -74,6 +77,20 @@ export class CriteriaFilterComponent implements OnInit {
     this.criteriaService.getAllCriterias().subscribe((result) => {
       console.log(result);
       result.forEach((e) => this.allCriterias.push(e));
+    });
+  }
+
+  setStep(step: number): void {
+    this.step = step;
+  }
+
+  public createCategory(): void {
+    this.dialog.open(SchoolCategoryManagementComponent, {
+      data: {
+        adminNotice:
+          "In dieser Ansicht haben Sie die Möglichkeit, die Kategorie CATEGORY_NAME zu bearbeiten.",
+        name: this.categoryName,
+      },
     });
   }
 
@@ -240,7 +257,9 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   public isAdmin(): boolean {
-    return BaseService.isLoggedIn();
+    // return BaseService.isLoggedIn();
+    //only for testing purpose
+    return true;
   }
 
   toggleSearchType() {

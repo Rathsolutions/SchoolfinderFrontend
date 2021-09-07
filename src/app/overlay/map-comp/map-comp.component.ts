@@ -27,6 +27,10 @@ import VectorSource from "ol/source/Vector";
 import { AddPointOverlay } from "../points/addpoint/addpointoverlay.component";
 import { ShowPointOverlay } from "../points/showpoint/showpoint.component";
 import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
+import {
+  ZoomEventMessage,
+  ZoomToEventService,
+} from "src/app/broadcast-event-service/ZoomToEventService";
 
 @Component({
   selector: "app-map-comp",
@@ -59,13 +63,18 @@ export class MapCompComponent implements OnInit {
   constructor(
     private schoolsService: SchoolsService,
     private componentFactoryResolver: ComponentFactoryResolver,
-    private saveEventService: MapUpdateEventService
+    private saveEventService: MapUpdateEventService,
+    private zoomEventService: ZoomToEventService
   ) {
     saveEventService.register().subscribe((res) => {
       if (res) {
         this.resetAllWaypoint();
         this.updateWaypoints();
       }
+    });
+    zoomEventService.register().subscribe((res) => {
+      this.map.getView().setCenter(transform([res.longitude,res.latitude], "EPSG:4326", "EPSG:3857"));
+      this.map.getView().setZoom(res.zoomLevel);
     });
   }
 
