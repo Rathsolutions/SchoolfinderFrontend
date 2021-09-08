@@ -30,6 +30,7 @@ import { ToastrService } from "ngx-toastr";
 import { SchoolsService } from "../../services/schools.service";
 import { CriteriaFilterComponent } from "../filter/criteria/criteria.component";
 import { SchoolPersonEntity } from "src/app/entities/SchoolPersonEntity";
+import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
 @Component({
   selector: "main-component",
   templateUrl: "./main.component.html",
@@ -82,13 +83,16 @@ export class MainComponent implements AfterViewInit {
     private schoolsService: SchoolsService,
     private toastr: ToastrService,
     private componentFactoryResolver: ComponentFactoryResolver,
+    private calculationEventService: CalculationEventService
   ) {
     this.lat = 8.50965;
     this.long = 48.85851;
+    calculationEventService.register().subscribe((res) => {
+      this.setCalculationInProgress(res);
+    });
   }
 
   ngAfterViewInit(): void {
-    this.criteriasObject.mainAppComponent = this;
   }
 
   public toggleAdminMode() {

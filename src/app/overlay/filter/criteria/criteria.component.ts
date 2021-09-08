@@ -43,7 +43,11 @@ import {
   ZoomToEventService,
 } from "src/app/broadcast-event-service/ZoomToEventService";
 import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
-import { SchoolCategoryManagementComponent } from "src/app/dialogs/category-management/school-category-management/school-category-management/school-category-management.component";
+import { SchoolCategoryManagementComponent } from "src/app/dialogs/category-management/school-category-management/school-category-management.component";
+import { InstitutionCategoryService } from "src/app/services/institution-category.service";
+import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
+import { CreateCategoryComponent } from "src/app/dialogs/category-management/create-category/create-category.component";
+import { AbstractCategoryManagement } from "src/app/dialogs/category-management/abstract-category-management";
 
 @Component({
   selector: "criteria-filter-component",
@@ -53,7 +57,6 @@ import { SchoolCategoryManagementComponent } from "src/app/dialogs/category-mana
 export class CriteriaFilterComponent implements OnInit {
   allCriterias: CriteriaEntity[] = [];
   selectedCriterias: CriteriaEntity[] = [];
-  mainAppComponent: MainComponent;
   schoolname: string;
   streetname: string;
   housenumber: string;
@@ -69,8 +72,10 @@ export class CriteriaFilterComponent implements OnInit {
     private criteriaSelectionEventService: CriteriaSelectionEventService,
     private zoomEventService: ZoomToEventService,
     private mapUpdateEventService: MapUpdateEventService,
+    private calculationEventService: CalculationEventService,
     private schoolService: SchoolsService,
     private citiesService: CitiesService,
+    private institutionCategoryService: InstitutionCategoryService,
     private dialog: MatDialog
   ) {}
   ngOnInit(): void {
@@ -85,17 +90,46 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   public createCategory(): void {
-    this.dialog.open(SchoolCategoryManagementComponent, {
-      data: {
-        adminNotice:
-          "In dieser Ansicht haben Sie die Möglichkeit, die Kategorie CATEGORY_NAME zu bearbeiten.",
-        name: this.categoryName,
-      },
-    });
+    this.institutionCategoryService
+      .findInstitutionCategoryByName(this.categoryName)
+      .subscribe(
+        (res) => {
+          this.dialog.open(SchoolCategoryManagementComponent, {
+            data: {
+              adminNotice:
+                "In dieser Ansicht haben Sie die Möglichkeit, die Kategorie " +
+                res.name +
+                " zu bearbeiten.",
+              name: res.name,
+              icon: res.icon,
+              id: res.id,
+            },
+          });
+        },
+        (rej) => {
+          //Comment in later
+          // if (rej.status == 404) {
+          var dialog = this.dialog.open(CreateCategoryComponent);
+          dialog
+            .afterClosed()
+            .subscribe((res: Type<AbstractCategoryManagement<any, any>>) => {
+              this.dialog.open(res, {
+                data: {
+                  adminNotice:
+                    "In dieser Ansicht haben Sie die Möglichkeit, die Kategorie " +
+                    this.categoryName +
+                    " zu erstellen.",
+                  name: this.categoryName,
+                },
+              });
+            });
+          // }
+        }
+      );
   }
 
   public searchCity(): void {
-    this.mainAppComponent.setCalculationInProgress(true);
+    this.calculationEventService.emit(true);
     var foundOsmEntity = this.citiesService
       .searchCityInOsmFile(this.city, 10)
       .subscribe(
@@ -126,7 +160,7 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   public showAllInstitutions(): void {
-    this.mainAppComponent.setCalculationInProgress(true);
+    this.calculationEventService.emit(true);
     var foundOsmEntity = this.schoolService
       .getAllSchoolsOrderedByName()
       .subscribe(
@@ -164,7 +198,7 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   private errorOnRequest(err) {
-    this.mainAppComponent.setCalculationInProgress(false);
+    this.calculationEventService.emit(false);
     this.toastr.error(
       "Es ist ein Fehler aufgetreten! Bitte kontaktieren Sie den Betreiber"
     );
@@ -197,7 +231,7 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   public searchStreet(): void {
-    this.mainAppComponent.setCalculationInProgress(true);
+    this.calculationEventService.emit(true);
     this.citiesService
       .searchCityAndStreetInOsmFile(
         this.city,
@@ -216,7 +250,7 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   public searchSchool(): void {
-    this.mainAppComponent.setCalculationInProgress(true);
+    this.calculationEventService.emit(true);
     var foundOsmEntity = this.schoolService
       .searchSchoolInOsmFile(this.schoolname, this.city, 10)
       .subscribe(
@@ -230,7 +264,7 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   private renderNewPositionInMainApp(result: SelectionDialogViewData) {
-    this.mainAppComponent.setCalculationInProgress(false);
+    this.calculationEventService.emit(false);
     this.zoomEventService.emit(
       new ZoomEventMessage(result.getLatitude(), result.getLongitude(), 17)
     );

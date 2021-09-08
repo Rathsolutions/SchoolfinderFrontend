@@ -1,0 +1,13 @@
+<!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
+<h1 mat-dialog-title>Institutionskategorie editieren</h1>
+<div mat-dialog-content id="dialogContent">
+  <p>
+    Diese Kategorie existiert noch nicht, Sie müssen sie daher hinzufügen.
+    Welche Art von Kategorie möchten Sie erstellen?
+  </p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Abbruch</button>
+  <button mat-button cdkFocusInitial (click)="onCreateInsitutionCategoryClicked()">Institutionskategorie</button>
+  <button mat-button cdkFocusInitial (click)="onCreatePersonCategoryClicked()">Personenkategorie</button>
+</div>
