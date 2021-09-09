@@ -8,17 +8,32 @@
   </mat-form-field>
   <!-- <mat-form-field>
     <mat-label>Anzeigeicon</mat-label> -->
-    <label class="mdl-button mdl-js-button mdl-button--icon mdl-button--file">
-      <i class="material-icons">attach_file</i>Anzeigeicon hochladen<input
-        (change)="handleFileInput($event.target.files)"
-        type="file"
-        id="file"
-        accept="image/*"
-      />
-    </label>
+  <label>Verwendetes Anzeigeicon:</label>
+  <img
+    mat-card-image
+    [src]="data.icon"
+    style="max-width: 80px; max-height: 80px; margin-top: 20px"
+  />
+  <button
+    mat-raised-button
+    color="primary"
+    class="mdl-button mdl-js-button mdl-button--icon mdl-button--file"
+    style="margin-top: 20px"
+    (click)="uploadFileButtonClicked()"
+  >
+    Anzeigeicon hochladen
+  </button>
+  <input
+    #uploadFileInput
+    style="opacity: 0"
+    (change)="handleFileInput($event.target.files)"
+    type="file"
+    id="file"
+    accept="image/*"
+  />
   <!-- </mat-form-field> -->
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Abbruch</button>
-  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+  <button mat-button (click)="saveChanges()" cdkFocusInitial>Ok</button>
 </div>

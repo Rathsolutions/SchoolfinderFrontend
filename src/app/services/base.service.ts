@@ -17,7 +17,7 @@ export class BaseService<T> {
     withCredentials: true,
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': 'Basic ' + btoa(":")
+      'Authorization': 'Basic ' + btoa("simon:!simon123")
     })
   };
 
@@ -72,7 +72,7 @@ export class BaseService<T> {
   }
 
   public create(t: T): Observable<T> {
-    return this.http.put<T>(this.requestURL + '/-1', t, BaseService.HTTP_OPTIONS)
+    return this.http.put<T>(this.requestURL + '/create', t, BaseService.HTTP_OPTIONS)
       .pipe(
         catchError(this.handleError(this.entity + ':create'))
       );
@@ -85,8 +85,8 @@ export class BaseService<T> {
       );
   }
 
-  public update(id: number, t: T): Observable<T> {
-    return this.http.patch<T>(this.requestURL + '/' + id, t, BaseService.HTTP_OPTIONS)
+  public update(t: T): Observable<T> {
+    return this.http.patch<T>(this.requestURL + '/edit', t, BaseService.HTTP_OPTIONS)
       .pipe(
         catchError(this.handleError(this.entity + ':update'))
       );

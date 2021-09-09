@@ -42,6 +42,7 @@ import { ShowPersonComponent } from "./viewdata/viewonly-person/showperson.compo
 import { AddPersonComponent } from "./viewdata/editable-person/addperson.component";
 import { SchoolCategoryManagementComponent } from './dialogs/category-management/school-category-management/school-category-management.component';
 import { CreateCategoryComponent } from './dialogs/category-management/create-category/create-category.component';
+import { PersonCategoryManagementComponent } from './dialogs/category-management/person-category-management/person-category-management.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { CreateCategoryComponent } from './dialogs/category-management/create-ca
     AddPersonComponent,
     SchoolCategoryManagementComponent,
     CreateCategoryComponent,
+    PersonCategoryManagementComponent,
   ],
   imports: [
     BrowserModule,

@@ -44,10 +44,13 @@ import {
 } from "src/app/broadcast-event-service/ZoomToEventService";
 import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
 import { SchoolCategoryManagementComponent } from "src/app/dialogs/category-management/school-category-management/school-category-management.component";
-import { InstitutionCategoryService } from "src/app/services/institution-category.service";
+import { ProjectCategoryService } from "src/app/services/project-category.service";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
 import { CreateCategoryComponent } from "src/app/dialogs/category-management/create-category/create-category.component";
 import { AbstractCategoryManagement } from "src/app/dialogs/category-management/abstract-category-management";
+import { EditStrategy } from "src/app/services/persistStrategy/EditStrategy";
+import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
+import { CreateStrategy } from "src/app/services/persistStrategy/CreateStrategy";
 
 @Component({
   selector: "criteria-filter-component",
@@ -75,7 +78,7 @@ export class CriteriaFilterComponent implements OnInit {
     private calculationEventService: CalculationEventService,
     private schoolService: SchoolsService,
     private citiesService: CitiesService,
-    private institutionCategoryService: InstitutionCategoryService,
+    private projectCategoryService: ProjectCategoryService,
     private dialog: MatDialog
   ) {}
   ngOnInit(): void {
@@ -90,42 +93,70 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   public createCategory(): void {
-    this.institutionCategoryService
-      .findInstitutionCategoryByName(this.categoryName)
-      .subscribe(
-        (res) => {
-          this.dialog.open(SchoolCategoryManagementComponent, {
-            data: {
-              adminNotice:
-                "In dieser Ansicht haben Sie die Möglichkeit, die Kategorie " +
-                res.name +
-                " zu bearbeiten.",
-              name: res.name,
-              icon: res.icon,
-              id: res.id,
-            },
-          });
-        },
-        (rej) => {
-          //Comment in later
-          // if (rej.status == 404) {
+    this.projectCategoryService.findProjectByName(this.categoryName).subscribe(
+      (res) => {
+        var openedDialog = this.dialog.open(SchoolCategoryManagementComponent, {
+          data: {
+            adminNotice:
+              "In dieser Ansicht haben Sie die Möglichkeit, die Kategorie " +
+              res.name +
+              " zu bearbeiten.",
+            name: res.name,
+            icon: res.icon,
+            id: res.id,
+            persistStrategy: new EditStrategy<ProjectCategoryEntity>(
+              this.projectCategoryService
+            ),
+          },
+        });
+        openedDialog
+          .afterClosed()
+          .subscribe((res) =>
+            this.handleClosedCategoryDialog(
+              "Die Kategorie " + res.name + " wurde erfolgreich editiert!"
+            )
+          );
+      },
+      (rej) => {
+        if (rej.status == 404) {
           var dialog = this.dialog.open(CreateCategoryComponent);
           dialog
             .afterClosed()
             .subscribe((res: Type<AbstractCategoryManagement<any, any>>) => {
-              this.dialog.open(res, {
+              if (!res) {
+                return;
+              }
+              var openedDialog = this.dialog.open(res, {
                 data: {
                   adminNotice:
                     "In dieser Ansicht haben Sie die Möglichkeit, die Kategorie " +
                     this.categoryName +
                     " zu erstellen.",
                   name: this.categoryName,
+                  persistStrategy: new CreateStrategy<ProjectCategoryEntity>(
+                    this.projectCategoryService
+                  ),
                 },
               });
+              openedDialog
+                .afterClosed()
+                .subscribe((res) =>
+                  this.handleClosedCategoryDialog(
+                    "Die Kategorie " + res.name + " wurde erfolgreich angelegt!"
+                  )
+                );
             });
-          // }
+        } else {
+          this.toastr.error(
+            "Es ist ein Fehler aufgetreten! Bitte kontaktieren Sie den Systemadministrator."
+          );
         }
-      );
+      }
+    );
+  }
+
+  private handleClosedCategoryDialog(toastrMessage: string) {
+    this.toastr.success(toastrMessage);
   }
 
   public searchCity(): void {

@@ -6,20 +6,19 @@ import { HttpClient, HttpXsrfTokenExtractor } from "@angular/common/http";
 import { catchError } from "rxjs/operators";
 import { Observable } from "rxjs";
 import { OsmPOIEntity } from "../entities/OsmPOIEntity";
-import { InstitutionCategoryEntity } from "../entities/InstitutionCategoryEntity";
+import { ProjectCategoryEntity } from "../entities/ProjectEntity";
 @Injectable({
   providedIn: "root",
 })
-export class InstitutionCategoryService extends BaseService<InstitutionCategoryEntity> {
+export class ProjectCategoryService extends BaseService<ProjectCategoryEntity> {
   constructor(http: HttpClient) {
-    super(http, "institutionCategory");
+    super(http, "project");
   }
 
-  public findInstitutionCategoryByName(name: string): Observable<InstitutionCategoryEntity> {
-    return this.http.get<InstitutionCategoryEntity>(this.requestURL + "/search/findCategoryByName", {
-      params: {
-        name: name,
-      },
-    });
+  public findProjectByName(name: string): Observable<ProjectCategoryEntity> {
+    return this.http.get<ProjectCategoryEntity>(
+      this.requestURL + "/search/getProjectByName/" + name,
+      BaseService.HTTP_OPTIONS
+    );
   }
 }

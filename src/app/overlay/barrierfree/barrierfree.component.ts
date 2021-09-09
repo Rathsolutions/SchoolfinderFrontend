@@ -4,7 +4,6 @@ import { SchoolPersonEntity } from 'src/app/entities/SchoolPersonEntity';
 import { TransitionCheckState } from '@angular/material/checkbox';
 import { PersonEntity } from 'src/app/entities/PersonEntity';
 import { PersonFunctionality } from 'src/app/entities/PersonFunctionalityEntity';
-import { match } from 'minimatch';
 
 @Component({
     selector: 'barrierfree-component',
