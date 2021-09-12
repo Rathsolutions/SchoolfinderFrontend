@@ -180,11 +180,12 @@ export class AddPointOverlay
     this.personsComponent.forEach(async (person) => {
       promisesToWait.push(
         person.getOrInsertPerson().then((e) => {
+          console.log(e);
           allPersonViewInstances.push(e);
           return e;
         })
       );
-    });
+    })
     this.criterias.forEach((e) => {
       var criteriaEntity = new CriteriaEntity();
       criteriaEntity.criteriaName = e.criteriaName.value;
@@ -196,6 +197,10 @@ export class AddPointOverlay
     }
     Promise.all(promisesToWait)
       .then((res) => {
+        if (allPersonViewInstances.length <= 0) {
+          this.toastr.error("Bitte mindestens eine Ansprechperson eintragen!");
+          return;
+        }
         res.forEach((e) => {
           school.personSchoolMapping.push(e);
         });
@@ -234,10 +239,6 @@ export class AddPointOverlay
       .catch((err) => {
         this.toastr.error(err);
       });
-    if (allPersonViewInstances.length <= 0) {
-      this.toastr.error("Bitte mindestens eine Ansprechperson eintragen!");
-      return;
-    }
   }
 
   public prefillByPointId(pointId: number): void {

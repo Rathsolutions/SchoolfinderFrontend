@@ -32,11 +32,11 @@ export class SchoolCategoryManagementComponent
   constructor(
     dialogRef: MatDialogRef<SchoolCategoryManagementComponent>,
     @Inject(MAT_DIALOG_DATA) data: SchoolCategoryManagementData,
-    private calculationEventService: CalculationEventService,
-    private projectService: ProjectCategoryService,
-    private toastrService: ToastrService
+    calculationEventService: CalculationEventService,
+    projectService: ProjectCategoryService,
+    toastrService: ToastrService
   ) {
-    super(dialogRef, data);
+    super(dialogRef, data, calculationEventService, toastrService);
     this.adminNotice = data.adminNotice;
   }
 
@@ -47,19 +47,7 @@ export class SchoolCategoryManagementComponent
     projectCategoryEntity.id = this.data.id;
     projectCategoryEntity.name = this.data.name;
     projectCategoryEntity.icon = this.data.icon;
-    this.calculationEventService.emit(true);
-    this.data.persistStrategy.persist(projectCategoryEntity).subscribe(
-      (res) => {
-        this.calculationEventService.emit(false);
-        this.dialogRef.close(res);
-      },
-      (rej) => {
-        this.calculationEventService.emit(false);
-        this.toastrService.error(
-          "Bei der Erstellung ist ein Fehler aufgetreten! Bitte überprüfen Sie alle eingetragenen Werte"
-        );
-      }
-    );
+    super.saveChanges(projectCategoryEntity);
   }
 
   uploadFileButtonClicked(): void {

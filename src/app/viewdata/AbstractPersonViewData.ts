@@ -6,6 +6,7 @@ import {
   FormBuilder,
   Validators,
 } from "@angular/forms";
+import { FunctionalityEntity } from "../entities/FunctionalityEntity";
 import { PersonEntity } from "../entities/PersonEntity";
 import {
   PersonFunctionality,
@@ -28,12 +29,14 @@ export abstract class AbstractPersonViewData {
   newPointForm: FormGroup;
 
   emails: string[] = [];
+  functionalities: string[] = [];
 
   constructor(protected personsService: PersonsService) {}
 
   public prefill(personFunctionalityEntity: PersonFunctionalityEntity) {
     var person = personFunctionalityEntity.person;
-    this.functionality.setValue(personFunctionalityEntity.functionality);
+    console.log(personFunctionalityEntity.functionality.name);
+    this.functionality.setValue(personFunctionalityEntity.functionality.name);
     this.prename.setValue(person.prename);
     this.lastname.setValue(person.lastname);
     this.email.setValue(person.email);
@@ -64,6 +67,7 @@ export abstract class AbstractPersonViewData {
     this.email.reset();
     this.phonenumber.reset();
     this.emails = [];
+    this.functionalities = [];
   }
 
   public toPersonFunctionalityEntity(): PersonFunctionalityEntity {
@@ -72,9 +76,11 @@ export abstract class AbstractPersonViewData {
     person.lastname = this.lastname.value;
     person.email = this.email.value;
     person.phoneNumber = this.phonenumber.value;
+    var functionalityEntity = new FunctionalityEntity();
+    functionalityEntity.name = this.functionality.value;
     return new PersonFunctionalityEntity(
       -1,
-      PersonFunctionality.MAKERSPACE,
+      functionalityEntity,
       person
     );
   }

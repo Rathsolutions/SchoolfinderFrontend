@@ -51,6 +51,10 @@ import { AbstractCategoryManagement } from "src/app/dialogs/category-management/
 import { EditStrategy } from "src/app/services/persistStrategy/EditStrategy";
 import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 import { CreateStrategy } from "src/app/services/persistStrategy/CreateStrategy";
+import { FunctionalityService } from "src/app/services/functionality.service";
+import { PersonCategoryManagementComponent } from "src/app/dialogs/category-management/person-category-management/person-category-management.component";
+import { FunctionalityEntity } from "src/app/entities/FunctionalityEntity";
+import { DummyStrategy } from "src/app/services/persistStrategy/DummyStrategy";
 
 @Component({
   selector: "criteria-filter-component",
@@ -79,6 +83,7 @@ export class CriteriaFilterComponent implements OnInit {
     private schoolService: SchoolsService,
     private citiesService: CitiesService,
     private projectCategoryService: ProjectCategoryService,
+    private functionalityService: FunctionalityService,
     private dialog: MatDialog
   ) {}
   ngOnInit(): void {
@@ -98,7 +103,7 @@ export class CriteriaFilterComponent implements OnInit {
         var openedDialog = this.dialog.open(SchoolCategoryManagementComponent, {
           data: {
             adminNotice:
-              "In dieser Ansicht haben Sie die Möglichkeit, die Kategorie " +
+              "In dieser Ansicht haben Sie die Möglichkeit, die Institutionskategorie " +
               res.name +
               " zu bearbeiten.",
             name: res.name,
@@ -119,39 +124,83 @@ export class CriteriaFilterComponent implements OnInit {
       },
       (rej) => {
         if (rej.status == 404) {
-          var dialog = this.dialog.open(CreateCategoryComponent);
-          dialog
-            .afterClosed()
-            .subscribe((res: Type<AbstractCategoryManagement<any, any>>) => {
-              if (!res) {
-                return;
-              }
-              var openedDialog = this.dialog.open(res, {
-                data: {
-                  adminNotice:
-                    "In dieser Ansicht haben Sie die Möglichkeit, die Kategorie " +
-                    this.categoryName +
-                    " zu erstellen.",
-                  name: this.categoryName,
-                  persistStrategy: new CreateStrategy<ProjectCategoryEntity>(
-                    this.projectCategoryService
-                  ),
-                },
-              });
+          this.functionalityService.findByName(this.categoryName).subscribe(
+            (res) => {
+              var openedDialog = this.dialog.open(
+                PersonCategoryManagementComponent,
+                {
+                  data: {
+                    adminNotice:
+                      "In dieser Ansicht haben Sie die Möglichkeit, die Personenkategorie " +
+                      res.name +
+                      " zu bearbeiten.",
+                    name: res.name,
+                    id: res.id,
+                    persistStrategy: new EditStrategy<FunctionalityEntity>(
+                      this.functionalityService
+                    ),
+                  },
+                }
+              );
               openedDialog
                 .afterClosed()
                 .subscribe((res) =>
                   this.handleClosedCategoryDialog(
-                    "Die Kategorie " + res.name + " wurde erfolgreich angelegt!"
+                    "Die Kategorie " + res.name + " wurde erfolgreich editiert!"
                   )
                 );
-            });
-        } else {
-          this.toastr.error(
-            "Es ist ein Fehler aufgetreten! Bitte kontaktieren Sie den Systemadministrator."
+            },
+            (rejTwo) => {
+              if (rejTwo.status == 404) {
+                var dialog = this.dialog.open(CreateCategoryComponent, {
+                  data: { persistStrategy: new DummyStrategy() },
+                });
+                dialog
+                  .afterClosed()
+                  .subscribe(
+                    (res: Type<AbstractCategoryManagement<any, any>>) => {
+                      if (!res) {
+                        return;
+                      }
+                      var openedDialog = this.dialog.open(res, {
+                        data: {
+                          adminNotice:
+                            "In dieser Ansicht haben Sie die Möglichkeit, die Kategorie " +
+                            this.categoryName +
+                            " zu erstellen.",
+                          name: this.categoryName,
+                          persistStrategy:
+                            new CreateStrategy<FunctionalityEntity>(
+                              this.functionalityService
+                            ),
+                        },
+                      });
+                      openedDialog
+                        .afterClosed()
+                        .subscribe((res) =>
+                          this.handleClosedCategoryDialog(
+                            "Die Kategorie " +
+                              res.name +
+                              " wurde erfolgreich angelegt!"
+                          )
+                        );
+                    }
+                  );
+              } else {
+                this.throwErrorMessage();
+              }
+            }
           );
+        } else {
+          this.throwErrorMessage();
         }
       }
+    );
+  }
+
+  private throwErrorMessage() {
+    this.toastr.error(
+      "Es ist ein Fehler aufgetreten! Bitte kontaktieren Sie den Systemadministrator."
     );
   }
 

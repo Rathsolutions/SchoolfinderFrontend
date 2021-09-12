@@ -5,6 +5,7 @@ import { PersonFunctionalityEntity } from "src/app/entities/PersonFunctionalityE
 import { ToastrService } from "ngx-toastr";
 import { PersonEntity } from "src/app/entities/PersonEntity";
 import { Component } from "@angular/core";
+import { FunctionalityService } from "src/app/services/functionality.service";
 
 @Component({
   selector: "addperson-overlay-component",
@@ -12,13 +13,22 @@ import { Component } from "@angular/core";
   styleUrls: ["./addperson.component.css"],
 })
 export class AddPersonComponent extends AbstractPersonViewData {
+  functionalityName: string = "Auszufüllende";
+
   constructor(
     protected personsService: PersonsService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private functionalityService: FunctionalityService
   ) {
     super(personsService);
     this.email.valueChanges.subscribe((data) => {
       this.updateEmailCache(data);
+    });
+    this.functionality.valueChanges.subscribe(data=>{
+      this.functionalityName = data;
+    })
+    this.functionalityService.findAll().subscribe((res) => {
+      res.forEach((e) => this.functionalities.push(e.name));
     });
   }
 
