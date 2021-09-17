@@ -35,7 +35,6 @@ export abstract class AbstractPersonViewData {
 
   public prefill(personFunctionalityEntity: PersonFunctionalityEntity) {
     var person = personFunctionalityEntity.person;
-    console.log(personFunctionalityEntity.functionality.name);
     this.functionality.setValue(personFunctionalityEntity.functionality.name);
     this.prename.setValue(person.prename);
     this.lastname.setValue(person.lastname);

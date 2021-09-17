@@ -24,9 +24,9 @@ export class AddPersonComponent extends AbstractPersonViewData {
     this.email.valueChanges.subscribe((data) => {
       this.updateEmailCache(data);
     });
-    this.functionality.valueChanges.subscribe(data=>{
+    this.functionality.valueChanges.subscribe((data) => {
       this.functionalityName = data;
-    })
+    });
     this.functionalityService.findAll().subscribe((res) => {
       res.forEach((e) => this.functionalities.push(e.name));
     });
