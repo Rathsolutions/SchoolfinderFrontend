@@ -3,7 +3,10 @@ import { BaseService } from "../base.service";
 import { PersistStrategy } from "./PersistStrategy";
 
 export class EditStrategy<T> implements PersistStrategy<T> {
-  constructor(private service: BaseService<T>) {}
+  private service: BaseService<T>;
+  setServiceInstance(service: BaseService<T>) {
+    this.service = service;
+  }
   persist(objToPersist: T): Observable<T> {
     return this.service.update(objToPersist);
   }

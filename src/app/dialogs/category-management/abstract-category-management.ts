@@ -8,7 +8,7 @@ export abstract class AbstractCategoryManagement<
   ManagementComponent,
   ComponentData extends { persistStrategy: PersistStrategy<any> }
 > {
-  private persistStrategy: PersistStrategy<any>;
+  protected persistStrategy: PersistStrategy<any>;
   constructor(
     public dialogRef: MatDialogRef<ManagementComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ComponentData,

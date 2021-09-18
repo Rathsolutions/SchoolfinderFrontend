@@ -2,6 +2,7 @@ import { Component, Inject, OnInit, Type } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
+import { FunctionalityService } from "src/app/services/functionality.service";
 import { ProjectCategoryService } from "src/app/services/project-category.service";
 import { AbstractCategoryManagement } from "../abstract-category-management";
 import { PersonCategoryManagementComponent } from "../person-category-management/person-category-management.component";
@@ -23,8 +24,7 @@ export class CreateCategoryComponent
     dialogRef: MatDialogRef<CreateCategoryComponent>,
     @Inject(MAT_DIALOG_DATA) data: any,
     calculationEventService: CalculationEventService,
-    projectService: ProjectCategoryService,
-    toastrService: ToastrService
+    toastrService: ToastrService,
   ) {
     super(dialogRef, data, calculationEventService, toastrService);
   }

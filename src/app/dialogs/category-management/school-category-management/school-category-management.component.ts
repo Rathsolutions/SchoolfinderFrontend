@@ -38,6 +38,7 @@ export class SchoolCategoryManagementComponent
   ) {
     super(dialogRef, data, calculationEventService, toastrService);
     this.adminNotice = data.adminNotice;
+    this.persistStrategy.setServiceInstance(projectService);
   }
 
   ngOnInit(): void {}

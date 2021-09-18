@@ -109,9 +109,7 @@ export class CriteriaFilterComponent implements OnInit {
             name: res.name,
             icon: res.icon,
             id: res.id,
-            persistStrategy: new EditStrategy<ProjectCategoryEntity>(
-              this.projectCategoryService
-            ),
+            persistStrategy: new EditStrategy<ProjectCategoryEntity>(),
           },
         });
         openedDialog
@@ -136,9 +134,7 @@ export class CriteriaFilterComponent implements OnInit {
                       " zu bearbeiten.",
                     name: res.name,
                     id: res.id,
-                    persistStrategy: new EditStrategy<FunctionalityEntity>(
-                      this.functionalityService
-                    ),
+                    persistStrategy: new EditStrategy<FunctionalityEntity>(),
                   },
                 }
               );
@@ -170,9 +166,7 @@ export class CriteriaFilterComponent implements OnInit {
                             " zu erstellen.",
                           name: this.categoryName,
                           persistStrategy:
-                            new CreateStrategy<FunctionalityEntity>(
-                              this.functionalityService
-                            ),
+                            new CreateStrategy<FunctionalityEntity>(),
                         },
                       });
                       openedDialog
