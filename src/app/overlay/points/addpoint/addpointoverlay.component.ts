@@ -31,7 +31,6 @@ import { AddCriteriaComponent } from "./criteria/addcriteria.component";
 import { SchoolPersonEntity } from "../../../entities/SchoolPersonEntity";
 import {
   PersonFunctionalityEntity,
-  PersonFunctionality,
 } from "../../../entities/PersonFunctionalityEntity";
 import { PointOverlay } from "../pointoverlay.component";
 import { AbstractPersonViewData } from "../../../viewdata/AbstractPersonViewData";
@@ -40,6 +39,8 @@ import { CriteriaEntity } from "src/app/entities/CriteriaEntity";
 import { MainComponent } from "src/app/overlay/main/main.component";
 import { ThemePalette } from "@angular/material/core";
 import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
+import { ProjectCategoryService } from "src/app/services/project-category.service";
+import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 
 @Component({
   selector: "addpointeroverlay-component",
@@ -61,6 +62,7 @@ export class AddPointOverlay
   lat: number;
   long: number;
 
+  projectCategories: ProjectCategoryEntity[] = [];
   private personsComponent: AddPersonComponent[] = [];
 
   collapsedHeight = "10vh";
@@ -78,10 +80,16 @@ export class AddPointOverlay
     protected personsService: PersonsService,
     private toastr: ToastrService,
     private componentFactoryResolver: ComponentFactoryResolver,
+    private projectCategoryService: ProjectCategoryService,
     private saveEventService: MapUpdateEventService
   ) {
     super(schoolService, personsService);
     this.init();
+    this.projectCategoryService.findAll().subscribe((res) => {
+      res.forEach((e) => {
+        this.projectCategories.push(e);
+      });
+    });
   }
 
   ngOnInit(): void {}
@@ -90,15 +98,15 @@ export class AddPointOverlay
     this.newPointForm = this.formBuilder.group({
       shortSchoolName: this.shortSchoolName,
       schoolName: this.schoolName,
-      arContent: this.arContent,
-      makerspaceContent: this.makerspaceContent,
       colorCtr: this.colorCtr,
       schoolPicture: this.schoolPicture,
+      projectCategory: this.projectCategory,
       alternativePictureText: this.alternativePictureText,
     });
     this.criterias = [];
     this.prefilled = false;
   }
+
   public prepareNewSchool() {
     super.prepareNewSchool();
     this.removeAllCriteriaButtons();
@@ -124,11 +132,10 @@ export class AddPointOverlay
       this.criteriaPlaceholder.clear();
     }
     this.schoolName.reset();
-    this.makerspaceContent.reset();
-    this.arContent.reset();
     this.colorCtr.reset();
     this.newPointForm.reset();
     this.schoolPicture.reset();
+    this.projectCategory.reset();
     this.alternativePictureText.reset();
     this.criterias = [];
   }
@@ -171,8 +178,6 @@ export class AddPointOverlay
     school.longitude = this.long;
     school.shortSchoolName = this.shortSchoolName.value;
     school.schoolName = this.schoolName.value;
-    school.arContent = this.arContent.value;
-    school.makerspaceContent = this.makerspaceContent.value;
     school.color = this.colorCtr.value.hex;
 
     var allPersonViewInstances: PersonFunctionalityEntity[] = [];
@@ -185,11 +190,14 @@ export class AddPointOverlay
           return e;
         })
       );
-    })
+    });
     this.criterias.forEach((e) => {
       var criteriaEntity = new CriteriaEntity();
       criteriaEntity.criteriaName = e.criteriaName.value;
       school.matchingCriterias.push(criteriaEntity);
+    });
+    this.projectCategory.value.forEach((element) => {
+      school.projects.push(element);
     });
     if (this.image) {
       school.schoolPicture = this.image;
@@ -242,8 +250,15 @@ export class AddPointOverlay
   }
 
   public prefillByPointId(pointId: number): void {
-    this.loadNewSchool(pointId);
     this.init();
+    this.loadNewSchool(pointId).then((res: SchoolPersonEntity) => {
+      var matchingProjects = [];
+      res.projects.forEach(e=>{
+        matchingProjects.push(this.projectCategories.filter(p=>p.id == e.id)[0]);
+      })
+      console.log(matchingProjects);
+      this.projectCategory.setValue(matchingProjects);
+    });
     this.prefilled = true;
     this.schoolsService.getSchoolDetails(pointId).subscribe((result) => {
       result.matchingCriterias.forEach((e) => {

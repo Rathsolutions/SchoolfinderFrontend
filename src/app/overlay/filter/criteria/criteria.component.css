@@ -3,6 +3,10 @@
   padding: 10px;
 }
 
+.mat-expansion-panel-header-title {
+  font-weight: bold;
+}
+
 .accordion-expansion-panel {
   margin-left: 0;
   background-color: rgb(211, 211, 211);

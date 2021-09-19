@@ -20,11 +20,11 @@ import {
 import { PersonEntity } from "../../entities/PersonEntity";
 import { SchoolsService } from "../../services/schools.service";
 import { PersonsService } from "../../services/persons.service";
-import { PersonFunctionality } from "../../entities/PersonFunctionalityEntity";
 import { AbstractPersonViewData } from "../../viewdata/AbstractPersonViewData";
 import { SchoolPersonEntity } from "src/app/entities/SchoolPersonEntity";
 import { Color } from "@angular-material-components/color-picker";
 import { parse } from "url";
+import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 
 @Directive()
 export abstract class PointOverlay implements AfterViewInit, OnDestroy {
@@ -40,8 +40,11 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
     Validators.required,
     Validators.pattern("^#[0-9A-Fa-f]{6}$"),
   ]);
-  public arContent: FormControl = new FormControl("");
-  public makerspaceContent: FormControl = new FormControl("");
+
+  public projectCategory: FormControl = new FormControl(
+    "",
+    Validators.required
+  );
   image: string = null;
   public alternativePictureText: FormControl = new FormControl("");
   protected schoolId: number;
@@ -60,9 +63,8 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
     this.schoolId = null;
     this.schoolName = new FormControl("", Validators.required);
     this.shortSchoolName = new FormControl("");
-    this.arContent = new FormControl("");
-    this.makerspaceContent = new FormControl("");
     this.alternativePictureText = new FormControl("");
+    this.projectCategory = new FormControl("");
   }
 
   async loadNewSchool(id: number) {
@@ -72,8 +74,6 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
         this.schoolId = result.id;
         this.shortSchoolName.setValue(result.shortSchoolName);
         this.schoolName.setValue(result.schoolName);
-        this.arContent.setValue(result.arContent);
-        this.makerspaceContent.setValue(result.makerspaceContent);
         console.log(result.color);
         if (result.color) {
           var r = parseInt(result.color.substr(0, 2), 16);

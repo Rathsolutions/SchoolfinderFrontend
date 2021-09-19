@@ -16,5 +16,5 @@ export class SchoolPersonEntity {
   longitude: number;
   personSchoolMapping: PersonFunctionalityEntity[] = [];
   matchingCriterias: CriteriaEntity[] = [];
-  projects: ProjectCategoryEntity[];
+  projects: ProjectCategoryEntity[] = [];
 }

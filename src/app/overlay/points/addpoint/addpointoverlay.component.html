@@ -1,73 +1,127 @@
 <!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
-<div [ngStyle]="{'display': visible ? 'block' : 'none'}">
-    <div class="gradient" style="max-width: 400px;">
-        <h3>Institution hinzufügen</h3>
-        <form [formGroup]="newPointForm" (ngSubmit)="onSubmit()">
-            <div>
-                <mat-form-field style="margin-left: 20px;">
-                    <mat-label>Institutionsname</mat-label>
-                    <input matInput [formControl]="schoolName">
-                </mat-form-field>
-                <img #schoolPicture mat-card-image [src]="image"
-                    style="max-width: 80px;max-height: 80px;margin-left: 20px;position: absolute;">
-                <div style="margin-left: 20px;">
-                    <label class="mdl-button mdl-js-button mdl-button--icon mdl-button--file">
-                        <i class="material-icons">attach_file</i>Bild der Institution hochladen<input
-                            (change)="handleFileInput($event.target.files)" type="file" id="file" accept="image/*">
-                    </label>
-                </div>
-                <div>
-                    <mat-form-field style="margin-left: 20px;">
-                        <mat-label>Institutionsabkürzung</mat-label>
-                        <input matInput [formControl]="shortSchoolName">
-                    </mat-form-field>
-                </div>
-                <div style="margin-left: 20px;" *ngIf="image">
-                    <mat-form-field>
-                        <mat-label>Alternativtext des Bildes</mat-label>
-                        <input matInput [formControl]="alternativePictureText">
-                    </mat-form-field>
-                </div>
-                <div style="margin-left: 20px;">
-                    <mat-form-field>
-                        <mat-label>Spezifischer XR-Inhalt (wenn verfügbar)</mat-label>
-                        <input matInput [formControl]="arContent">
-                    </mat-form-field>
-                </div>
-                <div style="margin-left: 20px;">
-                    <mat-form-field>
-                        <mat-label>Spezifischer 3D-Makerspace-Inhalt (wenn verfügbar)</mat-label>
-                        <input matInput [formControl]="makerspaceContent">
-                    </mat-form-field>
-                </div>
-                <div style="margin-left: 20px;">
-                    <mat-form-field>
-                        <mat-label>Punktfarbe</mat-label>
-                        <input matInput [ngxMatColorPicker]="picker" [formControl]="colorCtr">
-                        <ngx-mat-color-toggle matSuffix [for]="picker"></ngx-mat-color-toggle>
-                        <ngx-mat-color-picker #picker [touchUi]="touchUi" [color]="color"></ngx-mat-color-picker>
-                    </mat-form-field>
-                </div>
-                <!-- <input class="ng-hide" id="input-file-id" type="file" [formControl]="schoolPicture" accept="image/*" /> -->
-                <!-- <label for="input-file-id" class="md-button md-raised md-primary"></label> -->
-                <mat-accordion>
-                    <div #addPersonOverlay></div>
-                    <button mat-raised-button color="primary" (click)="addPersonButton()">Person hinzufügen</button>
-                    <button mat-raised-button color="primary" (click)="addCriteriaButton()" type="button">Kriterium
-                        hinzufügen</button>
-                    <button mat-raised-button color="warn" (click)="removeCriteriaButton()" type="button">Kriterium
-                        löschen</button>
-                    <div #criteriaPlaceholder>
-                    </div>
-                </mat-accordion>
-            </div>
-            <div style="margin-top: 10px;">
-                <button mat-raised-button color="warn" type="button" (click)="setVisible(false)">Abbrechen</button>
-                <button mat-raised-button color="primary" type="submit">Eintragen</button>
-                <button mat-raised-button color="warn" type="button" (click)="deleteCurrent()">Löschen</button>
-            </div>
-        </form>
-        <!-- <div mat-dialog-content>
+<div [ngStyle]="{ display: visible ? 'block' : 'none' }">
+  <div class="gradient" style="max-width: 400px">
+    <h3>Institution hinzufügen</h3>
+    <form [formGroup]="newPointForm" (ngSubmit)="onSubmit()">
+      <div>
+        <mat-form-field style="margin-left: 20px">
+          <mat-label>Institutionsname</mat-label>
+          <input matInput [formControl]="schoolName" />
+        </mat-form-field>
+        <img
+          #schoolPicture
+          mat-card-image
+          [src]="image"
+          style="
+            max-width: 80px;
+            max-height: 80px;
+            margin-left: 20px;
+            position: absolute;
+          "
+        />
+        <div style="margin-left: 20px">
+          <mat-form-field>
+            <mat-label>Institutionskategorie</mat-label>
+            <mat-select [formControl]="projectCategory" multiple>
+              <mat-option *ngFor="let category of projectCategories" [value]="category">{{
+                category.name
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div style="margin-left: 20px">
+          <label
+            class="mdl-button mdl-js-button mdl-button--icon mdl-button--file"
+          >
+            <i class="material-icons">attach_file</i>Bild der Institution
+            hochladen<input
+              (change)="handleFileInput($event.target.files)"
+              type="file"
+              id="file"
+              accept="image/*"
+            />
+          </label>
+        </div>
+        <div>
+          <mat-form-field style="margin-left: 20px">
+            <mat-label>Institutionsabkürzung</mat-label>
+            <input matInput [formControl]="shortSchoolName" />
+          </mat-form-field>
+        </div>
+        <div style="margin-left: 20px" *ngIf="image">
+          <mat-form-field>
+            <mat-label>Alternativtext des Bildes</mat-label>
+            <input matInput [formControl]="alternativePictureText" />
+          </mat-form-field>
+        </div>
+        <div style="margin-left: 20px">
+          <mat-form-field>
+            <mat-label>Punktfarbe</mat-label>
+            <input
+              matInput
+              [ngxMatColorPicker]="picker"
+              [formControl]="colorCtr"
+            />
+            <ngx-mat-color-toggle
+              matSuffix
+              [for]="picker"
+            ></ngx-mat-color-toggle>
+            <ngx-mat-color-picker
+              #picker
+              [touchUi]="touchUi"
+              [color]="color"
+            ></ngx-mat-color-picker>
+          </mat-form-field>
+        </div>
+        <!-- <input class="ng-hide" id="input-file-id" type="file" [formControl]="schoolPicture" accept="image/*" /> -->
+        <!-- <label for="input-file-id" class="md-button md-raised md-primary"></label> -->
+        <mat-accordion>
+          <div #addPersonOverlay></div>
+          <button mat-raised-button color="primary" (click)="addPersonButton()">
+            Person hinzufügen
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="addCriteriaButton()"
+            type="button"
+          >
+            Kriterium hinzufügen
+          </button>
+          <button
+            mat-raised-button
+            color="warn"
+            (click)="removeCriteriaButton()"
+            type="button"
+          >
+            Kriterium löschen
+          </button>
+          <div #criteriaPlaceholder></div>
+        </mat-accordion>
+      </div>
+      <div style="margin-top: 10px">
+        <button
+          mat-raised-button
+          color="warn"
+          type="button"
+          (click)="setVisible(false)"
+        >
+          Abbrechen
+        </button>
+        <button mat-raised-button color="primary" type="submit">
+          Eintragen
+        </button>
+        <button
+          mat-raised-button
+          color="warn"
+          type="button"
+          (click)="deleteCurrent()"
+        >
+          Löschen
+        </button>
+      </div>
+    </form>
+    <!-- <div mat-dialog-content>
                         <p>Bitte die Administratordaten eingeben</p>
                         <mat-form-field>
                             <mat-label>Benutzername</mat-label>
@@ -78,9 +132,9 @@
                             <input matInput [(ngModel)]="data.password">
                         </mat-form-field>
                     </div> -->
-        <!-- <div mat-dialog-actions>
+    <!-- <div mat-dialog-actions>
                         <button mat-button (click)="onNoClick()">Abbruch</button>
                         <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
                     </div> -->
-    </div>
+  </div>
 </div>

@@ -6,11 +6,13 @@ export class PersonFunctionalityEntity {
     mappingId:number
     functionality: FunctionalityEntity;
     person: PersonEntity;
+    description:string;
 
-    public constructor(mappingId:number,functionality: FunctionalityEntity, person: PersonEntity) {
+    public constructor(mappingId:number,functionality: FunctionalityEntity, person: PersonEntity, description:string) {
         this.mappingId = mappingId;
         this.functionality = functionality;
         this.person = person;
+        this.description = description;
     }
 
 }

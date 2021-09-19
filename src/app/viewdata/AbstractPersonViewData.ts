@@ -9,7 +9,6 @@ import {
 import { FunctionalityEntity } from "../entities/FunctionalityEntity";
 import { PersonEntity } from "../entities/PersonEntity";
 import {
-  PersonFunctionality,
   PersonFunctionalityEntity,
 } from "../entities/PersonFunctionalityEntity";
 import { PersonsService } from "../services/persons.service";
@@ -17,14 +16,15 @@ import { PersonsService } from "../services/persons.service";
 @Directive()
 export abstract class AbstractPersonViewData {
   collapsedHeight = "50px";
-  functionality: FormControl = new FormControl("", Validators.required);
   prename: FormControl = new FormControl("", Validators.required);
+  functionality: FormControl = new FormControl("", Validators.required);
   lastname: FormControl = new FormControl("", Validators.required);
   email: FormControl = new FormControl("", [
     Validators.required,
     Validators.email,
   ]);
   phonenumber: FormControl = new FormControl("");
+  projectDescription:FormControl = new FormControl("");
 
   newPointForm: FormGroup;
 
@@ -40,6 +40,7 @@ export abstract class AbstractPersonViewData {
     this.lastname.setValue(person.lastname);
     this.email.setValue(person.email);
     this.phonenumber.setValue(person.phoneNumber);
+    this.projectDescription.setValue(personFunctionalityEntity.description);
   }
 
   public setNewPointForm(newPointForm: FormGroup) {
@@ -65,6 +66,7 @@ export abstract class AbstractPersonViewData {
     this.lastname.reset();
     this.email.reset();
     this.phonenumber.reset();
+    this.projectDescription.reset();
     this.emails = [];
     this.functionalities = [];
   }
@@ -80,7 +82,8 @@ export abstract class AbstractPersonViewData {
     return new PersonFunctionalityEntity(
       -1,
       functionalityEntity,
-      person
+      person,
+      this.projectDescription.value
     );
   }
 
