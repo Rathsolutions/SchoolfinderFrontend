@@ -5,6 +5,7 @@ import { CalculationEventService } from 'src/app/broadcast-event-service/Calcula
 import { AreaEntity } from 'src/app/entities/AreaEntity';
 import { PersistStrategy } from 'src/app/services/persistStrategy/PersistStrategy';
 import { AbstractManagement } from '../category-management/abstract-management';
+import { AreaSelectionService } from "../../broadcast-event-service/AreaSelectionService";
 
 @Component({
   selector: 'app-area-management',
@@ -18,17 +19,19 @@ export class AreaManagementComponent extends AbstractManagement<AreaManagementCo
     @Inject(MAT_DIALOG_DATA) data: AreaManagementData,
     calculationEventService: CalculationEventService,
     toastrService: ToastrService,
+    private areaSelectionService: AreaSelectionService
   ) {
     super(dialogRef, data, calculationEventService, toastrService);
   }
 
   ngOnInit(): void {
   }
-  setAreaInstitutionPosition(){
-    
-  }
-  setArea(){
+  setAreaInstitutionPosition() {
 
+  }
+  setArea() {
+    this.areaSelectionService.emit(this.data);
+    this.dialogRef.close();
   }
   saveChanges(): void {
     // var projectCategoryEntity = new ProjectCategoryEntity();

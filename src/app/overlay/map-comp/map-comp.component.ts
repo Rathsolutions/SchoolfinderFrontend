@@ -33,6 +33,9 @@ import {
   ZoomToEventService,
 } from "src/app/broadcast-event-service/ZoomToEventService";
 import GeometryType from "ol/geom/GeometryType";
+import { AreaSelectionService } from "src/app/broadcast-event-service/AreaSelectionService";
+import { MatDialog } from "@angular/material/dialog";
+import { AreaManagementComponent } from "src/app/dialogs/area-management/area-management.component";
 
 @Component({
   selector: "app-map-comp",
@@ -55,6 +58,8 @@ export class MapCompComponent implements OnInit {
   pointOverlayWrapper: ElementRef<HTMLElement>;
 
   showPointOverlay: ShowPointOverlay;
+
+  private drawMode: boolean = false;
   private existingWaypointAtGeometry: [number, number][] = [];
 
   @Input()
@@ -66,7 +71,9 @@ export class MapCompComponent implements OnInit {
     private schoolsService: SchoolsService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private saveEventService: MapUpdateEventService,
-    private zoomEventService: ZoomToEventService
+    private zoomEventService: ZoomToEventService,
+    private areaSelectionService: AreaSelectionService,
+    private dialog: MatDialog
   ) {
     saveEventService.register().subscribe((res) => {
       if (res) {
@@ -81,6 +88,28 @@ export class MapCompComponent implements OnInit {
           transform([res.longitude, res.latitude], "EPSG:4326", "EPSG:3857")
         );
       this.map.getView().setZoom(res.zoomLevel);
+    });
+    areaSelectionService.register().subscribe(res => {
+      this.drawMode = true;
+      var sourceAreaVector = new VectorSource({});
+      var sourceAreaLayer = new VectorLayer({
+        source: sourceAreaVector,
+      });
+      var draw = new Draw({
+        source: sourceAreaVector,
+        type: GeometryType.POLYGON,
+      });
+      draw.on('drawend', () => {
+        this.dialog.open(AreaManagementComponent, {
+          data: res
+        }).afterOpened().subscribe(() => {
+          this.map.removeLayer(sourceAreaLayer);
+          this.map.removeInteraction(draw);
+          this.drawMode = false;
+        });
+      });
+      this.map.addLayer(sourceAreaLayer);
+      this.map.addInteraction(draw);
     });
   }
 
@@ -110,11 +139,6 @@ export class MapCompComponent implements OnInit {
     this.map.on("moveend", () => {
       this.updateWaypoints();
     });
-    var draw = new Draw({
-      source: this.sourceWaypointVector,
-      type: GeometryType.POLYGON,
-    });
-    // this.map.addInteraction(draw);
   }
 
   public updateWaypoints(): void {
@@ -201,6 +225,9 @@ export class MapCompComponent implements OnInit {
   }
 
   public mapOnClick(evt): void {
+    if (this.drawMode) {
+      return;
+    }
     const map: Map = evt.map as Map;
     const point = map.forEachFeatureAtPixel(
       evt.pixel,
