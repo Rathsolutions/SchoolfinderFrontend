@@ -116,14 +116,36 @@
       >
         <mat-expansion-panel-header>
           <mat-panel-title> Kategorieverwaltung </mat-panel-title>
-          <!-- <mat-panel-description
-            >In diesem Menü können Sie die allgemeine Kategorieverwaltung für Ansprechpersonen einer Institution
-            vornehmen</mat-panel-description
-          > -->
         </mat-expansion-panel-header>
         <mat-form-field *ngIf="isAdmin()">
           <mat-label>Kategoriename</mat-label>
           <input [(ngModel)]="categoryName" matInput />
+        </mat-form-field>
+        <button
+          mat-raised-button
+          color="primary"
+          #workOnCategoryButton
+          (click)="createCategory()"
+        >
+          Kategorie erstellen/bearbeiten
+        </button>
+      </mat-expansion-panel>
+      <mat-expansion-panel
+        *ngIf="isAdmin()"
+        [expanded]="step === 2"
+        (opened)="setStep(2)"
+        hideToggle
+        class="expansion-panel"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title> Regionalstellenbezirke </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-form-field *ngIf="isAdmin()">
+          <mat-select (selectionChange)="areaSelectionTriggered($event)">
+            <mat-option *ngFor="let area of allAreas" [value]="area">{{
+              area
+            }}</mat-option>
+          </mat-select>
         </mat-form-field>
         <button
           mat-raised-button

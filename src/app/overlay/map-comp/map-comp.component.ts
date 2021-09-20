@@ -12,6 +12,7 @@ import { Feature, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 import Map from "ol/Map";
+import Draw from "ol/interaction/Draw";
 import Projection from "ol/proj/Projection";
 import { XYZ } from "ol/source";
 import Overlay from "ol/Overlay";
@@ -31,6 +32,7 @@ import {
   ZoomEventMessage,
   ZoomToEventService,
 } from "src/app/broadcast-event-service/ZoomToEventService";
+import GeometryType from "ol/geom/GeometryType";
 
 @Component({
   selector: "app-map-comp",
@@ -73,13 +75,16 @@ export class MapCompComponent implements OnInit {
       }
     });
     zoomEventService.register().subscribe((res) => {
-      this.map.getView().setCenter(transform([res.longitude,res.latitude], "EPSG:4326", "EPSG:3857"));
+      this.map
+        .getView()
+        .setCenter(
+          transform([res.longitude, res.latitude], "EPSG:4326", "EPSG:3857")
+        );
       this.map.getView().setZoom(res.zoomLevel);
     });
   }
 
   ngOnInit(): void {
-    console.log("init");
     this.mapSource = new XYZ({
       attributions: "© Nico Rath",
       url: "https://mapserver.rathsolutions.de/styles/basic-preview/{z}/{x}/{y}.png",
@@ -105,6 +110,11 @@ export class MapCompComponent implements OnInit {
     this.map.on("moveend", () => {
       this.updateWaypoints();
     });
+    var draw = new Draw({
+      source: this.sourceWaypointVector,
+      type: GeometryType.POLYGON,
+    });
+    // this.map.addInteraction(draw);
   }
 
   public updateWaypoints(): void {

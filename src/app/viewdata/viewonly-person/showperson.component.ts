@@ -7,6 +7,15 @@ import { AbstractPersonViewData } from "../AbstractPersonViewData";
   styleUrls: ["./showperson.component.css"],
 })
 export class ShowPersonComponent extends AbstractPersonViewData {
+
+  public getProjectDescription():string{
+    if(this.projectDescription.value){
+      return this.projectDescription.value;
+    }else{
+      return "Für weitere Informationen kontaktieren Sie bitte die oben angegebene Ansprechperson!"
+    }
+  }
+
   public emailClicked() {
     throw new Error("This is the read only variant of person view data!");
   }

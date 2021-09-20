@@ -55,6 +55,8 @@ import { FunctionalityService } from "src/app/services/functionality.service";
 import { PersonCategoryManagementComponent } from "src/app/dialogs/category-management/person-category-management/person-category-management.component";
 import { FunctionalityEntity } from "src/app/entities/FunctionalityEntity";
 import { DummyStrategy } from "src/app/services/persistStrategy/DummyStrategy";
+import { AreaEntity } from "src/app/entities/AreaEntity";
+import { AreaService } from "src/app/services/area.service";
 
 @Component({
   selector: "criteria-filter-component",
@@ -63,6 +65,7 @@ import { DummyStrategy } from "src/app/services/persistStrategy/DummyStrategy";
 })
 export class CriteriaFilterComponent implements OnInit {
   allCriterias: CriteriaEntity[] = [];
+  allAreas: AreaEntity[];
   selectedCriterias: CriteriaEntity[] = [];
   schoolname: string;
   streetname: string;
@@ -84,6 +87,7 @@ export class CriteriaFilterComponent implements OnInit {
     private citiesService: CitiesService,
     private projectCategoryService: ProjectCategoryService,
     private functionalityService: FunctionalityService,
+    private areaService: AreaService,
     private dialog: MatDialog
   ) {}
   ngOnInit(): void {
@@ -91,11 +95,15 @@ export class CriteriaFilterComponent implements OnInit {
       console.log(result);
       result.forEach((e) => this.allCriterias.push(e));
     });
+    this.areaService.findAll().subscribe((res) => (this.allAreas = res));
   }
 
   setStep(step: number): void {
     this.step = step;
   }
+
+  //TODO implement
+  public areaSelectionTriggered(evt: Event) {}
 
   public createCategory(): void {
     this.projectCategoryService.findProjectByName(this.categoryName).subscribe(
