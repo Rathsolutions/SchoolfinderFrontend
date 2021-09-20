@@ -11,7 +11,7 @@ import { CalculationEventService } from "src/app/broadcast-event-service/Calcula
 import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 import { PersistStrategy } from "src/app/services/persistStrategy/PersistStrategy";
 import { ProjectCategoryService } from "src/app/services/project-category.service";
-import { AbstractCategoryManagement } from "../abstract-category-management";
+import { AbstractManagement } from "../abstract-management"
 
 @Component({
   selector: "app-school-category-management",
@@ -19,7 +19,7 @@ import { AbstractCategoryManagement } from "../abstract-category-management";
   styleUrls: ["./school-category-management.component.css"],
 })
 export class SchoolCategoryManagementComponent
-  extends AbstractCategoryManagement<
+  extends AbstractManagement<
     SchoolCategoryManagementComponent,
     SchoolCategoryManagementData
   >

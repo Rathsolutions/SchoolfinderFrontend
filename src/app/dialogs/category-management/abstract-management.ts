@@ -4,7 +4,7 @@ import { ToastrService } from "ngx-toastr";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
 import { PersistStrategy } from "src/app/services/persistStrategy/PersistStrategy";
 
-export abstract class AbstractCategoryManagement<
+export abstract class AbstractManagement<
   ManagementComponent,
   ComponentData extends { persistStrategy: PersistStrategy<any> }
 > {

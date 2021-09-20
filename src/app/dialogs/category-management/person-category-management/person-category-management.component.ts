@@ -6,8 +6,7 @@ import { FunctionalityEntity } from "src/app/entities/FunctionalityEntity";
 import { FunctionalityService } from "src/app/services/functionality.service";
 import { PersistStrategy } from "src/app/services/persistStrategy/PersistStrategy";
 import { ProjectCategoryService } from "src/app/services/project-category.service";
-import { AbstractCategoryManagement } from "../abstract-category-management";
-import { CreateCategoryComponent } from "../create-category/create-category.component";
+import { AbstractManagement } from "../abstract-management";
 
 @Component({
   selector: "app-person-category-management",
@@ -15,7 +14,7 @@ import { CreateCategoryComponent } from "../create-category/create-category.comp
   styleUrls: ["./person-category-management.component.css"],
 })
 export class PersonCategoryManagementComponent
-  extends AbstractCategoryManagement<
+  extends AbstractManagement<
     PersonCategoryManagementComponent,
     PersonCategoryManagementData
   >

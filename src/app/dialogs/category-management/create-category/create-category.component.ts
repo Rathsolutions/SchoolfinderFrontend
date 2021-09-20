@@ -4,7 +4,7 @@ import { ToastrService } from "ngx-toastr";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
 import { FunctionalityService } from "src/app/services/functionality.service";
 import { ProjectCategoryService } from "src/app/services/project-category.service";
-import { AbstractCategoryManagement } from "../abstract-category-management";
+import { AbstractManagement } from "../abstract-management";
 import { PersonCategoryManagementComponent } from "../person-category-management/person-category-management.component";
 import { SchoolCategoryManagementComponent } from "../school-category-management/school-category-management.component";
 
@@ -14,7 +14,7 @@ import { SchoolCategoryManagementComponent } from "../school-category-management
   styleUrls: ["./create-category.component.css"],
 })
 export class CreateCategoryComponent
-  extends AbstractCategoryManagement<
+  extends AbstractManagement<
     CreateCategoryComponent,
     { persistStrategy: null }
   >

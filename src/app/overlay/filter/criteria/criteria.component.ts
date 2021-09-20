@@ -47,7 +47,7 @@ import { SchoolCategoryManagementComponent } from "src/app/dialogs/category-mana
 import { ProjectCategoryService } from "src/app/services/project-category.service";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
 import { CreateCategoryComponent } from "src/app/dialogs/category-management/create-category/create-category.component";
-import { AbstractCategoryManagement } from "src/app/dialogs/category-management/abstract-category-management";
+import { AbstractManagement } from "src/app/dialogs/category-management/abstract-management";
 import { EditStrategy } from "src/app/services/persistStrategy/EditStrategy";
 import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 import { CreateStrategy } from "src/app/services/persistStrategy/CreateStrategy";
@@ -57,6 +57,7 @@ import { FunctionalityEntity } from "src/app/entities/FunctionalityEntity";
 import { DummyStrategy } from "src/app/services/persistStrategy/DummyStrategy";
 import { AreaEntity } from "src/app/entities/AreaEntity";
 import { AreaService } from "src/app/services/area.service";
+import { AreaManagementComponent } from "src/app/dialogs/area-management/area-management.component";
 
 @Component({
   selector: "criteria-filter-component",
@@ -100,6 +101,14 @@ export class CriteriaFilterComponent implements OnInit {
 
   setStep(step: number): void {
     this.step = step;
+  }
+
+  public createArea(){
+    this.dialog.open(AreaManagementComponent,{
+      data:{
+        adminNotice: "Unbekannt"
+      }
+    })
   }
 
   //TODO implement
@@ -162,7 +171,7 @@ export class CriteriaFilterComponent implements OnInit {
                 dialog
                   .afterClosed()
                   .subscribe(
-                    (res: Type<AbstractCategoryManagement<any, any>>) => {
+                    (res: Type<AbstractManagement<any, any>>) => {
                       if (!res) {
                         return;
                       }
