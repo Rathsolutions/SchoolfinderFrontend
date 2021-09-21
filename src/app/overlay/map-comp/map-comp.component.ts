@@ -14,12 +14,12 @@ import VectorLayer from "ol/layer/Vector";
 import Map from "ol/Map";
 import Draw from "ol/interaction/Draw";
 import Projection from "ol/proj/Projection";
-import { XYZ } from "ol/source";
+import { Vector, XYZ } from "ol/source";
 import Overlay from "ol/Overlay";
 import { transform, toLonLat, transformExtent } from "ol/proj";
 import { UserService } from "src/app/services/user.service";
 import { SchoolsService } from "src/app/services/schools.service";
-import { Point } from "ol/geom";
+import { LinearRing, Point, Polygon } from "ol/geom";
 import { CriteriaEntity } from "src/app/entities/CriteriaEntity";
 import { CriteriaFilterComponent } from "../filter/criteria/criteria.component";
 import { Circle, Fill, Stroke, Style, Text } from "ol/style";
@@ -36,6 +36,8 @@ import GeometryType from "ol/geom/GeometryType";
 import { AreaSelectionService } from "src/app/broadcast-event-service/AreaSelectionService";
 import { MatDialog } from "@angular/material/dialog";
 import { AreaManagementComponent } from "src/app/dialogs/area-management/area-management.component";
+import { unByKey } from "ol/Observable";
+import { Color } from "@angular-material-components/color-picker";
 
 @Component({
   selector: "app-map-comp",
@@ -59,13 +61,14 @@ export class MapCompComponent implements OnInit {
 
   showPointOverlay: ShowPointOverlay;
 
-  private drawMode: boolean = false;
   private existingWaypointAtGeometry: [number, number][] = [];
 
   @Input()
   private criteriasObject: CriteriaFilterComponent;
 
   sourceWaypointVector: VectorSource;
+
+  private clickListenerRef;
 
   constructor(
     private schoolsService: SchoolsService,
@@ -89,8 +92,8 @@ export class MapCompComponent implements OnInit {
         );
       this.map.getView().setZoom(res.zoomLevel);
     });
-    areaSelectionService.register().subscribe(res => {
-      this.drawMode = true;
+    areaSelectionService.registerSelectionEvent().subscribe((res) => {
+      unByKey(this.clickListenerRef);
       var sourceAreaVector = new VectorSource({});
       var sourceAreaLayer = new VectorLayer({
         source: sourceAreaVector,
@@ -98,19 +101,78 @@ export class MapCompComponent implements OnInit {
       var draw = new Draw({
         source: sourceAreaVector,
         type: GeometryType.POLYGON,
+        style: this.getDrawStyle(res.color),
       });
-      draw.on('drawend', () => {
-        this.dialog.open(AreaManagementComponent, {
-          data: res
-        }).afterOpened().subscribe(() => {
-          this.map.removeLayer(sourceAreaLayer);
-          this.map.removeInteraction(draw);
-          this.drawMode = false;
-        });
+      if (res.area) {
+        let geometry = new Polygon([res.area]);
+        sourceAreaVector.addFeature(new Feature({
+          geometry: geometry
+        }));
+      }
+      draw.on("drawend", (drawEndEvent) => {
+        var polygon = drawEndEvent.feature.getGeometry() as Polygon;
+        res.area = polygon.getCoordinates()[0];
+        this.dialog
+          .open(AreaManagementComponent, {
+            data: res,
+          })
+          .afterOpened()
+          .subscribe(() => {
+            this.clickListenerRef = this.map.on(
+              "click",
+              this.mapOnClick.bind(this)
+            );
+            this.map.removeLayer(sourceAreaLayer);
+            this.map.removeInteraction(draw);
+          });
       });
       this.map.addLayer(sourceAreaLayer);
       this.map.addInteraction(draw);
     });
+    areaSelectionService.registerInstitutionEvent().subscribe((res) => {
+      unByKey(this.clickListenerRef);
+      var localClickEventReference = this.map.on("click", (evt) => {
+        var latlong = toLonLat(evt.coordinate);
+        res.areaInstitutionPosition = latlong;
+        this.dialog
+          .open(AreaManagementComponent, {
+            data: res,
+          })
+          .afterOpened()
+          .subscribe(() => {
+            unByKey(localClickEventReference);
+            this.clickListenerRef = this.map.on(
+              "click",
+              this.mapOnClick.bind(this)
+            );
+          });
+      });
+    });
+  }
+
+  private getDrawStyle(color: Color): Style[] {
+    var colorRgb = "rgba(255,255,255,0.4)";
+    if (color) {
+      colorRgb = color.toRgba();
+    }
+    var fill = new Fill({
+      color: colorRgb,
+    });
+    var stroke = new Stroke({
+      color: "#3399CC",
+      width: 1.25,
+    });
+    return [
+      new Style({
+        image: new Circle({
+          fill: fill,
+          stroke: stroke,
+          radius: 5,
+        }),
+        fill: fill,
+        stroke: stroke,
+      }),
+    ];
   }
 
   ngOnInit(): void {
@@ -133,12 +195,8 @@ export class MapCompComponent implements OnInit {
         zoom: 8,
       }),
     });
-    this.map.on("click", (e) => {
-      this.mapOnClick(e);
-    });
-    this.map.on("moveend", () => {
-      this.updateWaypoints();
-    });
+    this.clickListenerRef = this.map.on("click", this.mapOnClick.bind(this));
+    this.map.on("moveend", this.updateWaypoints.bind(this));
   }
 
   public updateWaypoints(): void {
@@ -225,9 +283,6 @@ export class MapCompComponent implements OnInit {
   }
 
   public mapOnClick(evt): void {
-    if (this.drawMode) {
-      return;
-    }
     const map: Map = evt.map as Map;
     const point = map.forEachFeatureAtPixel(
       evt.pixel,

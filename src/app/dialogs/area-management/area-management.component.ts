@@ -1,49 +1,90 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ToastrService } from 'ngx-toastr';
-import { CalculationEventService } from 'src/app/broadcast-event-service/CalculationEventService';
-import { AreaEntity } from 'src/app/entities/AreaEntity';
-import { PersistStrategy } from 'src/app/services/persistStrategy/PersistStrategy';
-import { AbstractManagement } from '../category-management/abstract-management';
+import { Component, Inject, OnInit, ViewChild } from "@angular/core";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { ToastrService } from "ngx-toastr";
+import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
+import { AreaEntity } from "src/app/entities/AreaEntity";
+import { PersistStrategy } from "src/app/services/persistStrategy/PersistStrategy";
+import { AbstractManagement } from "../category-management/abstract-management";
 import { AreaSelectionService } from "../../broadcast-event-service/AreaSelectionService";
+import { Coordinate } from "ol/coordinate";
+import { AbstractControl, FormControl, Validators } from "@angular/forms";
+import { ThemePalette } from "@angular/material/core";
+import {
+  Color,
+  NgxMatColorPickerInput,
+} from "@angular-material-components/color-picker";
+import { Position } from "src/app/entities/Position";
+import { AreaService } from "src/app/services/area.service";
 
 @Component({
-  selector: 'app-area-management',
-  templateUrl: './area-management.component.html',
-  styleUrls: ['./area-management.component.css']
+  selector: "app-area-management",
+  templateUrl: "./area-management.component.html",
+  styleUrls: ["./area-management.component.css"],
 })
-export class AreaManagementComponent extends AbstractManagement<AreaManagementComponent, AreaManagementData> implements OnInit {
+export class AreaManagementComponent
+  extends AbstractManagement<AreaManagementComponent, AreaManagementData>
+  implements OnInit
+{
+  @ViewChild("picker") pickerInput: NgxMatColorPickerInput;
+
+  public colorCtr: AbstractControl = new FormControl("", [
+    Validators.required,
+    Validators.pattern("^#[0-9A-Fa-f]{6}$"),
+  ]);
+
+  public color: ThemePalette = "primary";
+  public touchUi = false;
 
   constructor(
     dialogRef: MatDialogRef<AreaManagementComponent>,
     @Inject(MAT_DIALOG_DATA) data: AreaManagementData,
     calculationEventService: CalculationEventService,
+    private areaService:AreaService,
     toastrService: ToastrService,
     private areaSelectionService: AreaSelectionService
   ) {
     super(dialogRef, data, calculationEventService, toastrService);
+    this.persistStrategy.setServiceInstance(areaService);
   }
 
   ngOnInit(): void {
+    this.colorCtr.setValue(this.data.color);
+    this.colorCtr.valueChanges.subscribe((res) => (this.data.color = res));
   }
   setAreaInstitutionPosition() {
-
+    this.areaSelectionService.emitAreaInstitutionEvent(this.data);
+    this.dialogRef.close();
   }
   setArea() {
-    this.areaSelectionService.emit(this.data);
+    this.areaSelectionService.emitAreaSelectionEvent(this.data);
     this.dialogRef.close();
   }
   saveChanges(): void {
-    // var projectCategoryEntity = new ProjectCategoryEntity();
-    // projectCategoryEntity.id = this.data.id;
-    // projectCategoryEntity.name = this.data.name;
-    // projectCategoryEntity.icon = this.data.icon;
-    // super.saveChanges(projectCategoryEntity);
+    var area = new AreaEntity();
+    area.id = this.data.id;
+    area.name = this.data.name;
+    area.color = this.data.color.toHex();
+    var areaInstitutionPosition = new Position();
+    areaInstitutionPosition.latitude = this.data.areaInstitutionPosition[0];
+    areaInstitutionPosition.longitude = this.data.areaInstitutionPosition[1];
+    var areaPolygon: Position[] = [];
+    area.areaInstitutionPosition = areaInstitutionPosition;
+    this.data.area.forEach((e) => {
+      var polygonEdgePoint = new Position();
+      polygonEdgePoint.latitude = e[0];
+      polygonEdgePoint.longitude = e[1];
+      areaPolygon.push(polygonEdgePoint);
+    });
+    area.areaPolygon = areaPolygon;
+    super.saveChanges(area);
   }
 }
 export interface AreaManagementData {
   name: string;
   id: number;
+  areaInstitutionPosition: Coordinate;
+  area: Coordinate[];
+  color: Color;
   adminNotice: string;
   persistStrategy: PersistStrategy<AreaEntity>;
 }

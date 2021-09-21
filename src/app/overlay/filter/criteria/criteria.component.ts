@@ -106,13 +106,26 @@ export class CriteriaFilterComponent implements OnInit {
   public createArea(){
     this.dialog.open(AreaManagementComponent,{
       data:{
-        adminNotice: "Unbekannt"
+        adminNotice: "Unbekannt",
+        persistStrategy: new CreateStrategy<AreaEntity>(),
       }
-    })
+    });
   }
 
   //TODO implement
-  public areaSelectionTriggered(evt: Event) {}
+  public areaSelectionTriggered(evt: any) {
+    this.areaService.findByName(evt.value.name).subscribe(res=>{
+      this.dialog.open(AreaManagementComponent,{
+        data:{
+          name:res.name,
+          color:res.color,
+          adminNotice: "Unbekannt",
+          persistStrategy: new EditStrategy<AreaEntity>(),
+
+        }
+      });
+    });
+  }
 
   public createCategory(): void {
     this.projectCategoryService.findProjectByName(this.categoryName).subscribe(

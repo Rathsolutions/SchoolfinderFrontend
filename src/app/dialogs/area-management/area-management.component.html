@@ -1,20 +1,50 @@
 <!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
-<h1 mat-dialog-title>Verwaltungsformular für den Regionalstellenbezirk {{data.name}}</h1>
+<h1 mat-dialog-title>
+  Verwaltungsformular für den Regionalstellenbezirk {{ data.name }}
+</h1>
 <div mat-dialog-content>
-    <p>In diesem Formular können Sie Einstellunge für den ausgewählten Regionalstellenbezirk vornehmen</p>
+  <p>
+    In diesem Formular können Sie Einstellunge für den ausgewählten
+    Regionalstellenbezirk vornehmen
+  </p>
+  <mat-form-field>
+    <mat-label>Regionalstellenbezirksname</mat-label>
+    <input matInput [(ngModel)]="data.name" />
+  </mat-form-field>
+  <div>
     <mat-form-field>
-        <mat-label>Regionalstellenbezirksname</mat-label>
-        <input matInput [(ngModel)]="data.name">
+      <mat-label>Punktfarbe</mat-label>
+      <input
+        matInput
+        [ngxMatColorPicker]="picker"
+        [formControl]="colorCtr"
+      />
+      <ngx-mat-color-toggle matSuffix [for]="picker"></ngx-mat-color-toggle>
+      <ngx-mat-color-picker
+        #picker
+        [touchUi]="touchUi"
+        [color]="color"
+      ></ngx-mat-color-picker>
     </mat-form-field>
-    <div>
-        <button mat-raised-button (click)="setAreaInstitutionPosition()" color="primary">Regionalstellenposition
-            auswählen</button>
-    </div>
-    <div style="margin-top: 20px;">
-        <button mat-raised-button (click)="setArea()" color="primary">Bezirksgebiet einzeichnen</button>
-    </div>
+  </div>
+  <div>
+    <button
+      mat-raised-button
+      (click)="setAreaInstitutionPosition()"
+      color="primary"
+    >
+      Regionalstellenposition auswählen
+    </button>
+  </div>
+  <div style="margin-top: 20px">
+    <button mat-raised-button (click)="setArea()" color="primary">
+      Bezirksgebiet einzeichnen
+    </button>
+  </div>
 </div>
 <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">Abbruch</button>
-    <button mat-button (click)="saveChanges()" cdkFocusInitial>Änderungen speichern</button>
+  <button mat-button (click)="onNoClick()">Abbruch</button>
+  <button mat-button (click)="saveChanges()" cdkFocusInitial>
+    Änderungen speichern
+  </button>
 </div>

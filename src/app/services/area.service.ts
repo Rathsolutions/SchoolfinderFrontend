@@ -14,4 +14,19 @@ export class AreaService extends BaseService<AreaEntity> {
         super(http, "area");
     }
 
+    public findByName(name:string):Observable<AreaEntity>{
+        return this.http
+        .get<AreaEntity>(
+          this.requestURL + "/search/findByName",
+          {
+            params: {
+              name: name,
+            },
+            withCredentials: BaseService.HTTP_OPTIONS.withCredentials,
+            headers: BaseService.HTTP_OPTIONS.headers,
+          }
+        )
+        .pipe();
+    }
+
 }
