@@ -1,46 +1,11 @@
 <!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
-<!-- <aol-map #map id="map" class="map">
-    <aol-interaction-default>
-    </aol-interaction-default>
-    <aol-interaction-select onselect="mapOnClick($event)"></aol-interaction-select>
-    <aol-view [zoom]="9" #mapView>
-        <aol-coordinate #mapCoord [x]="lat" [y]="long" [srid]="'EPSG:4326'"></aol-coordinate>
-    </aol-view>
-    <aol-layer-tile [opacity]="1">
-        <aol-source-xyz url="https://mapserver.rathsolutions.de/styles/basic-preview/{z}/{x}/{y}.png" #sourceLayer>
-            <aol-attributions>
-                <aol-attribution #myAttribution id="attribution">
-                    &copy;&nbsp;2020/21 <a href="https://rathsolutions.de" target="_blank">Nico Rath</a>, Openlayers,
-                    OpenStreetMaps, <a href="https://www.openmaptiles.org/" target="_blank">© OpenMapTiles</a> and <a
-                        href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>
-                </aol-attribution>
-            </aol-attributions>
-        </aol-source-xyz>
-    </aol-layer-tile>
-    <aol-overlay #showpointOverlay>
-        <aol-coordinate [x]="infoboxLat" [y]="infoboxLong" [srid]="'EPSG:4326'">
-        </aol-coordinate>
-        <aol-content>
-            <div [ngStyle]="{'display': overlayVisible ? 'block' : 'none'}">
-                <showpoint-component #showPointOverlayComponent></showpoint-component>
-            </div>
-        </aol-content>
-    </aol-overlay>
-    <aol-overlay>
-        <aol-coordinate [x]="addPointOverlayLat" [y]="addPointOverlayLong" [srid]="'EPSG:4326'">
-        </aol-coordinate>
-        <aol-content>
-            <addpointeroverlay-component #addPointOverlayComponent></addpointeroverlay-component>
-        </aol-content>
-    </aol-overlay>
-    <aol-layer-vector [opacity]="1.0">
-        <aol-source-vector #sourceWaypointVector>
-        </aol-source-vector>
-    </aol-layer-vector>
-</aol-map> -->
 <app-map-comp [criteriasObject]="criteriasObject"></app-map-comp>
 <div #overlay id="overlay">
-  <div #backgroundOverlayDiv id="backgroundOverlayDiv"></div>
+  <div
+    #backgroundOverlayDiv
+    id="backgroundOverlayDiv"
+    class="backgroundOverlayDiv"
+  ></div>
   <button mat-raised-button color="primary" (click)="toggleOverlay()">
     <fa-icon [icon]="alignJustifyIcon"></fa-icon>
   </button>
@@ -66,6 +31,13 @@
     ></criteria-filter-component>
   </div>
 </div>
+
+<!-- <div style="float: right" class="rightMenuWidth">
+  <div class="backgroundOverlayDiv fadeInBackground rightMenuWidth"></div>
+  <div id="propertiesMenuDiv" class="rightMenuWidth">
+    <app-region-area-properties-menu></app-region-area-properties-menu>
+  </div>
+</div> -->
 <div
   id="progressOverlay"
   *ngIf="calculationInProgress"

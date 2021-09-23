@@ -1,21 +1,39 @@
 /*Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE*/
-visibleDiv{
-    visibility: visible;
+visibleDiv {
+  visibility: visible;
 }
 
-hiddenDiv{
-    visibility: hidden;
+hiddenDiv {
+  visibility: hidden;
 }
 
-#overlay{
-  position: fixed; 
-  display: block; 
-  width: 5%; 
-  height: 50px; 
+#overlayWrapper {
+  display: flex;
+}
+
+#overlay {
+  position: fixed;
+  display: block;
+  width: 5%;
+  height: 50px;
+  top: 0%;
+}
+.rightMenuWidth {
+  max-width: 45vw !important;
+  width: 320px !important;
+}
+#propertiesMenuDiv {
+  background-color: white;
+  visibility: visible !important;
+  height: 100px;
+  float: right;
+  position: fixed;
+  display: block;
+  height: 50px;
   top: 0%;
 }
 
-#progressOverlay{
+#progressOverlay {
   background-color: rgba(0, 0, 0, 0.3);
   position: absolute;
   display: flex;
@@ -28,101 +46,101 @@ hiddenDiv{
   align-items: center;
 }
 
-#progressSpinner{
+#progressSpinner {
   margin: 0 auto;
 }
 
-#copyright{
+#copyright {
   position: fixed;
-  display: block; 
-  width: 50px; 
+  display: block;
+  width: 50px;
   height: 50px;
   top: 0%;
-  left: 80%
+  left: 80%;
 }
 
 #attribution {
   background-color: #f5f5f5;
   position: relative;
   text-align: right;
-  float:right;
-  bottom:20px;
+  float: right;
+  bottom: 20px;
 }
 
 #filterOverlay {
-    position: fixed; 
-    display: block; 
-    width: 5%;
-    height: 100%; 
-    top: 80px;
-    left: -300px;
-    right: 0;
-    bottom: 0;
-    z-index: 2;
-    cursor: pointer;
-  }
-#backgroundOverlayDiv{
-  position: fixed; 
-  display: block; 
+  position: fixed;
+  display: block;
+  width: 12%;
+  height: 100%;
+  top: 80px;
+  left: -300px;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+.backgroundOverlayDiv {
+  position: fixed;
+  display: block;
   opacity: 1;
-  width: 0px; 
+  width: 0px;
   height: 100%;
   top: 0%;
 }
 
-#adminButton{
-  position:fixed;
-  display:block;
-  width:50px;
-  left:-50%;
-  top:0%;
+#adminButton {
+  position: fixed;
+  display: block;
+  width: 50px;
+  left: -50%;
+  top: 0%;
 }
 
-  .selected {
-    -webkit-animation: fadein 1s forwards; 
-    -moz-animation: fadein 1s forwards; 
-     -ms-animation: fadein 1s forwards;
-      -o-animation: fadein 1s forwards; 
-         animation: fadein 1s forwards;
-  }
-  
-  .dismiss {
-    -webkit-animation: fadeout 1s forwards; 
-    -moz-animation: fadeout 1s forwards; 
-     -ms-animation: fadeout 1s forwards; 
-      -o-animation: fadeout 1s forwards; 
-         animation: fadeout 1s forwards;
-  }
+.selected {
+  -webkit-animation: fadein 1s forwards;
+  -moz-animation: fadein 1s forwards;
+  -ms-animation: fadein 1s forwards;
+  -o-animation: fadein 1s forwards;
+  animation: fadein 1s forwards;
+}
 
-  .fadeInBackground{
-    -webkit-animation: fadeInBackground 1s forwards; 
-    -moz-animation: fadeInBackground 1s forwards;
-     -ms-animation: fadeInBackground 1s forwards; 
-      -o-animation: fadeInBackground 1s forwards; 
-         animation: fadeInBackground 1s forwards;
-  }
-  .fadeOutBackground{
-    -webkit-animation: fadeOutBackground 1s forwards; 
-    -moz-animation: fadeOutBackground 1s forwards; 
-     -ms-animation: fadeOutBackground 1s forwards; 
-      -o-animation: fadeOutBackground 1s forwards; 
-         animation: fadeOutBackground 1s forwards;
-  }
-  .fadeInAdminButton{
-    -webkit-animation: fadeInAdminButton 1s forwards; 
-    -moz-animation: fadeInAdminButton 1s forwards; 
-     -ms-animation: fadeInAdminButton 1s forwards;
-      -o-animation: fadeInAdminButton 1s forwards; 
-         animation: fadeInAdminButton 1s forwards;
-  }
-  .fadeOutAdminButton{
-    -webkit-animation: fadeOutAdminButton 1s forwards; 
-    -moz-animation: fadeOutAdminButton 1s forwards;
-     -ms-animation: fadeOutAdminButton 1s forwards; 
-      -o-animation: fadeOutAdminButton 1s forwards; 
-         animation: fadeOutAdminButton 1s forwards;
-  }
-.overlayComponent{
+.dismiss {
+  -webkit-animation: fadeout 1s forwards;
+  -moz-animation: fadeout 1s forwards;
+  -ms-animation: fadeout 1s forwards;
+  -o-animation: fadeout 1s forwards;
+  animation: fadeout 1s forwards;
+}
+
+.fadeInBackground {
+  -webkit-animation: fadeInBackground 1s forwards;
+  -moz-animation: fadeInBackground 1s forwards;
+  -ms-animation: fadeInBackground 1s forwards;
+  -o-animation: fadeInBackground 1s forwards;
+  animation: fadeInBackground 1s forwards;
+}
+.fadeOutBackground {
+  -webkit-animation: fadeOutBackground 1s forwards;
+  -moz-animation: fadeOutBackground 1s forwards;
+  -ms-animation: fadeOutBackground 1s forwards;
+  -o-animation: fadeOutBackground 1s forwards;
+  animation: fadeOutBackground 1s forwards;
+}
+.fadeInAdminButton {
+  -webkit-animation: fadeInAdminButton 1s forwards;
+  -moz-animation: fadeInAdminButton 1s forwards;
+  -ms-animation: fadeInAdminButton 1s forwards;
+  -o-animation: fadeInAdminButton 1s forwards;
+  animation: fadeInAdminButton 1s forwards;
+}
+.fadeOutAdminButton {
+  -webkit-animation: fadeOutAdminButton 1s forwards;
+  -moz-animation: fadeOutAdminButton 1s forwards;
+  -ms-animation: fadeOutAdminButton 1s forwards;
+  -o-animation: fadeOutAdminButton 1s forwards;
+  animation: fadeOutAdminButton 1s forwards;
+}
+.overlayComponent {
   width: 10vw;
   overflow: auto;
   text-overflow: ellipsis;
@@ -131,37 +149,68 @@ hiddenDiv{
 
 .gradient {
   background: #f5f5f5;
-  border: 1px solid #FFF;
+  border: 1px solid #fff;
   border-radius: 5px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  box-shadow: 1px 2px 4px rgba(0,0,0,.4);
-  }
-
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.4);
+}
 
 @keyframes fadein {
-    from { left:-300px; }
-    to   { left:0px }
+  from {
+    left: -300px;
+  }
+  to {
+    left: 0px;
+  }
 }
 @keyframes fadeout {
-    from { left:0px }
-    to   { left:-300px }
+  from {
+    left: 0px;
+  }
+  to {
+    left: -300px;
+  }
 }
 
 @keyframes fadeInAdminButton {
-  from { left:-200px; }
-  to   { left:185px }
+  from {
+    left: -200px;
+  }
+  to {
+    left: 185px;
+  }
 }
 @keyframes fadeOutAdminButton {
-  from { left:185px }
-  to   { left:-200px; }
+  from {
+    left: 185px;
+  }
+  to {
+    left: -200px;
+  }
 }
 
-@keyframes fadeInBackground{
-  from{opacity: 0; background: transparent;;width: 0px;}
-  to{opacity: 1;background: white;;width: 250px;}
+@keyframes fadeInBackground {
+  from {
+    opacity: 0;
+    background: transparent;
+    width: 0px;
+  }
+  to {
+    opacity: 1;
+    background: white;
+    width: 250px;
+  }
 }
-@keyframes fadeOutBackground{
-  from{opacity: 1; background: white;width: 250px;}
-  to{opacity: 0.0;background: transparent;width: 0px;}
+@keyframes fadeOutBackground {
+  from {
+    opacity: 1;
+    background: white;
+    width: 250px;
+  }
+  to {
+    opacity: 0;
+    background: transparent;
+    width: 0px;
+  }
 }

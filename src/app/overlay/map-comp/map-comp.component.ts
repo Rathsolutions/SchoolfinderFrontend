@@ -38,6 +38,10 @@ import { MatDialog } from "@angular/material/dialog";
 import { AreaManagementComponent } from "src/app/dialogs/area-management/area-management.component";
 import { unByKey } from "ol/Observable";
 import { Color } from "@angular-material-components/color-picker";
+import { AreaManagementData } from "../region-area-properties-menu/region-area-properties-menu.component";
+import { AreaService } from "src/app/services/area.service";
+import { Coordinate } from "ol/coordinate";
+import { Position } from "src/app/entities/Position";
 
 @Component({
   selector: "app-map-comp",
@@ -46,7 +50,7 @@ import { Color } from "@angular-material-components/color-picker";
 })
 export class MapCompComponent implements OnInit {
   private map: Map;
-  private mapLayer: TileLayer;
+  private mapLayer: TileLayer<any>;
   private mapSource: XYZ;
 
   @ViewChild("addPointComponentOverlay", { read: ViewContainerRef })
@@ -61,14 +65,20 @@ export class MapCompComponent implements OnInit {
 
   showPointOverlay: ShowPointOverlay;
 
+  private drawInstance: Draw;
   private existingWaypointAtGeometry: [number, number][] = [];
 
   @Input()
   private criteriasObject: CriteriaFilterComponent;
 
-  sourceWaypointVector: VectorSource;
+  sourceWaypointVector: VectorSource<any>;
+  sourceAreaLayer: VectorLayer<any>;
 
   private clickListenerRef;
+  areaSelectionActive: boolean = false;
+
+  currentAreaEventData: AreaManagementData;
+  sourceAreaVector: VectorSource<any>;
 
   constructor(
     private schoolsService: SchoolsService,
@@ -76,6 +86,7 @@ export class MapCompComponent implements OnInit {
     private saveEventService: MapUpdateEventService,
     private zoomEventService: ZoomToEventService,
     private areaSelectionService: AreaSelectionService,
+    private areaService: AreaService,
     private dialog: MatDialog
   ) {
     saveEventService.register().subscribe((res) => {
@@ -93,41 +104,35 @@ export class MapCompComponent implements OnInit {
       this.map.getView().setZoom(res.zoomLevel);
     });
     areaSelectionService.registerSelectionEvent().subscribe((res) => {
+      this.currentAreaEventData = res;
+      this.areaSelectionActive = true;
       unByKey(this.clickListenerRef);
-      var sourceAreaVector = new VectorSource({});
-      var sourceAreaLayer = new VectorLayer({
-        source: sourceAreaVector,
-      });
-      var draw = new Draw({
-        source: sourceAreaVector,
+      this.drawInstance = new Draw({
+        source: this.sourceAreaVector,
         type: GeometryType.POLYGON,
         style: this.getDrawStyle(res.color),
       });
+      this.map.addLayer(this.sourceAreaLayer);
+      this.map.addInteraction(this.drawInstance);
       if (res.area) {
-        let geometry = new Polygon([res.area]);
-        sourceAreaVector.addFeature(new Feature({
-          geometry: geometry
-        }));
+        var polygonAreaToAdd = [];
+        for (let i = 0; i < res.area.length - 1; i++) {
+          polygonAreaToAdd.push(res.area[i]);
+        }
+        let geometry = new Polygon([polygonAreaToAdd]);
+        var polygon = new Feature({
+          geometry: geometry,
+        });
+        geometry.getCoordinates().forEach((e) => {
+          this.drawInstance.appendCoordinates(e);
+        });
       }
-      draw.on("drawend", (drawEndEvent) => {
+      this.drawInstance.on("drawend", (drawEndEvent) => {
         var polygon = drawEndEvent.feature.getGeometry() as Polygon;
         res.area = polygon.getCoordinates()[0];
-        this.dialog
-          .open(AreaManagementComponent, {
-            data: res,
-          })
-          .afterOpened()
-          .subscribe(() => {
-            this.clickListenerRef = this.map.on(
-              "click",
-              this.mapOnClick.bind(this)
-            );
-            this.map.removeLayer(sourceAreaLayer);
-            this.map.removeInteraction(draw);
-          });
+        this.finalizeDrawing(res);
+        this.currentAreaEventData = null;
       });
-      this.map.addLayer(sourceAreaLayer);
-      this.map.addInteraction(draw);
     });
     areaSelectionService.registerInstitutionEvent().subscribe((res) => {
       unByKey(this.clickListenerRef);
@@ -148,6 +153,45 @@ export class MapCompComponent implements OnInit {
           });
       });
     });
+  }
+
+  private finalizeDrawing(res: AreaManagementData): void {
+    this.dialog
+      .open(AreaManagementComponent, {
+        data: res,
+      })
+      .afterOpened()
+      .subscribe(() => {
+        this.clickListenerRef = this.map.on(
+          "click",
+          this.mapOnClick.bind(this)
+        );
+        this.map.removeLayer(this.sourceAreaLayer);
+        this.map.removeInteraction(this.drawInstance);
+        this.areaSelectionActive = false;
+      });
+  }
+
+  public abortDrawing(): void {
+    this.drawInstance.abortDrawing();
+    this.finalizeDrawing(this.currentAreaEventData);
+    this.currentAreaEventData = null;
+  }
+
+  //TODO repair method
+  public applyDrawing(): void {
+    var polygon = this.drawInstance
+      .getOverlay()
+      .getSource()
+      .getFeatures()[0]
+      .getGeometry() as Polygon;
+    this.currentAreaEventData.area = polygon.getCoordinates()[0];
+    this.finalizeDrawing(this.currentAreaEventData);
+    this.currentAreaEventData = null;
+  }
+
+  public removeLastSetDrawingPoint(): void {
+    this.drawInstance.removeLastPoint();
   }
 
   private getDrawStyle(color: Color): Style[] {
@@ -183,12 +227,16 @@ export class MapCompComponent implements OnInit {
     this.mapLayer = new TileLayer({
       source: this.mapSource,
     });
+    this.sourceAreaVector = new VectorSource({});
     this.sourceWaypointVector = new VectorSource({});
     var sourceWaypointLayer = new VectorLayer({
       source: this.sourceWaypointVector,
     });
+    this.sourceAreaLayer = new VectorLayer({
+      source: this.sourceAreaVector,
+    });
     this.map = new Map({
-      layers: [this.mapLayer, sourceWaypointLayer],
+      layers: [this.mapLayer, this.sourceAreaLayer, sourceWaypointLayer],
       target: "map",
       view: new View({
         center: transform([8.50965, 48.85851], "EPSG:4326", "EPSG:3857"),
@@ -197,6 +245,31 @@ export class MapCompComponent implements OnInit {
     });
     this.clickListenerRef = this.map.on("click", this.mapOnClick.bind(this));
     this.map.on("moveend", this.updateWaypoints.bind(this));
+    this.addAllAreasToMap();
+  }
+  public addAllAreasToMap(): void {
+    this.sourceAreaVector.clear();
+    this.areaService.findAll().subscribe((res) => {
+      res.forEach((e) => {
+        var coordinatePoly: Coordinate[] = [];
+        e.areaPolygon.forEach((areaP) => {
+          coordinatePoly.push([areaP.latitude, areaP.longitude]);
+        });
+        let geometry = new Polygon([coordinatePoly]);
+        var polygon = new Feature({
+          geometry: geometry,
+        });
+        var r = parseInt(e.color.substr(0, 2), 16);
+        var g = parseInt(e.color.substr(2, 2), 16);
+        var b = parseInt(e.color.substr(4, 2), 16);
+        var a = 0.5;
+        console.log(r);
+        console.log(g);
+        console.log(b);
+        polygon.setStyle(this.getDrawStyle(new Color(r, g, b, a)));
+        this.sourceAreaVector.addFeature(polygon);
+      });
+    });
   }
 
   public updateWaypoints(): void {
@@ -308,12 +381,14 @@ export class MapCompComponent implements OnInit {
         this.showPointOverlayPlaceholder.clear();
       }
       this.map.addOverlay(overlayMap);
+      this.addPointOverlay.setLat(latlong[0])
+      this.addPointOverlay.setLong(latlong[1]);
       this.addPointOverlay.setVisible(true);
       this.addPointOverlay.prepareNewSchool();
       if (point) {
         this.addPointOverlay.prefillByPointId((point as any).getId());
       }
-    } else if (!UserService.isLoggedIn() && point) {
+    } else if (!UserService.isLoggedIn() && point && point.getId()) {
       this.showPointOverlayPlaceholder.clear();
       var compFactoryShowPoint =
         this.componentFactoryResolver.resolveComponentFactory(ShowPointOverlay);

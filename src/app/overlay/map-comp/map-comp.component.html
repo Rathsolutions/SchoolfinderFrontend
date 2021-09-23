@@ -9,3 +9,28 @@
   <div #addPointComponentOverlay id="addPointComponentOverlay"></div>
   <div #showPointComponentOverlay id="showPointComponentOverlay"></div>
 </div>
+
+<div
+  style="
+    left: 50%;
+    transform: translate(-50%, 0);
+    position: fixed;
+    display: block;
+    top: 0%;
+  "
+>
+  <button
+    *ngIf="areaSelectionActive"
+    mat-raised-button
+    color="primary"
+    (click)="removeLastSetDrawingPoint()"
+  >
+    Letzten gesetzten Punkt entfernen
+  </button>
+  <button *ngIf="areaSelectionActive" mat-raised-button color="primary" (click)="abortDrawing()">
+    Abbrechen
+  </button>
+  <button *ngIf="areaSelectionActive" mat-raised-button color="primary" (click)="applyDrawing()">
+    Bestätigen
+  </button>
+</div>
