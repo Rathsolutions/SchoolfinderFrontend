@@ -40,11 +40,10 @@ import { BarrierFree } from "./overlay/barrierfree/barrierfree.component";
 import { MapCompComponent } from "./overlay/map-comp/map-comp.component";
 import { ShowPersonComponent } from "./viewdata/viewonly-person/showperson.component";
 import { AddPersonComponent } from "./viewdata/editable-person/addperson.component";
-import { SchoolCategoryManagementComponent } from './dialogs/category-management/school-category-management/school-category-management.component';
-import { CreateCategoryComponent } from './dialogs/category-management/create-category/create-category.component';
-import { PersonCategoryManagementComponent } from './dialogs/category-management/person-category-management/person-category-management.component';
-import { AreaManagementComponent } from './dialogs/area-management/area-management.component';
-import { RegionAreaPropertiesMenuComponent } from './overlay/region-area-properties-menu/region-area-properties-menu.component';
+import { SchoolCategoryManagementComponent } from "./dialogs/category-management/school-category-management/school-category-management.component";
+import { CreateCategoryComponent } from "./dialogs/category-management/create-category/create-category.component";
+import { PersonCategoryManagementComponent } from "./dialogs/category-management/person-category-management/person-category-management.component";
+import { AreaManagementComponent } from "./dialogs/area-management/area-management.component";
 
 @NgModule({
   declarations: [
@@ -64,7 +63,6 @@ import { RegionAreaPropertiesMenuComponent } from './overlay/region-area-propert
     CreateCategoryComponent,
     PersonCategoryManagementComponent,
     AreaManagementComponent,
-    RegionAreaPropertiesMenuComponent,
   ],
   imports: [
     BrowserModule,

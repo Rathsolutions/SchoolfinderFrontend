@@ -2,6 +2,7 @@ import { Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
+import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
 import { SavableComponent } from "src/app/overlay/SaveableComponent";
 import { PersistStrategy } from "src/app/services/persistStrategy/PersistStrategy";
 
@@ -14,28 +15,27 @@ export abstract class AbstractManagement<
     public dialogRef: MatDialogRef<ManagementComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ComponentData,
     calculationEventService: CalculationEventService,
-    toastrService: ToastrService
+    toastrService: ToastrService,
+    mapEventService: MapUpdateEventService
   ) {
-    super(calculationEventService,toastrService,data.persistStrategy);
+    super(
+      calculationEventService,
+      toastrService,
+      data.persistStrategy,
+      mapEventService
+    );
   }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
-  saveChanges(entityToPersist: any): void {
-    this.calculationEventService.emit(true);
-    this.persistStrategy.persist(entityToPersist).subscribe(
-      (res) => {
-        this.calculationEventService.emit(false);
-        this.dialogRef.close(res);
-      },
-      (rej) => {
-        this.calculationEventService.emit(false);
-        this.toastrService.error(
-          "Bei der Erstellung ist ein Fehler aufgetreten! Bitte überprüfen Sie alle eingetragenen Werte"
-        );
-      }
-    );
+  protected async saveChanges(entityToPersist: any) {
+    super.saveChanges(entityToPersist).then((res) => {
+      this.dialogRef.close();
+      return Promise.resolve(res);
+    }).catch(rej=>{
+      return Promise.reject(rej);
+    });
   }
 }

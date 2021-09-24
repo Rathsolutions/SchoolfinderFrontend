@@ -141,7 +141,7 @@
           <mat-panel-title> Regionalstellenbezirke </mat-panel-title>
         </mat-expansion-panel-header>
         <mat-form-field *ngIf="isAdmin()">
-          <mat-select (selectionChange)="areaSelectionTriggered($event)">
+          <mat-select (selectionChange)="areaSelectionTriggered($event)" #areaSelectionField>
             <mat-option *ngFor="let area of allAreas" [value]="area">{{
               area.name
             }}</mat-option>

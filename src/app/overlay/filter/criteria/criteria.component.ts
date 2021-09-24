@@ -58,6 +58,9 @@ import { DummyStrategy } from "src/app/services/persistStrategy/DummyStrategy";
 import { AreaEntity } from "src/app/entities/AreaEntity";
 import { AreaService } from "src/app/services/area.service";
 import { AreaManagementComponent } from "src/app/dialogs/area-management/area-management.component";
+import { Coordinate } from "ol/coordinate";
+import { Color } from "@angular-material-components/color-picker";
+import { ColorParser } from "src/app/util/color-parser";
 
 @Component({
   selector: "criteria-filter-component",
@@ -65,6 +68,9 @@ import { AreaManagementComponent } from "src/app/dialogs/area-management/area-ma
   styleUrls: ["./criteria.component.css"],
 })
 export class CriteriaFilterComponent implements OnInit {
+  @ViewChild("areaSelectionField")
+  areaSelectionField: MatSelect;
+
   allCriterias: CriteriaEntity[] = [];
   allAreas: AreaEntity[];
   selectedCriterias: CriteriaEntity[] = [];
@@ -103,27 +109,42 @@ export class CriteriaFilterComponent implements OnInit {
     this.step = step;
   }
 
-  public createArea(){
-    this.dialog.open(AreaManagementComponent,{
-      data:{
+  public createArea() {
+    this.dialog.open(AreaManagementComponent, {
+      data: {
         adminNotice: "Unbekannt",
         persistStrategy: new CreateStrategy<AreaEntity>(),
-      }
+      },
     });
   }
 
-  //TODO implement
   public areaSelectionTriggered(evt: any) {
-    this.areaService.findByName(evt.value.name).subscribe(res=>{
-      this.dialog.open(AreaManagementComponent,{
-        data:{
-          name:res.name,
-          color:res.color,
-          adminNotice: "Unbekannt",
-          persistStrategy: new EditStrategy<AreaEntity>(),
-
-        }
+    this.areaService.findByName(evt.value.name).subscribe((res) => {
+      var institutionPositionCoordinates: Coordinate = [
+        res.areaInstitutionPosition.latitude,
+        res.areaInstitutionPosition.longitude,
+      ];
+      var areaCoordinates: Coordinate[] = [];
+      res.areaPolygon.forEach((e) => {
+        areaCoordinates.push([e.latitude, e.longitude]);
       });
+      var color: Color = ColorParser.parseRgbaString(res.color);
+      this.dialog
+        .open(AreaManagementComponent, {
+          data: {
+            name: res.name,
+            color: color,
+            id: res.id,
+            areaInstitutionPosition: institutionPositionCoordinates,
+            area: areaCoordinates,
+            persistStrategy: new EditStrategy<AreaEntity>(),
+          },
+        })
+        .afterClosed()
+        .subscribe(() => {
+          console.log(this.areaSelectionField);
+          this.areaSelectionField.writeValue(null);
+        });
     });
   }
 
@@ -183,33 +204,31 @@ export class CriteriaFilterComponent implements OnInit {
                 });
                 dialog
                   .afterClosed()
-                  .subscribe(
-                    (res: Type<AbstractManagement<any, any>>) => {
-                      if (!res) {
-                        return;
-                      }
-                      var openedDialog = this.dialog.open(res, {
-                        data: {
-                          adminNotice:
-                            "In dieser Ansicht haben Sie die Möglichkeit, die Kategorie " +
-                            this.categoryName +
-                            " zu erstellen.",
-                          name: this.categoryName,
-                          persistStrategy:
-                            new CreateStrategy<FunctionalityEntity>(),
-                        },
-                      });
-                      openedDialog
-                        .afterClosed()
-                        .subscribe((res) =>
-                          this.handleClosedCategoryDialog(
-                            "Die Kategorie " +
-                              res.name +
-                              " wurde erfolgreich angelegt!"
-                          )
-                        );
+                  .subscribe((res: Type<AbstractManagement<any, any>>) => {
+                    if (!res) {
+                      return;
                     }
-                  );
+                    var openedDialog = this.dialog.open(res, {
+                      data: {
+                        adminNotice:
+                          "In dieser Ansicht haben Sie die Möglichkeit, die Kategorie " +
+                          this.categoryName +
+                          " zu erstellen.",
+                        name: this.categoryName,
+                        persistStrategy:
+                          new CreateStrategy<FunctionalityEntity>(),
+                      },
+                    });
+                    openedDialog
+                      .afterClosed()
+                      .subscribe((res) =>
+                        this.handleClosedCategoryDialog(
+                          "Die Kategorie " +
+                            res.name +
+                            " wurde erfolgreich angelegt!"
+                        )
+                      );
+                  });
               } else {
                 this.throwErrorMessage();
               }

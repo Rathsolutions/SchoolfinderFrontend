@@ -68,9 +68,10 @@ hiddenDiv {
 }
 
 #filterOverlay {
+  flex-direction: row !important;
   position: fixed;
   display: block;
-  width: 12%;
+  width: 240px;
   height: 100%;
   top: 80px;
   left: -300px;

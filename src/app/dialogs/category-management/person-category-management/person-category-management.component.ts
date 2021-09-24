@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
+import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
 import { FunctionalityEntity } from "src/app/entities/FunctionalityEntity";
 import { FunctionalityService } from "src/app/services/functionality.service";
 import { PersistStrategy } from "src/app/services/persistStrategy/PersistStrategy";
@@ -25,15 +26,16 @@ export class PersonCategoryManagementComponent
     @Inject(MAT_DIALOG_DATA) data: PersonCategoryManagementData,
     calculationEventService: CalculationEventService,
     functionalityService: FunctionalityService,
-    toastrService: ToastrService
+    toastrService: ToastrService,
+    mapEventService:MapUpdateEventService
   ) {
-    super(dialogRef, data, calculationEventService, toastrService);
+    super(dialogRef, data, calculationEventService, toastrService,mapEventService);
     this.persistStrategy.setServiceInstance(functionalityService);
   }
 
   ngOnInit(): void {}
 
-  public saveChanges() {
+  public async saveChanges() {
     var functionality = new FunctionalityEntity();
     functionality.id = this.data.id;
     functionality.name = this.data.name;

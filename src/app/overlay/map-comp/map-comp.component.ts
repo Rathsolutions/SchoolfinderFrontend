@@ -35,13 +35,16 @@ import {
 import GeometryType from "ol/geom/GeometryType";
 import { AreaSelectionService } from "src/app/broadcast-event-service/AreaSelectionService";
 import { MatDialog } from "@angular/material/dialog";
-import { AreaManagementComponent } from "src/app/dialogs/area-management/area-management.component";
+import {
+  AreaManagementComponent,
+  AreaManagementData,
+} from "src/app/dialogs/area-management/area-management.component";
 import { unByKey } from "ol/Observable";
 import { Color } from "@angular-material-components/color-picker";
-import { AreaManagementData } from "../region-area-properties-menu/region-area-properties-menu.component";
 import { AreaService } from "src/app/services/area.service";
 import { Coordinate } from "ol/coordinate";
 import { Position } from "src/app/entities/Position";
+import { ColorParser } from "src/app/util/color-parser";
 
 @Component({
   selector: "app-map-comp",
@@ -93,6 +96,7 @@ export class MapCompComponent implements OnInit {
       if (res) {
         this.resetAllWaypoint();
         this.updateWaypoints();
+        this.addAllAreasToMap();
       }
     });
     zoomEventService.register().subscribe((res) => {
@@ -112,7 +116,12 @@ export class MapCompComponent implements OnInit {
         type: GeometryType.POLYGON,
         style: this.getDrawStyle(res.color),
       });
-      this.map.addLayer(this.sourceAreaLayer);
+      this.sourceAreaVector.getFeatures().forEach((e) => {
+        if (e.getId() == res.id) {
+          console.log("found");
+          this.sourceAreaVector.removeFeature(e);
+        }
+      });
       this.map.addInteraction(this.drawInstance);
       if (res.area) {
         var polygonAreaToAdd = [];
@@ -166,7 +175,7 @@ export class MapCompComponent implements OnInit {
           "click",
           this.mapOnClick.bind(this)
         );
-        this.map.removeLayer(this.sourceAreaLayer);
+        this.addAllAreasToMap();
         this.map.removeInteraction(this.drawInstance);
         this.areaSelectionActive = false;
       });
@@ -247,6 +256,7 @@ export class MapCompComponent implements OnInit {
     this.map.on("moveend", this.updateWaypoints.bind(this));
     this.addAllAreasToMap();
   }
+
   public addAllAreasToMap(): void {
     this.sourceAreaVector.clear();
     this.areaService.findAll().subscribe((res) => {
@@ -259,15 +269,29 @@ export class MapCompComponent implements OnInit {
         var polygon = new Feature({
           geometry: geometry,
         });
-        var r = parseInt(e.color.substr(0, 2), 16);
-        var g = parseInt(e.color.substr(2, 2), 16);
-        var b = parseInt(e.color.substr(4, 2), 16);
-        var a = 0.5;
-        console.log(r);
-        console.log(g);
-        console.log(b);
-        polygon.setStyle(this.getDrawStyle(new Color(r, g, b, a)));
+        var color: Color = ColorParser.parseRgbaString(e.color);
+        polygon.setStyle(this.getDrawStyle(color));
+        polygon.setId(e.id);
         this.sourceAreaVector.addFeature(polygon);
+        var institutionFeature = new Feature({
+          geometry: new Point(
+            transform(
+              [
+                e.areaInstitutionPosition.latitude,
+                e.areaInstitutionPosition.longitude,
+              ],
+              "EPSG:4326",
+              "EPSG:3857"
+            )
+          ),
+        });
+        var zoom = this.map.getView().getZoom();
+        var school = new SchoolPersonEntity();
+        school.schoolName = e.name;
+        school.shortSchoolName = e.name;
+        var institutionStyle = this.getStyleForWaypoint(school, zoom);
+        institutionFeature.setStyle(institutionStyle);
+        this.sourceAreaVector.addFeature(institutionFeature);
       });
     });
   }
@@ -381,7 +405,7 @@ export class MapCompComponent implements OnInit {
         this.showPointOverlayPlaceholder.clear();
       }
       this.map.addOverlay(overlayMap);
-      this.addPointOverlay.setLat(latlong[0])
+      this.addPointOverlay.setLat(latlong[0]);
       this.addPointOverlay.setLong(latlong[1]);
       this.addPointOverlay.setVisible(true);
       this.addPointOverlay.prepareNewSchool();

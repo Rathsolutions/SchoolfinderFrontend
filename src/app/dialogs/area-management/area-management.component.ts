@@ -15,6 +15,8 @@ import {
 } from "@angular-material-components/color-picker";
 import { Position } from "src/app/entities/Position";
 import { AreaService } from "src/app/services/area.service";
+import { Observable } from "rxjs";
+import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
 
 @Component({
   selector: "app-area-management",
@@ -39,15 +41,18 @@ export class AreaManagementComponent
     dialogRef: MatDialogRef<AreaManagementComponent>,
     @Inject(MAT_DIALOG_DATA) data: AreaManagementData,
     calculationEventService: CalculationEventService,
-    private areaService:AreaService,
+    private areaService: AreaService,
     toastrService: ToastrService,
-    private areaSelectionService: AreaSelectionService
+    private areaSelectionService: AreaSelectionService,
+    mapEventService:MapUpdateEventService,
   ) {
-    super(dialogRef, data, calculationEventService, toastrService);
+    super(dialogRef, data, calculationEventService, toastrService,mapEventService);
+    console.log(data);
     this.persistStrategy.setServiceInstance(areaService);
   }
 
   ngOnInit(): void {
+    console.log(this.data.color);
     this.colorCtr.setValue(this.data.color);
     this.colorCtr.valueChanges.subscribe((res) => (this.data.color = res));
   }
@@ -59,11 +64,11 @@ export class AreaManagementComponent
     this.areaSelectionService.emitAreaSelectionEvent(this.data);
     this.dialogRef.close();
   }
-  saveChanges(): void {
+  async saveChanges() {
     var area = new AreaEntity();
     area.id = this.data.id;
     area.name = this.data.name;
-    area.color = this.data.color.toHex();
+    area.color = this.data.color.toRgba();
     var areaInstitutionPosition = new Position();
     areaInstitutionPosition.latitude = this.data.areaInstitutionPosition[0];
     areaInstitutionPosition.longitude = this.data.areaInstitutionPosition[1];
@@ -85,6 +90,5 @@ export interface AreaManagementData {
   areaInstitutionPosition: Coordinate;
   area: Coordinate[];
   color: Color;
-  adminNotice: string;
   persistStrategy: PersistStrategy<AreaEntity>;
 }

@@ -2,6 +2,7 @@ import { Component, Inject, OnInit, Type } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
+import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
 import { FunctionalityService } from "src/app/services/functionality.service";
 import { ProjectCategoryService } from "src/app/services/project-category.service";
 import { AbstractManagement } from "../abstract-management";
@@ -14,10 +15,7 @@ import { SchoolCategoryManagementComponent } from "../school-category-management
   styleUrls: ["./create-category.component.css"],
 })
 export class CreateCategoryComponent
-  extends AbstractManagement<
-    CreateCategoryComponent,
-    { persistStrategy: null }
-  >
+  extends AbstractManagement<CreateCategoryComponent, { persistStrategy: null }>
   implements OnInit
 {
   constructor(
@@ -25,8 +23,15 @@ export class CreateCategoryComponent
     @Inject(MAT_DIALOG_DATA) data: any,
     calculationEventService: CalculationEventService,
     toastrService: ToastrService,
+    mapEventService: MapUpdateEventService
   ) {
-    super(dialogRef, data, calculationEventService, toastrService);
+    super(
+      dialogRef,
+      data,
+      calculationEventService,
+      toastrService,
+      mapEventService
+    );
   }
   ngOnInit(): void {}
 

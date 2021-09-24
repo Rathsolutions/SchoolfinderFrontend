@@ -8,10 +8,11 @@ import {
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
+import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
 import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 import { PersistStrategy } from "src/app/services/persistStrategy/PersistStrategy";
 import { ProjectCategoryService } from "src/app/services/project-category.service";
-import { AbstractManagement } from "../abstract-management"
+import { AbstractManagement } from "../abstract-management";
 
 @Component({
   selector: "app-school-category-management",
@@ -34,16 +35,23 @@ export class SchoolCategoryManagementComponent
     @Inject(MAT_DIALOG_DATA) data: SchoolCategoryManagementData,
     calculationEventService: CalculationEventService,
     projectService: ProjectCategoryService,
-    toastrService: ToastrService
+    toastrService: ToastrService,
+    mapEventService: MapUpdateEventService
   ) {
-    super(dialogRef, data, calculationEventService, toastrService);
+    super(
+      dialogRef,
+      data,
+      calculationEventService,
+      toastrService,
+      mapEventService
+    );
     this.adminNotice = data.adminNotice;
     this.persistStrategy.setServiceInstance(projectService);
   }
 
   ngOnInit(): void {}
 
-  saveChanges(): void {
+  async saveChanges() {
     var projectCategoryEntity = new ProjectCategoryEntity();
     projectCategoryEntity.id = this.data.id;
     projectCategoryEntity.name = this.data.name;

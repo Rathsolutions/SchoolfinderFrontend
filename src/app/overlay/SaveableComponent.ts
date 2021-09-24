@@ -4,22 +4,25 @@ import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
 import { PersistStrategy } from "src/app/services/persistStrategy/PersistStrategy";
+import { MapUpdateEventService } from "../broadcast-event-service/MapUpdateEventService";
 
 export abstract class SavableComponent {
   protected persistStrategy: PersistStrategy<any>;
   constructor(
     protected calculationEventService: CalculationEventService,
     protected toastrService: ToastrService,
-    persistStrategy:PersistStrategy<any>
+    persistStrategy:PersistStrategy<any>,
+    protected mapEventService:MapUpdateEventService
   ) {
     this.persistStrategy = persistStrategy;
   }
 
-  async save(entityToPersist: any) {
+  protected async saveChanges(entityToPersist: any) {
     this.calculationEventService.emit(true);
     this.persistStrategy.persist(entityToPersist).subscribe(
       (res) => {
         this.calculationEventService.emit(false);
+        this.mapEventService.emit(true);
         return Promise.resolve(res);
       },
       (rej) => {
