@@ -1,4 +1,4 @@
-export class FunctionalityEntity{
-    id:number;
-    name:string;
+import { AbstractCategoryEntity } from "./AbstractCategoryEntity";
+
+export class FunctionalityEntity extends AbstractCategoryEntity {
 }

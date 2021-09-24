@@ -61,6 +61,8 @@ import { AreaManagementComponent } from "src/app/dialogs/area-management/area-ma
 import { Coordinate } from "ol/coordinate";
 import { Color } from "@angular-material-components/color-picker";
 import { ColorParser } from "src/app/util/color-parser";
+import { PersonCategoryEntity } from "src/app/entities/PersonCategoryEntity";
+import { AbstractCategoryEntity } from "src/app/entities/AbstractCategoryEntity";
 
 @Component({
   selector: "criteria-filter-component",
@@ -70,9 +72,12 @@ import { ColorParser } from "src/app/util/color-parser";
 export class CriteriaFilterComponent implements OnInit {
   @ViewChild("areaSelectionField")
   areaSelectionField: MatSelect;
+  @ViewChild("categorySelectionField")
+  categorySelectionField: MatSelect;
 
   allCriterias: CriteriaEntity[] = [];
   allAreas: AreaEntity[];
+  allCategories: AbstractCategoryEntity[] = [];
   selectedCriterias: CriteriaEntity[] = [];
   schoolname: string;
   streetname: string;
@@ -96,13 +101,19 @@ export class CriteriaFilterComponent implements OnInit {
     private functionalityService: FunctionalityService,
     private areaService: AreaService,
     private dialog: MatDialog
-  ) {}
+  ) { }
   ngOnInit(): void {
     this.criteriaService.getAllCriterias().subscribe((result) => {
       console.log(result);
       result.forEach((e) => this.allCriterias.push(e));
     });
     this.areaService.findAll().subscribe((res) => (this.allAreas = res));
+    this.functionalityService.findAll().subscribe(res => {
+      res.forEach(e => this.allCategories.push(e));
+    });
+    this.projectCategoryService.findAll().subscribe(res => {
+      res.forEach(e => this.allCategories.push(e));
+    })
   }
 
   setStep(step: number): void {
@@ -142,14 +153,13 @@ export class CriteriaFilterComponent implements OnInit {
         })
         .afterClosed()
         .subscribe(() => {
-          console.log(this.areaSelectionField);
           this.areaSelectionField.writeValue(null);
         });
     });
   }
 
-  public createCategory(): void {
-    this.projectCategoryService.findProjectByName(this.categoryName).subscribe(
+  public categorySelectionTriggered(evt: any) {
+    this.projectCategoryService.findProjectByName(evt.value.name).subscribe(
       (res) => {
         var openedDialog = this.dialog.open(SchoolCategoryManagementComponent, {
           data: {
@@ -165,15 +175,17 @@ export class CriteriaFilterComponent implements OnInit {
         });
         openedDialog
           .afterClosed()
-          .subscribe((res) =>
+          .subscribe((res) => {
             this.handleClosedCategoryDialog(
               "Die Kategorie " + res.name + " wurde erfolgreich editiert!"
             )
+            this.categorySelectionField.writeValue(null);
+          }
           );
       },
       (rej) => {
         if (rej.status == 404) {
-          this.functionalityService.findByName(this.categoryName).subscribe(
+          this.functionalityService.findByName(evt.value.name).subscribe(
             (res) => {
               var openedDialog = this.dialog.open(
                 PersonCategoryManagementComponent,
@@ -191,47 +203,16 @@ export class CriteriaFilterComponent implements OnInit {
               );
               openedDialog
                 .afterClosed()
-                .subscribe((res) =>
+                .subscribe((res) => {
                   this.handleClosedCategoryDialog(
                     "Die Kategorie " + res.name + " wurde erfolgreich editiert!"
-                  )
+                  );
+                  this.categorySelectionField.writeValue(null);
+                }
                 );
             },
             (rejTwo) => {
-              if (rejTwo.status == 404) {
-                var dialog = this.dialog.open(CreateCategoryComponent, {
-                  data: { persistStrategy: new DummyStrategy() },
-                });
-                dialog
-                  .afterClosed()
-                  .subscribe((res: Type<AbstractManagement<any, any>>) => {
-                    if (!res) {
-                      return;
-                    }
-                    var openedDialog = this.dialog.open(res, {
-                      data: {
-                        adminNotice:
-                          "In dieser Ansicht haben Sie die Möglichkeit, die Kategorie " +
-                          this.categoryName +
-                          " zu erstellen.",
-                        name: this.categoryName,
-                        persistStrategy:
-                          new CreateStrategy<FunctionalityEntity>(),
-                      },
-                    });
-                    openedDialog
-                      .afterClosed()
-                      .subscribe((res) =>
-                        this.handleClosedCategoryDialog(
-                          "Die Kategorie " +
-                            res.name +
-                            " wurde erfolgreich angelegt!"
-                        )
-                      );
-                  });
-              } else {
-                this.throwErrorMessage();
-              }
+              this.throwErrorMessage();
             }
           );
         } else {
@@ -239,6 +220,100 @@ export class CriteriaFilterComponent implements OnInit {
         }
       }
     );
+  }
+
+  public createCategory(): void {
+    var dialog = this.dialog.open(CreateCategoryComponent, {
+      data: { persistStrategy: new DummyStrategy() },
+    });
+    dialog
+      .afterClosed()
+      .subscribe((res: Type<AbstractManagement<any, any>>) => {
+        if (!res) {
+          return;
+        }
+        var openedDialog = this.dialog.open(res, {
+          data: {
+            adminNotice:
+              "In dieser Ansicht haben Sie die Möglichkeit, die Kategorie " +
+              this.categoryName +
+              " zu erstellen.",
+            name: this.categoryName,
+            persistStrategy:
+              new CreateStrategy<FunctionalityEntity>(),
+          },
+        });
+        openedDialog
+          .afterClosed()
+          .subscribe((res) =>
+            this.handleClosedCategoryDialog(
+              "Die Kategorie " +
+              res.name +
+              " wurde erfolgreich angelegt!"
+            )
+          );
+      });
+    // this.projectCategoryService.findProjectByName(this.categoryName).subscribe(
+    //   (res) => {
+    //     var openedDialog = this.dialog.open(SchoolCategoryManagementComponent, {
+    //       data: {
+    //         adminNotice:
+    //           "In dieser Ansicht haben Sie die Möglichkeit, die Institutionskategorie " +
+    //           res.name +
+    //           " zu bearbeiten.",
+    //         name: res.name,
+    //         icon: res.icon,
+    //         id: res.id,
+    //         persistStrategy: new EditStrategy<ProjectCategoryEntity>(),
+    //       },
+    //     });
+    //     openedDialog
+    //       .afterClosed()
+    //       .subscribe((res) =>
+    //         this.handleClosedCategoryDialog(
+    //           "Die Kategorie " + res.name + " wurde erfolgreich editiert!"
+    //         )
+    //       );
+    //   },
+    //   (rej) => {
+    //     if (rej.status == 404) {
+    //       this.functionalityService.findByName(this.categoryName).subscribe(
+    //         (res) => {
+    //           var openedDialog = this.dialog.open(
+    //             PersonCategoryManagementComponent,
+    //             {
+    //               data: {
+    //                 adminNotice:
+    //                   "In dieser Ansicht haben Sie die Möglichkeit, die Personenkategorie " +
+    //                   res.name +
+    //                   " zu bearbeiten.",
+    //                 name: res.name,
+    //                 id: res.id,
+    //                 persistStrategy: new EditStrategy<FunctionalityEntity>(),
+    //               },
+    //             }
+    //           );
+    //           openedDialog
+    //             .afterClosed()
+    //             .subscribe((res) =>
+    //               this.handleClosedCategoryDialog(
+    //                 "Die Kategorie " + res.name + " wurde erfolgreich editiert!"
+    //               )
+    //             );
+    //         },
+    //         (rejTwo) => {
+    //           if (rejTwo.status == 404) {
+
+    //           } else {
+    //             this.throwErrorMessage();
+    //           }
+    //         }
+    //       );
+    //     } else {
+    //       this.throwErrorMessage();
+    //     }
+    //   }
+    // );
   }
 
   private throwErrorMessage() {
