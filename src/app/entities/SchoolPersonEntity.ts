@@ -5,6 +5,7 @@ import { ProjectCategoryEntity } from "./ProjectEntity";
 
 export class SchoolPersonEntity {
   id: number;
+  imageIcon:string;
   shortSchoolName: string;
   schoolName: string;
   schoolPicture: string;
@@ -16,5 +17,5 @@ export class SchoolPersonEntity {
   longitude: number;
   personSchoolMapping: PersonFunctionalityEntity[] = [];
   matchingCriterias: CriteriaEntity[] = [];
-  projects: ProjectCategoryEntity[] = [];
+  project: ProjectCategoryEntity;
 }

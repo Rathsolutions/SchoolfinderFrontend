@@ -49,7 +49,6 @@ export class AddPersonComponent extends AbstractPersonViewData {
         result.forEach((e) => this.emails.push(e.email));
       });
   }
-  //TODO implement field for adding functionality to the person. without, we´ll always get an persist exception.
   public async getOrInsertPerson(): Promise<PersonFunctionalityEntity> {
     var errorInCallback = false;
     var personFunctionalityEntity = this.toPersonFunctionalityEntity();

@@ -123,11 +123,11 @@ export class AddPointOverlay
     ).instance;
     personInstance.removeListener.subscribe((res: AddPersonComponent) => {
       var remainingPersons = [];
-      var i =0;
+      var i = 0;
       this.personsComponent.forEach((e) => {
         if (e != res) {
           remainingPersons.push(e);
-        }else{
+        } else {
           this.addPersonOverlay.remove(i);
         }
         i++;
@@ -207,9 +207,7 @@ export class AddPointOverlay
       criteriaEntity.criteriaName = e.criteriaName.value;
       school.matchingCriterias.push(criteriaEntity);
     });
-    this.projectCategory.value.forEach((element) => {
-      school.projects.push(element);
-    });
+    school.project = this.projectCategory.value;
     if (this.image) {
       school.schoolPicture = this.image;
       school.alternativePictureText = this.alternativePictureText.value;
@@ -263,14 +261,9 @@ export class AddPointOverlay
   public prefillByPointId(pointId: number): void {
     this.init();
     this.loadNewSchool(pointId).then((res: SchoolPersonEntity) => {
-      var matchingProjects = [];
-      res.projects.forEach((e) => {
-        matchingProjects.push(
-          this.projectCategories.filter((p) => p.id == e.id)[0]
-        );
-      });
-      console.log(matchingProjects);
-      this.projectCategory.setValue(matchingProjects);
+      this.projectCategory.setValue(
+        this.projectCategories.filter((p) => p.id == res.project.id)[0]
+      );
       this.prefilled = true;
       res.matchingCriterias.forEach((e) => {
         var currentComponent = this.addCriteriaButton();

@@ -22,7 +22,7 @@ import { SchoolsService } from "src/app/services/schools.service";
 import { LinearRing, Point, Polygon } from "ol/geom";
 import { CriteriaEntity } from "src/app/entities/CriteriaEntity";
 import { CriteriaFilterComponent } from "../filter/criteria/criteria.component";
-import { Circle, Fill, Stroke, Style, Text } from "ol/style";
+import { Circle, Fill, Icon, Stroke, Style, Text } from "ol/style";
 import { SchoolPersonEntity } from "src/app/entities/SchoolPersonEntity";
 import VectorSource from "ol/source/Vector";
 import { AddPointOverlay } from "../points/addpoint/addpointoverlay.component";
@@ -286,10 +286,11 @@ export class MapCompComponent implements OnInit {
           ),
         });
         var zoom = this.map.getView().getZoom();
-        var school = new SchoolPersonEntity();
-        school.schoolName = e.name;
-        school.shortSchoolName = e.name;
-        var institutionStyle = this.getStyleForWaypoint(school, zoom);
+        var institutionStyle = this.getStyleForAreaInstitutionPoint(
+          e.name,
+          e.name,
+          zoom
+        );
         institutionFeature.setStyle(institutionStyle);
         this.sourceAreaVector.addFeature(institutionFeature);
       });
@@ -366,9 +367,28 @@ export class MapCompComponent implements OnInit {
         offsetY: -20,
         font: "bold italic " + zoom * 1.15 + "px/1.0 sans-serif",
       }),
+      image: new Icon({
+        scale:0.03,
+        src: e.project.icon,
+      }),
+    });
+  }
+
+  private getStyleForAreaInstitutionPoint(
+    shortText: string,
+    longText: string,
+    zoom: any
+  ) {
+    var textToSet = zoom <= 9 && shortText ? shortText : longText;
+    return new Style({
+      text: new Text({
+        text: textToSet,
+        offsetY: -20,
+        font: "bold italic " + zoom * 1.15 + "px/1.0 sans-serif",
+      }),
       image: new Circle({
         radius: 6,
-        fill: new Fill({ color: e.color ? "#" + e.color : "#ff0000" }),
+        fill: new Fill({ color: "#ff0000" }),
         stroke: new Stroke({ color: "black" }),
       }),
     });
@@ -385,7 +405,7 @@ export class MapCompComponent implements OnInit {
     const point = map.forEachFeatureAtPixel(
       evt.pixel,
       function (feature, layer) {
-        if(sourceAreaLayerBound == layer){
+        if (sourceAreaLayerBound == layer) {
           return undefined;
         }
         return feature;
