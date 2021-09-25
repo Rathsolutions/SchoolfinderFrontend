@@ -7,6 +7,7 @@ import { catchError } from "rxjs/operators";
 import { Observable } from "rxjs";
 import { OsmPOIEntity } from "../entities/OsmPOIEntity";
 import { ProjectCategoryEntity } from "../entities/ProjectEntity";
+import { SchoolPersonEntity } from "../entities/SchoolPersonEntity";
 @Injectable({
   providedIn: "root",
 })
@@ -19,6 +20,19 @@ export class ProjectCategoryService extends BaseService<ProjectCategoryEntity> {
     return this.http.get<ProjectCategoryEntity>(
       this.requestURL + "/search/getProjectByName/" + name,
       BaseService.HTTP_OPTIONS
+    );
+  }
+
+  public findAllSchoolsForProjectWithId(
+    id: number
+  ): Observable<SchoolPersonEntity[]> {
+    return this.http.get<SchoolPersonEntity[]>(
+      this.requestURL + "/search/getAllSchoolsForProjectWithId",
+      {
+        params: {
+          id: id,
+        },
+      }
     );
   }
 }

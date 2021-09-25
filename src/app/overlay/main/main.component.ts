@@ -8,6 +8,7 @@ import {
   ElementRef,
   AfterViewInit,
   Injectable,
+  OnInit,
 } from "@angular/core";
 import * as proj from "ol/proj";
 import * as geom from "ol/geom";
@@ -31,23 +32,21 @@ import { SchoolsService } from "../../services/schools.service";
 import { CriteriaFilterComponent } from "../filter/criteria/criteria.component";
 import { SchoolPersonEntity } from "src/app/entities/SchoolPersonEntity";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
+import { ActivatedRoute } from "@angular/router";
+import { MapCompComponent } from "../map-comp/map-comp.component";
 @Component({
   selector: "main-component",
   templateUrl: "./main.component.html",
   styleUrls: ["./main.component.css"],
 })
-export class MainComponent implements AfterViewInit {
+export class MainComponent implements AfterViewInit, OnInit {
   @ViewChild("xInput") xInput: ElementRef;
   @ViewChild("yInput") yInput: ElementRef;
   @ViewChild("filterOverlay") filterOverlay: ElementRef;
   @ViewChild("adminButton") adminButton: ElementRef;
   @ViewChild("backgroundOverlayDiv") backgroundOverlayDiv: ElementRef;
   @ViewChild("popup") popup: any;
-  @ViewChild("mapCoord") map;
-  @ViewChild("map") mapComp;
-  @ViewChild("mapView") mapView;
-  @ViewChild("sourceLayer") sourceLayer;
-  @ViewChild("sourceWaypointVector") sourceWaypointVector;
+  @ViewChild("mapComponent") mapComponent: MapCompComponent;
   @ViewChild("addPointOverlayComponent")
   addPointOverlayPlaceholder: AddPointOverlay;
   @ViewChild("showPointOverlayComponent")
@@ -59,21 +58,14 @@ export class MainComponent implements AfterViewInit {
   @ViewChild("showpointOverlay") showpointOverlayOpenlayersComponent: Overlay;
 
   calculationInProgress: boolean = false;
-  lat: number;
-  long: number;
-  infoboxLat: number;
-  infoboxLong: number;
-  addPointOverlayLat: number;
-  addPointOverlayLong: number;
-  mapObject: any;
   existingWaypointAtGeometry: [number, number][] = [];
 
   alignJustifyIcon = faAlignJustify;
   usersCog = faUserCog;
-  filterForm;
   overlayVisible: boolean;
   adminOverlayVisible: boolean;
   adminButtonColor: string = "primary";
+  projectParam: number;
 
   constructor(
     private resolver: ComponentFactoryResolver,
@@ -83,17 +75,25 @@ export class MainComponent implements AfterViewInit {
     private schoolsService: SchoolsService,
     private toastr: ToastrService,
     private componentFactoryResolver: ComponentFactoryResolver,
-    private calculationEventService: CalculationEventService
+    private calculationEventService: CalculationEventService,
+    private route: ActivatedRoute
   ) {
-    this.lat = 8.50965;
-    this.long = 48.85851;
     calculationEventService.register().subscribe((res) => {
       this.setCalculationInProgress(res);
     });
   }
-
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      console.log(params.get("projectId"));
+      var projectParam = params.get("projectId");
+      console.log(projectParam);
+      if (projectParam) {
+        this.projectParam = parseInt(projectParam);
+      }
+    });
   }
+
+  ngAfterViewInit(): void {}
 
   public toggleAdminMode() {
     if (UserService.isLoggedIn()) {

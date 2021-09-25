@@ -74,6 +74,9 @@ export class MapCompComponent implements OnInit {
   @Input()
   private criteriasObject: CriteriaFilterComponent;
 
+  @Input()
+  private projectParam: number;
+
   sourceWaypointVector: VectorSource<any>;
   sourceAreaLayer: VectorLayer<any>;
 
@@ -303,11 +306,12 @@ export class MapCompComponent implements OnInit {
     var box = transformExtent(glbox, "EPSG:3857", "EPSG:4326");
     var replaceRegex = "/(.{5})/g,  $1\n";
     this.schoolsService
-      .getSchoolsByBoundsAndCriterias(
+      .getSchoolsByBoundsAndCriteriasAndProject(
         box[0],
         box[2],
         box[1],
         box[3],
+        this.projectParam,
         this.criteriasObject.selectedCriterias,
         this.criteriasObject.exclusiveSearch
       )
@@ -368,7 +372,7 @@ export class MapCompComponent implements OnInit {
         font: "bold italic " + zoom * 1.15 + "px/1.0 sans-serif",
       }),
       image: new Icon({
-        scale:0.03,
+        scale: 0.03,
         src: e.project.icon,
       }),
     });
