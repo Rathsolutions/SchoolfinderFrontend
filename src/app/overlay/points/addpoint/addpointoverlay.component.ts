@@ -29,9 +29,7 @@ import { PersonsService } from "../../../services/persons.service";
 import { PersonEntity } from "../../../entities/PersonEntity";
 import { AddCriteriaComponent } from "./criteria/addcriteria.component";
 import { SchoolPersonEntity } from "../../../entities/SchoolPersonEntity";
-import {
-  PersonFunctionalityEntity,
-} from "../../../entities/PersonFunctionalityEntity";
+import { PersonFunctionalityEntity } from "../../../entities/PersonFunctionalityEntity";
 import { PointOverlay } from "../pointoverlay.component";
 import { AbstractPersonViewData } from "../../../viewdata/AbstractPersonViewData";
 import { AddPersonComponent } from "../../../viewdata/editable-person/addperson.component";
@@ -123,6 +121,19 @@ export class AddPointOverlay
     var personInstance = this.addPersonOverlay.createComponent(
       addPersonComponentFactory
     ).instance;
+    personInstance.removeListener.subscribe((res: AddPersonComponent) => {
+      var remainingPersons = [];
+      var i =0;
+      this.personsComponent.forEach((e) => {
+        if (e != res) {
+          remainingPersons.push(e);
+        }else{
+          this.addPersonOverlay.remove(i);
+        }
+        i++;
+      });
+      this.personsComponent = remainingPersons;
+    });
     this.personsComponent.push(personInstance);
     return personInstance;
   }
@@ -253,41 +264,19 @@ export class AddPointOverlay
     this.init();
     this.loadNewSchool(pointId).then((res: SchoolPersonEntity) => {
       var matchingProjects = [];
-      res.projects.forEach(e=>{
-        matchingProjects.push(this.projectCategories.filter(p=>p.id == e.id)[0]);
-      })
+      res.projects.forEach((e) => {
+        matchingProjects.push(
+          this.projectCategories.filter((p) => p.id == e.id)[0]
+        );
+      });
       console.log(matchingProjects);
       this.projectCategory.setValue(matchingProjects);
-    });
-    this.prefilled = true;
-    this.schoolsService.getSchoolDetails(pointId).subscribe((result) => {
-      result.matchingCriterias.forEach((e) => {
+      this.prefilled = true;
+      res.matchingCriterias.forEach((e) => {
         var currentComponent = this.addCriteriaButton();
         currentComponent.instance.criteriaName.setValue(e.criteriaName);
       });
     });
-  }
-
-  private async getPersonFromBackend(
-    person: PersonEntity
-  ): Promise<PersonEntity> {
-    var personFromDb = this.personsService
-      .getPerson(person.prename, person.lastname, person.email)
-      .toPromise();
-    return personFromDb;
-  }
-  private async existsPersonFromBackend(
-    person: PersonEntity
-  ): Promise<Boolean> {
-    var personFromDb = this.personsService
-      .getPersonExists(person.prename, person.lastname, person.email)
-      .toPromise();
-    return personFromDb;
-  }
-
-  private async persistPerson(person: PersonEntity): Promise<PersonEntity> {
-    var personFromDb = this.personsService.putNewPerson(person).toPromise();
-    return personFromDb;
   }
 
   addCriteriaButton(): ComponentRef<AddCriteriaComponent> {
@@ -296,13 +285,21 @@ export class AddPointOverlay
         AddCriteriaComponent
       );
     var component = this.criteriaPlaceholder.createComponent(componentFactory);
+    component.instance.removeListener.subscribe((res) => {
+      var remainingCriterias = [];
+      var i = 0;
+      this.criterias.forEach((e) => {
+        if (e.criteriaName.value != res) {
+          remainingCriterias.push(e);
+        } else {
+          this.criteriaPlaceholder.remove(i);
+        }
+        i++;
+      });
+      this.criterias = remainingCriterias;
+    });
     this.criterias.push(component.instance);
     return component;
-  }
-
-  removeCriteriaButton() {
-    this.criteriaPlaceholder.remove();
-    this.criterias.splice(this.criterias.length - 1, 1);
   }
 
   removeAllCriteriaButtons() {

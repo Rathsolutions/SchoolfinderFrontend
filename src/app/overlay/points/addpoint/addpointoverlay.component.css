@@ -8,6 +8,32 @@
     box-shadow: 1px 2px 4px rgba(0,0,0,.4);
 }
 
+.spaceAround{
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
 #file {
     display: none;
+}
+
+@media only screen and (max-width : 500px) {
+    .gradient{
+        max-width: 70vw;
+    }
+    .propertiesForm{
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+}
+
+@media only screen and (min-width : 501px) {
+    .gradient{
+        max-width: 30vw;
+    }
+    .propertiesForm{
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
 }

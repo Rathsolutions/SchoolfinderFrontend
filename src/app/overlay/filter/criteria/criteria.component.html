@@ -3,13 +3,23 @@
   <div style="display: flex; flex-direction: column">
     <h1 id="settingsMenuText">Einstellungsmenü</h1>
     <div style="margin-top: 10px; align-self: center">
-      <button id="showAllInstitutionsButton" mat-raised-button color="primary" cdkFocusInitial
-        (click)="showAllInstitutions()">
+      <button
+        id="showAllInstitutionsButton"
+        mat-raised-button
+        color="primary"
+        cdkFocusInitial
+        (click)="showAllInstitutions()"
+      >
         Zeige alle Institution
       </button>
     </div>
     <mat-accordion>
-      <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle class="expansion-panel">
+      <mat-expansion-panel
+        [expanded]="step === 0"
+        (opened)="setStep(0)"
+        hideToggle
+        class="expansion-panel"
+      >
         <mat-expansion-panel-header>
           <mat-panel-title> Suche </mat-panel-title>
         </mat-expansion-panel-header>
@@ -30,35 +40,63 @@
           <input [(ngModel)]="housenumber" matInput />
         </mat-form-field>
         <div *ngIf="isAdmin()" style="margin-bottom: 10px">
-          <button mat-raised-button color="primary" cdkFocusInitial (click)="searchSchool()">
+          <button
+            mat-raised-button
+            color="primary"
+            cdkFocusInitial
+            (click)="searchSchool()"
+          >
             Suche nach Institution
           </button>
         </div>
         <div *ngIf="isAdmin()" style="margin-bottom: 10px">
-          <button mat-raised-button color="primary" cdkFocusInitial (click)="searchStreet()">
+          <button
+            mat-raised-button
+            color="primary"
+            cdkFocusInitial
+            (click)="searchStreet()"
+          >
             Suche nach Straßenname
           </button>
         </div>
         <div>
-          <button mat-raised-button color="primary" cdkFocusInitial (click)="searchCity()">
+          <button
+            mat-raised-button
+            color="primary"
+            cdkFocusInitial
+            (click)="searchCity()"
+          >
             Suche nach Stadt
           </button>
         </div>
       </mat-expansion-panel>
       <!-- <hr /> -->
-      <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle class="expansion-panel">
+      <mat-expansion-panel
+        [expanded]="step === 1"
+        (opened)="setStep(1)"
+        hideToggle
+        class="expansion-panel"
+      >
         <mat-expansion-panel-header>
           <mat-panel-title> Filter </mat-panel-title>
         </mat-expansion-panel-header>
         <mat-form-field>
           <mat-label>Filterkriterien</mat-label>
-          <mat-select #selectMat multiple (selectionChange)="selectChange($event.value)">
-            <mat-option *ngFor="let criteria of allCriterias" [value]="criteria">{{ criteria.criteriaName }}
+          <mat-select
+            #selectMat
+            multiple
+            (selectionChange)="selectChange($event.value)"
+          >
+            <mat-option *ngFor="let criteria of allCriterias" [value]="criteria"
+              >{{ criteria.criteriaName }}
             </mat-option>
           </mat-select>
         </mat-form-field>
         <div>
-          <mat-slide-toggle (change)="toggleSearchType()" [(ngModel)]="exclusiveSearch">
+          <mat-slide-toggle
+            (change)="toggleSearchType()"
+            [(ngModel)]="exclusiveSearch"
+          >
             Inklusive Suche
           </mat-slide-toggle>
         </div>
@@ -67,35 +105,74 @@
           <i>{{ criteria.criteriaName }}</i>
         </div>
       </mat-expansion-panel>
-      <mat-expansion-panel *ngIf="isAdmin()" [expanded]="step === 2" (opened)="setStep(2)" hideToggle
-        class="expansion-panel">
+      <mat-expansion-panel
+        *ngIf="isAdmin()"
+        [expanded]="step === 2"
+        (opened)="setStep(2)"
+        hideToggle
+        class="expansion-panel"
+      >
         <mat-expansion-panel-header>
           <mat-panel-title> Kategorieverwaltung </mat-panel-title>
         </mat-expansion-panel-header>
         <mat-form-field *ngIf="isAdmin()">
-          <mat-select (selectionChange)="categorySelectionTriggered($event)" #categorySelectionField>
-            <mat-option *ngFor="let category of allCategories" [value]="category">{{
-              category.name
-              }}</mat-option>
+          <mat-label>Existente Kategorien</mat-label>
+          <mat-select
+            (selectionChange)="categorySelectionTriggered($event)"
+            #categorySelectionField
+          >
+            <mat-optgroup label="Institutionskategorien">
+              <mat-option
+                *ngFor="let category of allInstitutionCategories"
+                [value]="category"
+                >{{ category.name }}</mat-option
+              >
+            </mat-optgroup>
+            <mat-optgroup label="Personkategorien">
+              <mat-option
+                *ngFor="let category of allPersonCategories"
+                [value]="category"
+                >{{ category.name }}</mat-option
+              >
+            </mat-optgroup>
           </mat-select>
         </mat-form-field>
-        <button mat-raised-button color="primary" #workOnCategoryButton (click)="createCategory()">
+        <button
+          mat-raised-button
+          color="primary"
+          #workOnCategoryButton
+          (click)="createCategory()"
+        >
           Kategorie erstellen
         </button>
       </mat-expansion-panel>
-      <mat-expansion-panel *ngIf="isAdmin()" [expanded]="step === 3" (opened)="setStep(3)" hideToggle
-        class="expansion-panel">
+      <mat-expansion-panel
+        *ngIf="isAdmin()"
+        [expanded]="step === 3"
+        (opened)="setStep(3)"
+        hideToggle
+        class="expansion-panel"
+      >
         <mat-expansion-panel-header>
           <mat-panel-title> Regionalstellenbezirke </mat-panel-title>
         </mat-expansion-panel-header>
         <mat-form-field *ngIf="isAdmin()">
-          <mat-select (selectionChange)="areaSelectionTriggered($event)" #areaSelectionField>
+          <mat-label>Existente Regionalstellenbezirke</mat-label>
+          <mat-select
+            (selectionChange)="areaSelectionTriggered($event)"
+            #areaSelectionField
+          >
             <mat-option *ngFor="let area of allAreas" [value]="area">{{
               area.name
-              }}</mat-option>
+            }}</mat-option>
           </mat-select>
         </mat-form-field>
-        <button mat-raised-button color="primary" #workOnCategoryButton (click)="createArea()">
+        <button
+          mat-raised-button
+          color="primary"
+          #workOnCategoryButton
+          (click)="createArea()"
+        >
           Regionalstellenbezirk erstellen
         </button>
       </mat-expansion-panel>

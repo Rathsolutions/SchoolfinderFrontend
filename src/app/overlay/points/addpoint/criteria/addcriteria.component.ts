@@ -1,49 +1,68 @@
 //Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE
-import { Component, Type, OnDestroy, AfterViewInit, ViewChild, ElementRef, Input, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {
+  Component,
+  Type,
+  OnDestroy,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  Input,
+  Inject,
+  OnInit,
+} from "@angular/core";
+import {
+  FormControl,
+  FormGroup,
+  FormBuilder,
+  Validators,
+} from "@angular/forms";
+import { ToastrService } from "ngx-toastr";
+import { Observable, Subject } from "rxjs";
+import { map } from "rxjs/operators";
+import { CriteriaEntity } from "src/app/entities/CriteriaEntity";
 
-import { CriteriaService } from '../../../../services/criteria.service';
-import { AddPointOverlay } from '../addpointoverlay.component';
+import { CriteriaService } from "../../../../services/criteria.service";
+import { AddPointOverlay } from "../addpointoverlay.component";
 
 @Component({
-    selector: 'addcriteria-component',
-    templateUrl: './addcriteria.component.html',
-    styleUrls: ['./addcriteria.component.css']
+  selector: "addcriteria-component",
+  templateUrl: "./addcriteria.component.html",
+  styleUrls: ["./addcriteria.component.css"],
 })
 export class AddCriteriaComponent {
+  criteriaName: FormControl = new FormControl("");
+  newPointForm: FormGroup;
+  possibleCriterias: string[] = [];
 
-    criteriaName: FormControl = new FormControl('');
-    newPointForm: FormGroup;
-    possibleCriterias: string[] = [];
+  removeListener: Subject<string> = new Subject();
 
-    collapsedHeight = '5vh';
+  collapsedHeight = "5vh";
 
-    constructor(private criteriaService: CriteriaService) {
-        this.criteriaName.valueChanges.subscribe(data => {
-            this.updateCriteriaCache(data);
-        });
-    }
+  constructor(private criteriaService: CriteriaService) {
+    this.criteriaName.valueChanges.subscribe((data) => {
+      this.updateCriteriaCache(data);
+    });
+  }
 
-    public setNewPointForm(newPointForm: FormGroup) {
-        this.newPointForm = newPointForm;
-    }
+  public removeCriteriaFromSchool() {
+    this.removeListener.next(this.criteriaName.value);
+  }
 
-    public autocompleteChoosen(value) {
-    }
+  public setNewPointForm(newPointForm: FormGroup) {
+    this.newPointForm = newPointForm;
+  }
 
-    public criteriaClicked() {
-        this.updateCriteriaCache('');
-    }
+  public autocompleteChoosen(value) {}
 
-    private updateCriteriaCache(data: string): void {
-        this.criteriaService.getPossibleCriterias(data, 5).subscribe(result => {
-            this.possibleCriterias = [];
-            console.log(result);
-            result.forEach(e => this.possibleCriterias.push(e.criteriaName));
-        });
-    }
+  public criteriaClicked() {
+    this.updateCriteriaCache("");
+  }
 
+  private updateCriteriaCache(data: string): void {
+    this.criteriaService.getPossibleCriterias(data, 5).subscribe((result) => {
+      this.possibleCriterias = [];
+      console.log(result);
+      result.forEach((e) => this.possibleCriterias.push(e.criteriaName));
+    });
+  }
 }

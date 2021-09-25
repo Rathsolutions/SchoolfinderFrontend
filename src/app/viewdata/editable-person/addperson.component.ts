@@ -6,6 +6,7 @@ import { ToastrService } from "ngx-toastr";
 import { PersonEntity } from "src/app/entities/PersonEntity";
 import { Component } from "@angular/core";
 import { FunctionalityService } from "src/app/services/functionality.service";
+import { Subject } from "rxjs";
 
 @Component({
   selector: "addperson-overlay-component",
@@ -14,7 +15,7 @@ import { FunctionalityService } from "src/app/services/functionality.service";
 })
 export class AddPersonComponent extends AbstractPersonViewData {
   functionalityName: string = "Auszufüllende";
-
+  removeListener: Subject<AddPersonComponent> = new Subject();
   constructor(
     protected personsService: PersonsService,
     private toastr: ToastrService,
@@ -30,6 +31,10 @@ export class AddPersonComponent extends AbstractPersonViewData {
     this.functionalityService.findAll().subscribe((res) => {
       res.forEach((e) => this.functionalities.push(e.name));
     });
+  }
+
+  public removePersonFromSchool() {
+    this.removeListener.next(this);
   }
 
   public emailClicked() {

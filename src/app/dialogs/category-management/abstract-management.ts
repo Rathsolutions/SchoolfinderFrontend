@@ -32,7 +32,7 @@ export abstract class AbstractManagement<
 
   protected async saveChanges(entityToPersist: any) {
     super.saveChanges(entityToPersist).then((res) => {
-      this.dialogRef.close();
+      this.dialogRef.close(entityToPersist);
       return Promise.resolve(res);
     }).catch(rej=>{
       return Promise.reject(rej);

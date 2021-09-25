@@ -2,7 +2,11 @@
 <div [ngStyle]="{ display: visible ? 'block' : 'none' }">
   <div class="gradient" style="max-width: 400px">
     <h3>Institution hinzufügen</h3>
-    <form [formGroup]="newPointForm" (ngSubmit)="onSubmit()">
+    <form
+      class="propertiesForm"
+      [formGroup]="newPointForm"
+      (ngSubmit)="onSubmit()"
+    >
       <div>
         <mat-form-field style="margin-left: 20px">
           <mat-label>Institutionsname</mat-label>
@@ -23,9 +27,11 @@
           <mat-form-field>
             <mat-label>Institutionskategorie</mat-label>
             <mat-select [formControl]="projectCategory" multiple>
-              <mat-option *ngFor="let category of projectCategories" [value]="category">{{
-                category.name
-              }}</mat-option>
+              <mat-option
+                *ngFor="let category of projectCategories"
+                [value]="category"
+                >{{ category.name }}</mat-option
+              >
             </mat-select>
           </mat-form-field>
         </div>
@@ -77,26 +83,28 @@
         <!-- <label for="input-file-id" class="md-button md-raised md-primary"></label> -->
         <mat-accordion>
           <div #addPersonOverlay></div>
-          <button mat-raised-button color="primary" (click)="addPersonButton()">
-            Person hinzufügen
-          </button>
-          <button
-            mat-raised-button
-            color="primary"
-            (click)="addCriteriaButton()"
-            type="button"
-          >
-            Kriterium hinzufügen
-          </button>
-          <button
-            mat-raised-button
-            color="warn"
-            (click)="removeCriteriaButton()"
-            type="button"
-          >
-            Kriterium löschen
-          </button>
+          <div class="spaceAround" style="margin-bottom: 10px;">
+            <button
+              class="spaceAround"
+              mat-raised-button
+              color="primary"
+              (click)="addPersonButton()"
+            >
+              Person hinzufügen
+            </button>
+          </div>
           <div #criteriaPlaceholder></div>
+          <div class="spaceAround">
+            <button
+              style="margin-right: 10px"
+              mat-raised-button
+              color="primary"
+              (click)="addCriteriaButton()"
+              type="button"
+            >
+              Kriterium hinzufügen
+            </button>
+          </div>
         </mat-accordion>
       </div>
       <div style="margin-top: 10px">

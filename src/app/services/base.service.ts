@@ -11,7 +11,7 @@ const BASE_URL = environment.baseUrl;
 export class BaseService<T> {
   protected username = null;
   protected password = null;
-  protected static loggedIn = false;
+  protected static loggedIn = true;
 
   static HTTP_OPTIONS = {
     withCredentials: true,

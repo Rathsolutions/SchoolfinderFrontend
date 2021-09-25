@@ -61,7 +61,6 @@ import { AreaManagementComponent } from "src/app/dialogs/area-management/area-ma
 import { Coordinate } from "ol/coordinate";
 import { Color } from "@angular-material-components/color-picker";
 import { ColorParser } from "src/app/util/color-parser";
-import { PersonCategoryEntity } from "src/app/entities/PersonCategoryEntity";
 import { AbstractCategoryEntity } from "src/app/entities/AbstractCategoryEntity";
 
 @Component({
@@ -77,7 +76,8 @@ export class CriteriaFilterComponent implements OnInit {
 
   allCriterias: CriteriaEntity[] = [];
   allAreas: AreaEntity[];
-  allCategories: AbstractCategoryEntity[] = [];
+  allPersonCategories: FunctionalityEntity[] = [];
+  allInstitutionCategories: ProjectCategoryEntity[] = [];
   selectedCriterias: CriteriaEntity[] = [];
   schoolname: string;
   streetname: string;
@@ -101,19 +101,34 @@ export class CriteriaFilterComponent implements OnInit {
     private functionalityService: FunctionalityService,
     private areaService: AreaService,
     private dialog: MatDialog
-  ) { }
+  ) {}
   ngOnInit(): void {
+    this.updateAllCriteriasList();
+    this.updateAllAreasList();
+    this.updateAllCategoriesList();
+  }
+
+  private updateAllCriteriasList() {
+    this.allCriterias = [];
     this.criteriaService.getAllCriterias().subscribe((result) => {
-      console.log(result);
       result.forEach((e) => this.allCriterias.push(e));
     });
+  }
+
+  private updateAllAreasList() {
+    this.allAreas = [];
     this.areaService.findAll().subscribe((res) => (this.allAreas = res));
-    this.functionalityService.findAll().subscribe(res => {
-      res.forEach(e => this.allCategories.push(e));
+  }
+
+  private updateAllCategoriesList() {
+    this.allPersonCategories = [];
+    this.allInstitutionCategories = [];
+    this.functionalityService.findAll().subscribe((res) => {
+      res.forEach((e) => this.allPersonCategories.push(e));
     });
-    this.projectCategoryService.findAll().subscribe(res => {
-      res.forEach(e => this.allCategories.push(e));
-    })
+    this.projectCategoryService.findAll().subscribe((res) => {
+      res.forEach((e) => this.allInstitutionCategories.push(e));
+    });
   }
 
   setStep(step: number): void {
@@ -152,8 +167,12 @@ export class CriteriaFilterComponent implements OnInit {
           },
         })
         .afterClosed()
-        .subscribe(() => {
+        .subscribe((res) => {
           this.areaSelectionField.writeValue(null);
+          this.handleClosedCategoryDialog(
+            "Der Regionalstellenbezirk " + res.name + " wurde erfolgreich editiert!"
+          );
+          this.updateAllAreasList();
         });
     });
   }
@@ -175,13 +194,7 @@ export class CriteriaFilterComponent implements OnInit {
         });
         openedDialog
           .afterClosed()
-          .subscribe((res) => {
-            this.handleClosedCategoryDialog(
-              "Die Kategorie " + res.name + " wurde erfolgreich editiert!"
-            )
-            this.categorySelectionField.writeValue(null);
-          }
-          );
+          .subscribe(this.handleCategoryDialogClose.bind(this));
       },
       (rej) => {
         if (rej.status == 404) {
@@ -203,13 +216,7 @@ export class CriteriaFilterComponent implements OnInit {
               );
               openedDialog
                 .afterClosed()
-                .subscribe((res) => {
-                  this.handleClosedCategoryDialog(
-                    "Die Kategorie " + res.name + " wurde erfolgreich editiert!"
-                  );
-                  this.categorySelectionField.writeValue(null);
-                }
-                );
+                .subscribe(this.handleCategoryDialogClose.bind(this));
             },
             (rejTwo) => {
               this.throwErrorMessage();
@@ -220,6 +227,16 @@ export class CriteriaFilterComponent implements OnInit {
         }
       }
     );
+  }
+
+  private handleCategoryDialogClose(res) {
+    if (res) {
+      this.handleClosedCategoryDialog(
+        "Die Kategorie " + res.name + " wurde erfolgreich editiert!"
+      );
+    }
+    this.categorySelectionField.writeValue(null);
+    this.updateAllCategoriesList();
   }
 
   public createCategory(): void {
@@ -239,81 +256,13 @@ export class CriteriaFilterComponent implements OnInit {
               this.categoryName +
               " zu erstellen.",
             name: this.categoryName,
-            persistStrategy:
-              new CreateStrategy<FunctionalityEntity>(),
+            persistStrategy: new CreateStrategy<FunctionalityEntity>(),
           },
         });
         openedDialog
           .afterClosed()
-          .subscribe((res) =>
-            this.handleClosedCategoryDialog(
-              "Die Kategorie " +
-              res.name +
-              " wurde erfolgreich angelegt!"
-            )
-          );
+          .subscribe(this.handleCategoryDialogClose.bind(this));
       });
-    // this.projectCategoryService.findProjectByName(this.categoryName).subscribe(
-    //   (res) => {
-    //     var openedDialog = this.dialog.open(SchoolCategoryManagementComponent, {
-    //       data: {
-    //         adminNotice:
-    //           "In dieser Ansicht haben Sie die Möglichkeit, die Institutionskategorie " +
-    //           res.name +
-    //           " zu bearbeiten.",
-    //         name: res.name,
-    //         icon: res.icon,
-    //         id: res.id,
-    //         persistStrategy: new EditStrategy<ProjectCategoryEntity>(),
-    //       },
-    //     });
-    //     openedDialog
-    //       .afterClosed()
-    //       .subscribe((res) =>
-    //         this.handleClosedCategoryDialog(
-    //           "Die Kategorie " + res.name + " wurde erfolgreich editiert!"
-    //         )
-    //       );
-    //   },
-    //   (rej) => {
-    //     if (rej.status == 404) {
-    //       this.functionalityService.findByName(this.categoryName).subscribe(
-    //         (res) => {
-    //           var openedDialog = this.dialog.open(
-    //             PersonCategoryManagementComponent,
-    //             {
-    //               data: {
-    //                 adminNotice:
-    //                   "In dieser Ansicht haben Sie die Möglichkeit, die Personenkategorie " +
-    //                   res.name +
-    //                   " zu bearbeiten.",
-    //                 name: res.name,
-    //                 id: res.id,
-    //                 persistStrategy: new EditStrategy<FunctionalityEntity>(),
-    //               },
-    //             }
-    //           );
-    //           openedDialog
-    //             .afterClosed()
-    //             .subscribe((res) =>
-    //               this.handleClosedCategoryDialog(
-    //                 "Die Kategorie " + res.name + " wurde erfolgreich editiert!"
-    //               )
-    //             );
-    //         },
-    //         (rejTwo) => {
-    //           if (rejTwo.status == 404) {
-
-    //           } else {
-    //             this.throwErrorMessage();
-    //           }
-    //         }
-    //       );
-    //     } else {
-    //       this.throwErrorMessage();
-    //     }
-    //   }
-    // );
   }
 
   private throwErrorMessage() {

@@ -381,9 +381,13 @@ export class MapCompComponent implements OnInit {
 
   public mapOnClick(evt): void {
     const map: Map = evt.map as Map;
+    var sourceAreaLayerBound = this.sourceAreaLayer;
     const point = map.forEachFeatureAtPixel(
       evt.pixel,
       function (feature, layer) {
+        if(sourceAreaLayerBound == layer){
+          return undefined;
+        }
         return feature;
       },
       { hitTolerance: 3 }

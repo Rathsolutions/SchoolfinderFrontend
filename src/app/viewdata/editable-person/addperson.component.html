@@ -1,8 +1,8 @@
 <mat-expansion-panel>
   <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
-    <mat-panel-title> {{functionalityName}}-Ansprechperson </mat-panel-title>
+    <mat-panel-title> {{ functionalityName }}-Ansprechperson </mat-panel-title>
     <mat-panel-description>
-      Ansprechperson zum Thema {{functionalityName}}
+      Ansprechperson zum Thema {{ functionalityName }}
     </mat-panel-description>
   </mat-expansion-panel-header>
   <div>
@@ -58,4 +58,9 @@
     <mat-label>Projektbeschreibung</mat-label>
     <input matInput [formControl]="projectDescription" />
   </mat-form-field>
+  <div>
+    <button mat-raised-button color="warn" (click)="removePersonFromSchool()">
+      Person löschen
+    </button>
+  </div>
 </mat-expansion-panel>
