@@ -234,7 +234,7 @@ export class MapCompComponent implements OnInit {
   ngOnInit(): void {
     this.mapSource = new XYZ({
       attributions: "© Nico Rath",
-      url: "https://mapserver.rathsolutions.de/styles/basic-preview/{z}/{x}/{y}.png",
+      url: "https://mapserver.rathsolutions.de/styles/liberty/{z}/{x}/{y}.png",
     });
     this.mapLayer = new TileLayer({
       source: this.mapSource,
@@ -251,7 +251,12 @@ export class MapCompComponent implements OnInit {
       layers: [this.mapLayer, this.sourceAreaLayer, sourceWaypointLayer],
       target: "map",
       view: new View({
-        center: transform([8.50965, 48.85851], "EPSG:4326", "EPSG:3857"),
+        extent: transformExtent(
+          [4.60965, 46.55851, 13.30965, 50.55851],
+          "EPSG:4326",
+          "EPSG:3857"
+        ),
+        center: transform([8.50965, 48.65851], "EPSG:4326", "EPSG:3857"),
         zoom: 8,
       }),
     });
