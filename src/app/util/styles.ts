@@ -33,7 +33,7 @@ export class Styles {
         font: "bold italic " + zoom * 1.15 + "px/1.0 sans-serif",
       }),
       image: new Icon({
-        scale: 0.03,
+        scale: e.project.scaling ? e.project.scaling : 0.03,
         src: e.project.icon,
       }),
     });

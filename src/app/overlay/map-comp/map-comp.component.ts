@@ -51,6 +51,7 @@ import { Styles } from "src/app/util/styles";
 import { FeatureFactory } from "src/app/util/FeatureFactory";
 import { AreaShowEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/AreaShowEventStrategy";
 import { VisibilityEventService } from "src/app/broadcast-event-service/VisibilityEventService";
+import { VisibilityDataElement } from "src/app/broadcast-event-service/visibility-event-strategies/VisibilityEventStrategy";
 
 @Component({
   selector: "app-map-comp",
@@ -87,6 +88,7 @@ export class MapCompComponent implements OnInit {
   sourceAreaLayer: VectorLayer<any>;
 
   private clickListenerRef;
+  private visibilityDataElement = new VisibilityDataElement();
   areaSelectionActive: boolean = false;
   institutionSelectionActive: boolean = false;
 
@@ -103,16 +105,22 @@ export class MapCompComponent implements OnInit {
     private dialog: MatDialog,
     private visiblityEventService: VisibilityEventService
   ) {
+    this.visibilityDataElement.activeAreaStrategy = new AreaShowEventStrategy(this.areaService);
     visiblityEventService.register().subscribe((res) => {
-      res.performActionOnLayer(this.sourceAreaVector, this.map);
+      res.performActionOnLayer(
+        this.sourceAreaVector,
+        this.map,
+        this.visibilityDataElement
+      );
     });
     saveEventService.register().subscribe((res) => {
       if (res) {
         this.resetAllWaypoint();
         this.updateWaypoints();
-        new AreaShowEventStrategy(this.areaService).performActionOnLayer(
+        this.visibilityDataElement.activeAreaStrategy.performActionOnLayer(
           this.sourceAreaVector,
-          this.map
+          this.map,
+          this.visibilityDataElement
         );
       }
     });
@@ -205,9 +213,10 @@ export class MapCompComponent implements OnInit {
           "click",
           this.mapOnClick.bind(this)
         );
-        new AreaShowEventStrategy(this.areaService).performActionOnLayer(
+        this.visibilityDataElement.activeAreaStrategy.performActionOnLayer(
           this.sourceAreaVector,
-          this.map
+          this.map,
+          this.visibilityDataElement
         );
         this.map.removeInteraction(this.drawInstance);
         this.areaSelectionActive = false;
@@ -265,9 +274,10 @@ export class MapCompComponent implements OnInit {
     this.map.addControl(new Attribution());
     this.clickListenerRef = this.map.on("click", this.mapOnClick.bind(this));
     this.map.on("moveend", this.updateWaypoints.bind(this));
-    new AreaShowEventStrategy(this.areaService).performActionOnLayer(
+    this.visibilityDataElement.activeAreaStrategy.performActionOnLayer(
       this.sourceAreaVector,
-      this.map
+      this.map,
+      this.visibilityDataElement
     );
   }
 

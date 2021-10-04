@@ -36,10 +36,10 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
 
   public schoolName: FormControl = new FormControl("", Validators.required);
   public shortSchoolName: FormControl = new FormControl("");
-  public colorCtr: AbstractControl = new FormControl("#ff0000", [
-    Validators.required,
-    Validators.pattern("^#[0-9A-Fa-f]{6}$"),
-  ]);
+  // public colorCtr: AbstractControl = new FormControl("#ff0000", [
+    // Validators.required,
+    // Validators.pattern("^#[0-9A-Fa-f]{6}$"),
+  // ]);
 
   public projectCategory: FormControl = new FormControl(
     "",
@@ -74,15 +74,14 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
         this.schoolId = result.id;
         this.shortSchoolName.setValue(result.shortSchoolName);
         this.schoolName.setValue(result.schoolName);
-        console.log(result.color);
-        if (result.color) {
-          var r = parseInt(result.color.substr(0, 2), 16);
-          var g = parseInt(result.color.substr(2, 2), 16);
-          var b = parseInt(result.color.substr(4, 2), 16);
-          this.colorCtr.setValue(new Color(r, g, b));
-        } else {
-          this.colorCtr.setValue(new Color(255, 0, 0));
-        }
+        // if (result.color) {
+        //   var r = parseInt(result.color.substr(0, 2), 16);
+        //   var g = parseInt(result.color.substr(2, 2), 16);
+        //   var b = parseInt(result.color.substr(4, 2), 16);
+          // this.colorCtr.setValue(new Color(r, g, b));
+        // } else {
+          // this.colorCtr.setValue(new Color(255, 0, 0));
+        // }
         result.personSchoolMapping.forEach((e) => {
           var personViewInstance = this.appendPersonViewDataInstance();
           personViewInstance.prefill(e);

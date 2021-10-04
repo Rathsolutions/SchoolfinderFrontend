@@ -9,12 +9,12 @@ import { ColorParser } from "src/app/util/color-parser";
 import { FeatureFactory } from "src/app/util/FeatureFactory";
 import { Styles } from "src/app/util/styles";
 import { VisibilityEventService } from "../VisibilityEventService";
-import { VisibilityEventStrategy } from "./VisibilityEventStrategy";
+import { VisibilityDataElement, VisibilityEventStrategy } from "./VisibilityEventStrategy";
 
 export class AreaShowEventStrategy implements VisibilityEventStrategy {
   constructor(private areaService: AreaService) {}
 
-  performActionOnLayer(source: VectorSource<any>, map:Map) {
+  performActionOnLayer(source: VectorSource<any>, map:Map, visibilityDataElement:VisibilityDataElement) {
     source.clear();
     this.areaService.findAll().subscribe((res) => {
       res.forEach((e) => {
@@ -37,6 +37,7 @@ export class AreaShowEventStrategy implements VisibilityEventStrategy {
           map.getView().getZoom()
         );
         source.addFeature(institutionFeature);
+        visibilityDataElement.activeAreaStrategy = this;
       });
     });
   }

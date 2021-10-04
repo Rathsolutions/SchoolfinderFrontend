@@ -6,14 +6,21 @@
     <mat-label>Name</mat-label>
     <input matInput [(ngModel)]="data.name" />
   </mat-form-field>
+  <mat-form-field>
+    <mat-label>Icon-Skalierung</mat-label>
+    <input matInput [(ngModel)]="data.scaling" />
+  </mat-form-field>
   <!-- <mat-form-field>
     <mat-label>Anzeigeicon</mat-label> -->
   <label>Verwendetes Anzeigeicon:</label>
-  <img
-    mat-card-image
-    [src]="data.icon"
-    style="max-width: 80px; max-height: 80px; margin-top: 20px"
-  />
+  <div>
+    <div [style.visibility]="isSvg ? 'visible' : 'hidden'" #imgContainer></div>
+    <img [style.visibility]="isSvg ? 'hidden' : 'visible'"
+      mat-card-image
+      [src]="data.icon"
+      style="max-width: 80px; max-height: 80px; margin-top: 20px"
+    />
+  </div>
   <button
     mat-raised-button
     color="primary"

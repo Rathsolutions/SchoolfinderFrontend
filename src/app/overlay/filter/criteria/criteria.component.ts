@@ -191,6 +191,7 @@ export class CriteriaFilterComponent implements OnInit {
               " zu bearbeiten.",
             name: res.name,
             icon: res.icon,
+            scaling: res.scaling,
             id: res.id,
             persistStrategy: new EditStrategy<ProjectCategoryEntity>(),
           },
@@ -427,11 +428,13 @@ export class CriteriaFilterComponent implements OnInit {
   public resetClicked() {
     this.selectedCriterias = [];
     this.mapUpdateEventService.emit(true);
+    this.toggleShowRegionAreas();
   }
 
   public selectChange(val) {
     this.selectedCriterias = val;
     this.mapUpdateEventService.emit(true);
+    this.toggleShowRegionAreas();
   }
 
   public trackItem(index: number, item: CriteriaEntity) {
@@ -444,6 +447,7 @@ export class CriteriaFilterComponent implements OnInit {
 
   toggleSearchType() {
     this.mapUpdateEventService.emit(true);
+    this.toggleShowRegionAreas();
   }
 
   public toggleShowRegionAreas() {

@@ -10,7 +10,6 @@ export class SchoolPersonEntity {
   schoolName: string;
   schoolPicture: string;
   alternativePictureText: string;
-  color: string;
   latitude: number;
   longitude: number;
   personSchoolMapping: PersonFunctionalityEntity[] = [];

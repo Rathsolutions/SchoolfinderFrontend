@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   Inject,
@@ -24,12 +25,13 @@ export class SchoolCategoryManagementComponent
     SchoolCategoryManagementComponent,
     SchoolCategoryManagementData
   >
-  implements OnInit
+  implements OnInit, AfterViewInit
 {
   @ViewChild("uploadFileInput") uploadFileInput: ElementRef<HTMLButtonElement>;
+  @ViewChild("imgContainer") imgContainer: ElementRef<HTMLDivElement>;
 
   adminNotice: string = "";
-
+  isSvg: boolean = false;
   constructor(
     dialogRef: MatDialogRef<SchoolCategoryManagementComponent>,
     @Inject(MAT_DIALOG_DATA) data: SchoolCategoryManagementData,
@@ -48,6 +50,12 @@ export class SchoolCategoryManagementComponent
     this.adminNotice = data.adminNotice;
     this.persistStrategy.setServiceInstance(projectService);
   }
+  ngAfterViewInit(): void {
+    if (this.data.icon.startsWith("data:image/svg+xml")) {
+      this.isSvg = true;
+      this.renderSvg(atob(this.data.icon.substring(26)));
+    }
+  }
 
   ngOnInit(): void {}
 
@@ -56,6 +64,7 @@ export class SchoolCategoryManagementComponent
     projectCategoryEntity.id = this.data.id;
     projectCategoryEntity.name = this.data.name;
     projectCategoryEntity.icon = this.data.icon;
+    projectCategoryEntity.scaling = this.data.scaling;
     super.saveChanges(projectCategoryEntity);
   }
 
@@ -68,15 +77,27 @@ export class SchoolCategoryManagementComponent
     var reader = new FileReader();
     reader.readAsBinaryString(file);
     reader.onloadend = () => {
+      this.imgContainer.nativeElement.innerHTML = "";
+      if (file.type == "image/svg+xml") {
+        this.isSvg = true;
+        this.renderSvg(reader.result.toString());
+      } else {
+        this.isSvg = false;
+      }
       this.data.icon =
-        "data:image/gif;base64," + btoa(reader.result.toString());
+        "data:" + file.type + ";base64," + btoa(reader.result.toString());
     };
+  }
+
+  private renderSvg(svg: string) {
+    this.imgContainer.nativeElement.innerHTML = svg;
   }
 }
 export interface SchoolCategoryManagementData {
   name: string;
   icon: string;
   id: number;
+  scaling: number;
   adminNotice: string;
   persistStrategy: PersistStrategy<ProjectCategoryEntity>;
 }

@@ -96,7 +96,6 @@ export class AddPointOverlay
     this.newPointForm = this.formBuilder.group({
       shortSchoolName: this.shortSchoolName,
       schoolName: this.schoolName,
-      colorCtr: this.colorCtr,
       schoolPicture: this.schoolPicture,
       projectCategory: this.projectCategory,
       alternativePictureText: this.alternativePictureText,
@@ -143,7 +142,7 @@ export class AddPointOverlay
       this.criteriaPlaceholder.clear();
     }
     this.schoolName.reset();
-    this.colorCtr.reset();
+    // this.colorCtr.reset();
     this.newPointForm.reset();
     this.schoolPicture.reset();
     this.projectCategory.reset();
@@ -189,7 +188,7 @@ export class AddPointOverlay
     school.longitude = this.long;
     school.shortSchoolName = this.shortSchoolName.value;
     school.schoolName = this.schoolName.value;
-    school.color = this.colorCtr.value.hex;
+    // school.color = this.colorCtr.value.hex;
 
     var allPersonViewInstances: PersonFunctionalityEntity[] = [];
     var promisesToWait: Promise<PersonFunctionalityEntity>[] = [];
