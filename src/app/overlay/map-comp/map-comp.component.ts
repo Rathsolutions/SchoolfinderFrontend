@@ -8,6 +8,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from "@angular/core";
+import { Attribution, MousePosition, OverviewMap } from "ol/control";
 import { Feature, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
@@ -45,6 +46,11 @@ import { AreaService } from "src/app/services/area.service";
 import { Coordinate } from "ol/coordinate";
 import { Position } from "src/app/entities/Position";
 import { ColorParser } from "src/app/util/color-parser";
+import { AreaEntity } from "src/app/entities/AreaEntity";
+import { Styles } from "src/app/util/styles";
+import { FeatureFactory } from "src/app/util/FeatureFactory";
+import { AreaShowEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/AreaShowEventStrategy";
+import { VisibilityEventService } from "src/app/broadcast-event-service/VisibilityEventService";
 
 @Component({
   selector: "app-map-comp",
@@ -82,6 +88,7 @@ export class MapCompComponent implements OnInit {
 
   private clickListenerRef;
   areaSelectionActive: boolean = false;
+  institutionSelectionActive: boolean = false;
 
   currentAreaEventData: AreaManagementData;
   sourceAreaVector: VectorSource<any>;
@@ -93,13 +100,20 @@ export class MapCompComponent implements OnInit {
     private zoomEventService: ZoomToEventService,
     private areaSelectionService: AreaSelectionService,
     private areaService: AreaService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private visiblityEventService: VisibilityEventService
   ) {
+    visiblityEventService.register().subscribe((res) => {
+      res.performActionOnLayer(this.sourceAreaVector, this.map);
+    });
     saveEventService.register().subscribe((res) => {
       if (res) {
         this.resetAllWaypoint();
         this.updateWaypoints();
-        this.addAllAreasToMap();
+        new AreaShowEventStrategy(this.areaService).performActionOnLayer(
+          this.sourceAreaVector,
+          this.map
+        );
       }
     });
     zoomEventService.register().subscribe((res) => {
@@ -117,11 +131,10 @@ export class MapCompComponent implements OnInit {
       this.drawInstance = new Draw({
         source: this.sourceAreaVector,
         type: GeometryType.POLYGON,
-        style: this.getDrawStyle(res.color),
+        style: Styles.getDrawStyle(res.color),
       });
       this.sourceAreaVector.getFeatures().forEach((e) => {
         if (e.getId() == res.id) {
-          console.log("found");
           this.sourceAreaVector.removeFeature(e);
         }
       });
@@ -147,23 +160,37 @@ export class MapCompComponent implements OnInit {
       });
     });
     areaSelectionService.registerInstitutionEvent().subscribe((res) => {
+      this.currentAreaEventData = res;
+      this.institutionSelectionActive = true;
       unByKey(this.clickListenerRef);
-      var localClickEventReference = this.map.on("click", (evt) => {
-        var latlong = toLonLat(evt.coordinate);
-        res.areaInstitutionPosition = latlong;
-        this.dialog
-          .open(AreaManagementComponent, {
-            data: res,
-          })
-          .afterOpened()
-          .subscribe(() => {
-            unByKey(localClickEventReference);
-            this.clickListenerRef = this.map.on(
-              "click",
-              this.mapOnClick.bind(this)
-            );
-          });
+      this.drawInstance = new Draw({
+        source: this.sourceAreaVector,
+        type: GeometryType.POINT,
       });
+      this.drawInstance.on("drawend", (drawEndEvent) => {
+        var point: Point = drawEndEvent.feature.getGeometry() as Point;
+        this.sourceAreaVector.getFeatures().forEach((e) => {
+          if (e.getId() == res.id + FeatureFactory.POINT) {
+            this.sourceAreaVector.removeFeature(e);
+          }
+        });
+
+        var latlong = toLonLat(point.getCoordinates());
+        console.log(latlong);
+        res.areaInstitutionPosition = latlong;
+        var pos = new Position();
+        pos.latitude = latlong[0];
+        pos.latitude = latlong[1];
+        var institutionFeature = FeatureFactory.createInstitutionFeature(
+          res.id,
+          res.name,
+          pos,
+          this.map.getView().getZoom()
+        );
+        this.sourceAreaVector.addFeature(institutionFeature);
+        this.finalizeDrawing(res);
+      });
+      this.map.addInteraction(this.drawInstance);
     });
   }
 
@@ -178,9 +205,13 @@ export class MapCompComponent implements OnInit {
           "click",
           this.mapOnClick.bind(this)
         );
-        this.addAllAreasToMap();
+        new AreaShowEventStrategy(this.areaService).performActionOnLayer(
+          this.sourceAreaVector,
+          this.map
+        );
         this.map.removeInteraction(this.drawInstance);
         this.areaSelectionActive = false;
+        this.institutionSelectionActive = false;
       });
   }
 
@@ -206,31 +237,6 @@ export class MapCompComponent implements OnInit {
     this.drawInstance.removeLastPoint();
   }
 
-  private getDrawStyle(color: Color): Style[] {
-    var colorRgb = "rgba(255,255,255,0.4)";
-    if (color) {
-      colorRgb = color.toRgba();
-    }
-    var fill = new Fill({
-      color: colorRgb,
-    });
-    var stroke = new Stroke({
-      color: "#3399CC",
-      width: 1.25,
-    });
-    return [
-      new Style({
-        image: new Circle({
-          fill: fill,
-          stroke: stroke,
-          radius: 5,
-        }),
-        fill: fill,
-        stroke: stroke,
-      }),
-    ];
-  }
-
   ngOnInit(): void {
     this.mapSource = new XYZ({
       attributions: "© Nico Rath",
@@ -251,58 +257,18 @@ export class MapCompComponent implements OnInit {
       layers: [this.mapLayer, this.sourceAreaLayer, sourceWaypointLayer],
       target: "map",
       view: new View({
-        extent: transformExtent(
-          [4.60965, 46.55851, 13.30965, 50.55851],
-          "EPSG:4326",
-          "EPSG:3857"
-        ),
         center: transform([8.50965, 48.65851], "EPSG:4326", "EPSG:3857"),
         zoom: 8,
       }),
+      controls: [],
     });
+    this.map.addControl(new Attribution());
     this.clickListenerRef = this.map.on("click", this.mapOnClick.bind(this));
     this.map.on("moveend", this.updateWaypoints.bind(this));
-    this.addAllAreasToMap();
-  }
-
-  public addAllAreasToMap(): void {
-    this.sourceAreaVector.clear();
-    this.areaService.findAll().subscribe((res) => {
-      res.forEach((e) => {
-        var coordinatePoly: Coordinate[] = [];
-        e.areaPolygon.forEach((areaP) => {
-          coordinatePoly.push([areaP.latitude, areaP.longitude]);
-        });
-        let geometry = new Polygon([coordinatePoly]);
-        var polygon = new Feature({
-          geometry: geometry,
-        });
-        var color: Color = ColorParser.parseRgbaString(e.color);
-        polygon.setStyle(this.getDrawStyle(color));
-        polygon.setId(e.id);
-        this.sourceAreaVector.addFeature(polygon);
-        var institutionFeature = new Feature({
-          geometry: new Point(
-            transform(
-              [
-                e.areaInstitutionPosition.latitude,
-                e.areaInstitutionPosition.longitude,
-              ],
-              "EPSG:4326",
-              "EPSG:3857"
-            )
-          ),
-        });
-        var zoom = this.map.getView().getZoom();
-        var institutionStyle = this.getStyleForAreaInstitutionPoint(
-          e.name,
-          e.name,
-          zoom
-        );
-        institutionFeature.setStyle(institutionStyle);
-        this.sourceAreaVector.addFeature(institutionFeature);
-      });
-    });
+    new AreaShowEventStrategy(this.areaService).performActionOnLayer(
+      this.sourceAreaVector,
+      this.map
+    );
   }
 
   public updateWaypoints(): void {
@@ -343,7 +309,7 @@ export class MapCompComponent implements OnInit {
                 splitPoint = splitPoint - 1;
               }
             }
-            var style = this.getStyleForWaypoint(e, zoom);
+            var style = Styles.getStyleForWaypoint(e, zoom);
             waypoint.setStyle(style);
             waypoint.setId(e.id);
             var res = this.existingWaypointAtGeometry.find(
@@ -355,7 +321,9 @@ export class MapCompComponent implements OnInit {
             } else {
               this.sourceWaypointVector.getFeatures().forEach((element) => {
                 if ((element as any).id_ == e.id) {
-                  (element as any).setStyle(this.getStyleForWaypoint(e, zoom));
+                  (element as any).setStyle(
+                    Styles.getStyleForWaypoint(e, zoom)
+                  );
                 }
               });
             }
@@ -365,42 +333,6 @@ export class MapCompComponent implements OnInit {
           console.log(error);
         }
       );
-  }
-
-  private getStyleForWaypoint(e: SchoolPersonEntity, zoom: any) {
-    var textToSet =
-      zoom <= 9 && e.shortSchoolName ? e.shortSchoolName : e.schoolName;
-    return new Style({
-      text: new Text({
-        text: textToSet,
-        offsetY: -20,
-        font: "bold italic " + zoom * 1.15 + "px/1.0 sans-serif",
-      }),
-      image: new Icon({
-        scale: 0.03,
-        src: e.project.icon,
-      }),
-    });
-  }
-
-  private getStyleForAreaInstitutionPoint(
-    shortText: string,
-    longText: string,
-    zoom: any
-  ) {
-    var textToSet = zoom <= 9 && shortText ? shortText : longText;
-    return new Style({
-      text: new Text({
-        text: textToSet,
-        offsetY: -20,
-        font: "bold italic " + zoom * 1.15 + "px/1.0 sans-serif",
-      }),
-      image: new Circle({
-        radius: 6,
-        fill: new Fill({ color: "#ff0000" }),
-        stroke: new Stroke({ color: "black" }),
-      }),
-    });
   }
 
   public resetAllWaypoint(): void {
@@ -463,7 +395,12 @@ export class MapCompComponent implements OnInit {
           pixel[0] += map.getSize()[0] / 4;
           pixel[1] += map.getSize()[1] / 2.5;
           var box = map.getCoordinateFromPixel(pixel);
-          this.map.getView().animate({ center: box });
+          // this.map.getView().fit(box,{
+          //   duration: 1000
+          // });
+          this.map.getView().animate({ center: box }, () => {
+            // this.map.getView().setCenter(box);
+          });
         });
       this.showPointOverlay.setVisible(true);
       this.map.addOverlay(overlayMap);

@@ -27,7 +27,7 @@
   >
     Letzten gesetzten Punkt entfernen
   </button>
-  <button *ngIf="areaSelectionActive" mat-raised-button color="primary" (click)="abortDrawing()">
+  <button *ngIf="areaSelectionActive || institutionSelectionActive" mat-raised-button color="primary" (click)="abortDrawing()">
     Abbrechen
   </button>
   <button *ngIf="areaSelectionActive" mat-raised-button color="primary" (click)="applyDrawing()">

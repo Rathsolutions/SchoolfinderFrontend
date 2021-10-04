@@ -11,11 +11,10 @@ export class SchoolPersonEntity {
   schoolPicture: string;
   alternativePictureText: string;
   color: string;
-  arContent: string;
-  makerspaceContent: string;
   latitude: number;
   longitude: number;
   personSchoolMapping: PersonFunctionalityEntity[] = [];
   matchingCriterias: CriteriaEntity[] = [];
   project: ProjectCategoryEntity;
+  correspondingAreaName:string;
 }

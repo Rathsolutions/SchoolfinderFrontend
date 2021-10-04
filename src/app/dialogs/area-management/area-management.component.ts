@@ -44,9 +44,15 @@ export class AreaManagementComponent
     private areaService: AreaService,
     toastrService: ToastrService,
     private areaSelectionService: AreaSelectionService,
-    mapEventService:MapUpdateEventService,
+    mapEventService: MapUpdateEventService
   ) {
-    super(dialogRef, data, calculationEventService, toastrService,mapEventService);
+    super(
+      dialogRef,
+      data,
+      calculationEventService,
+      toastrService,
+      mapEventService
+    );
     console.log(data);
     this.persistStrategy.setServiceInstance(areaService);
   }
@@ -57,10 +63,12 @@ export class AreaManagementComponent
     this.colorCtr.valueChanges.subscribe((res) => (this.data.color = res));
   }
   setAreaInstitutionPosition() {
+    this.toastrService.info("Bitte wählen Sie den Standort der Regionalstelle");
     this.areaSelectionService.emitAreaInstitutionEvent(this.data);
     this.dialogRef.close();
   }
   setArea() {
+    this.toastrService.info("Bitte kreisen Sie das Regionalstellengebiet ein");
     this.areaSelectionService.emitAreaSelectionEvent(this.data);
     this.dialogRef.close();
   }
@@ -81,7 +89,13 @@ export class AreaManagementComponent
       areaPolygon.push(polygonEdgePoint);
     });
     area.areaPolygon = areaPolygon;
-    super.saveChanges(area);
+    super.saveChanges(area).then((res) => {
+      this.toastrService.success(
+        "Der Regionalstellenbezirk " +
+          area.name +
+          " wurde erfolgreich editiert!"
+      );
+    });
   }
 }
 export interface AreaManagementData {

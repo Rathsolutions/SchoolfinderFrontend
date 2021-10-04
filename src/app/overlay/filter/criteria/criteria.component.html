@@ -147,9 +147,24 @@
         </button>
       </mat-expansion-panel>
       <mat-expansion-panel
-        *ngIf="isAdmin()"
         [expanded]="step === 3"
         (opened)="setStep(3)"
+        hideToggle
+        class="expansion-panel"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title> Anzeigekonfiguration </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-slide-toggle
+          (change)="toggleShowRegionAreas()"
+          [(ngModel)]="showRegionAreas"
+          >Bezirke anzeigen</mat-slide-toggle
+        >
+      </mat-expansion-panel>
+      <mat-expansion-panel
+        *ngIf="isAdmin()"
+        [expanded]="step === 4"
+        (opened)="setStep(4)"
         hideToggle
         class="expansion-panel"
       >

@@ -1,33 +1,58 @@
 <div id="overallContent">
-    <div id="headliner">
-        <h1>Barrierefreie Übersicht</h1>
-        <h3>Dies ist die barrierefreie Übersicht des Schoolfinders. Hier bekommen Sie eine reine textuelle
-            Repräsentation
-            der gebotenen Inhalte angezeigt</h3>
-    </div>
-    <div class="contentTable">
-        <mat-list *ngFor="let school of data">
-            <h2>{{school.schoolName}}</h2>
-            <div *ngIf="school.schoolPicture">
-                <img [src]="school.schoolPicture" [alt]="school.alternativePictureText">
+  <div id="headliner" style="margin-bottom: 20px">
+    <h1 class="heading">Barrierefreie Übersicht</h1>
+    <h3 class="heading">
+      Dies ist die barrierefreie Übersicht des Schoolfinders. Hier bekommen Sie
+      eine reine textuelle Repräsentation der gebotenen Inhalte angezeigt
+    </h3>
+  </div>
+  <div class="contentTable">
+    <mat-card
+      *ngFor="let school of data"
+      style="min-width: 300px; margin: 10px"
+    >
+      <mat-card-header>
+        <mat-card-title>{{ school.schoolName }}</mat-card-title>
+        <mat-card-subtitle>Gruppe: {{ school.project.name }}</mat-card-subtitle>
+        <mat-card-subtitle
+          >Zugehöriger Regionalstellenbezirk:
+          {{ school.correspondingAreaName }}</mat-card-subtitle
+        >
+      </mat-card-header>
+      <div *ngIf="school.schoolPicture">
+        <img
+          [src]="school.schoolPicture"
+          [alt]="school.alternativePictureText"
+          width="300px"
+        />
+      </div>
+      <mat-card-content>
+        <div *ngFor="let person of school.personSchoolMapping">
+          <mat-divider></mat-divider>
+          <div class="functionalityDiv">
+            {{ person.functionality.name }}
+          </div>
+          <mat-divider></mat-divider>
+          <div style="margin-top: 10px;">
+            <div mat-line>
+              Name: {{ person.person.prename }} {{ person.person.lastname }}
             </div>
-            <div *ngFor="let person of school.personSchoolMapping">
-                <mat-divider></mat-divider>
-                <div mat-subheader>{{person.functionality}}</div>
-                <mat-divider></mat-divider>
-                <mat-list-item>
-                    <div mat-line>Name: {{person.person.prename}} {{person.person.lastname}}</div>
-                    <div mat-line>E-Mail: {{person.person.email}}</div>
-                    <div mat-line>Telefonnummer: {{person.person.phoneNumber}}</div>
-                    <div mat-line
-                        style="word-break: break-all; word-wrap: break-word; overflow: visible; white-space: normal;">
-                        Spezifischer Inhalt:
-                        {{getContentTextForPerson(school, person.functionality)}}
-                    </div>
-                </mat-list-item>
+            <div mat-line>E-Mail: {{ person.person.email }}</div>
+            <div mat-line>Telefonnummer: {{ person.person.phoneNumber }}</div>
+            <div
+              mat-line
+              style="
+                word-break: break-all;
+                word-wrap: break-word;
+                overflow: visible;
+                white-space: normal;
+              "
+            >
+              Spezifischer Inhalt: {{ person.description }}
             </div>
-            <mat-divider></mat-divider>
-        </mat-list>
-
-    </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>

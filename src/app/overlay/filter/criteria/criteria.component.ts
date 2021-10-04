@@ -62,6 +62,10 @@ import { Coordinate } from "ol/coordinate";
 import { Color } from "@angular-material-components/color-picker";
 import { ColorParser } from "src/app/util/color-parser";
 import { AbstractCategoryEntity } from "src/app/entities/AbstractCategoryEntity";
+import { VisibilityEventService } from "src/app/broadcast-event-service/VisibilityEventService";
+import { VisibilityEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/VisibilityEventStrategy";
+import { AreaShowEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/AreaShowEventStrategy";
+import { AreaHideEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/AreaHideEventStrategy";
 
 @Component({
   selector: "criteria-filter-component",
@@ -87,6 +91,7 @@ export class CriteriaFilterComponent implements OnInit {
   exclusiveSearch: boolean = false;
   categoryName: string = "";
   step: number = 0;
+  showRegionAreas: boolean = true;
 
   constructor(
     private criteriaService: CriteriaService,
@@ -100,7 +105,8 @@ export class CriteriaFilterComponent implements OnInit {
     private projectCategoryService: ProjectCategoryService,
     private functionalityService: FunctionalityService,
     private areaService: AreaService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private visibilityEventService: VisibilityEventService
   ) {}
   ngOnInit(): void {
     this.updateAllCriteriasList();
@@ -169,9 +175,6 @@ export class CriteriaFilterComponent implements OnInit {
         .afterClosed()
         .subscribe((res) => {
           this.areaSelectionField.writeValue(null);
-          this.handleClosedCategoryDialog(
-            "Der Regionalstellenbezirk " + res.name + " wurde erfolgreich editiert!"
-          );
           this.updateAllAreasList();
         });
     });
@@ -314,15 +317,13 @@ export class CriteriaFilterComponent implements OnInit {
         (result) => {
           var dialogViewdata: SelectionDialogViewData[] = [];
           result.forEach((e) => {
-            var subtitle = "";
-            if (e.arContent && e.makerspaceContent) {
-              subtitle = "XR & Makerspace";
-            } else if (e.arContent) {
-              subtitle = "XR";
-            } else if (e.makerspaceContent) {
-              subtitle = "Makerspace";
-            } else {
-              subtitle = "Für weitere Informationen klicken";
+            var subtitle = "Für weitere Informationen klicken";
+            if (subtitle.length > 0) {
+              subtitle = "";
+              e.personSchoolMapping.forEach((mapping) => {
+                subtitle += mapping.functionality.name + " & ";
+              });
+              subtitle = subtitle.substring(0, subtitle.length - 3);
             }
             //Seems like latlong are swapped for schools. be careful when fixing this
             dialogViewdata.push(
@@ -438,12 +439,20 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   public isAdmin(): boolean {
-    // return BaseService.isLoggedIn();
-    //only for testing purpose
-    return true;
+    return BaseService.isLoggedIn();
   }
 
   toggleSearchType() {
     this.mapUpdateEventService.emit(true);
+  }
+
+  public toggleShowRegionAreas() {
+    var strategyToExecute: VisibilityEventStrategy;
+    if (this.showRegionAreas) {
+      strategyToExecute = new AreaShowEventStrategy(this.areaService);
+    } else {
+      strategyToExecute = new AreaHideEventStrategy();
+    }
+    this.visibilityEventService.emit(strategyToExecute);
   }
 }
