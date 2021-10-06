@@ -34,6 +34,8 @@ import { SchoolPersonEntity } from "src/app/entities/SchoolPersonEntity";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
 import { ActivatedRoute } from "@angular/router";
 import { MapCompComponent } from "../map-comp/map-comp.component";
+import { ProjectCategoryService } from "src/app/services/project-category.service";
+import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 @Component({
   selector: "main-component",
   templateUrl: "./main.component.html",
@@ -66,6 +68,7 @@ export class MainComponent implements AfterViewInit, OnInit {
   adminOverlayVisible: boolean;
   adminButtonColor: string = "primary";
   projectParam: number;
+  projectInstance:ProjectCategoryEntity;
 
   constructor(
     private resolver: ComponentFactoryResolver,
@@ -73,6 +76,7 @@ export class MainComponent implements AfterViewInit, OnInit {
     private dialog: MatDialog,
     private userService: UserService,
     private schoolsService: SchoolsService,
+    private projectCategoryService:ProjectCategoryService,
     private toastr: ToastrService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private calculationEventService: CalculationEventService,
@@ -89,6 +93,9 @@ export class MainComponent implements AfterViewInit, OnInit {
       console.log(projectParam);
       if (projectParam) {
         this.projectParam = parseInt(projectParam);
+        this.projectCategoryService.read(this.projectParam).subscribe(res=>{
+          this.projectInstance = res;
+        });
       }
     });
   }

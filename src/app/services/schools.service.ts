@@ -7,6 +7,7 @@ import { HttpClient, HttpXsrfTokenExtractor } from "@angular/common/http";
 import { catchError } from "rxjs/operators";
 import { Observable } from "rxjs";
 import { CriteriaEntity } from "../entities/CriteriaEntity";
+import { ProjectCategoryEntity } from "../entities/ProjectEntity";
 
 @Injectable({
   providedIn: "root",
@@ -56,7 +57,7 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
     rightLatBound: number,
     topLongBound: number,
     bottomLongBound: number,
-    projectId: number,
+    project: ProjectCategoryEntity,
     criterias: CriteriaEntity[],
     exclusiveSearch: boolean
   ): Observable<SchoolPersonEntity[]> {
@@ -72,8 +73,8 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
       criteriaNumbers: criteriasIds,
       exclusiveSearch: exclusiveSearch.toString(),
     };
-    if (projectId) {
-      (paramsObj as any).projectId = projectId;
+    if (project && project.id) {
+      (paramsObj as any).projectId = project.id;
     }
     return this.http.get<SchoolPersonEntity[]>(
       this.requestURL +

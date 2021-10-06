@@ -52,6 +52,7 @@ import { FeatureFactory } from "src/app/util/FeatureFactory";
 import { AreaShowEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/AreaShowEventStrategy";
 import { VisibilityEventService } from "src/app/broadcast-event-service/VisibilityEventService";
 import { VisibilityDataElement } from "src/app/broadcast-event-service/visibility-event-strategies/VisibilityEventStrategy";
+import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 
 @Component({
   selector: "app-map-comp",
@@ -82,7 +83,7 @@ export class MapCompComponent implements OnInit {
   private criteriasObject: CriteriaFilterComponent;
 
   @Input()
-  private projectParam: number;
+  private projectParam: ProjectCategoryEntity;
 
   sourceWaypointVector: VectorSource<any>;
   sourceAreaLayer: VectorLayer<any>;
@@ -105,7 +106,9 @@ export class MapCompComponent implements OnInit {
     private dialog: MatDialog,
     private visiblityEventService: VisibilityEventService
   ) {
-    this.visibilityDataElement.activeAreaStrategy = new AreaShowEventStrategy(this.areaService);
+    this.visibilityDataElement.activeAreaStrategy = new AreaShowEventStrategy(
+      this.areaService
+    );
     visiblityEventService.register().subscribe((res) => {
       res.performActionOnLayer(
         this.sourceAreaVector,
@@ -259,6 +262,7 @@ export class MapCompComponent implements OnInit {
     var sourceWaypointLayer = new VectorLayer({
       source: this.sourceWaypointVector,
     });
+
     this.sourceAreaLayer = new VectorLayer({
       source: this.sourceAreaVector,
     });
@@ -268,12 +272,20 @@ export class MapCompComponent implements OnInit {
       view: new View({
         center: transform([8.50965, 48.65851], "EPSG:4326", "EPSG:3857"),
         zoom: 8,
+        minZoom:8
       }),
       controls: [],
     });
     this.map.addControl(new Attribution());
     this.clickListenerRef = this.map.on("click", this.mapOnClick.bind(this));
-    this.map.on("moveend", this.updateWaypoints.bind(this));
+    this.map.on("moveend", () => {
+      this.updateWaypoints();
+      // this.visibilityDataElement.activeAreaStrategy.performActionOnLayer(
+      //   this.sourceAreaVector,
+      //   this.map,
+      //   this.visibilityDataElement
+      // );
+    });
     this.visibilityDataElement.activeAreaStrategy.performActionOnLayer(
       this.sourceAreaVector,
       this.map,
@@ -319,7 +331,7 @@ export class MapCompComponent implements OnInit {
                 splitPoint = splitPoint - 1;
               }
             }
-            var style = Styles.getStyleForWaypoint(e, zoom);
+            var style = Styles.getStyleForWaypoint(e, zoom, this.projectParam);
             waypoint.setStyle(style);
             waypoint.setId(e.id);
             var res = this.existingWaypointAtGeometry.find(
@@ -332,7 +344,7 @@ export class MapCompComponent implements OnInit {
               this.sourceWaypointVector.getFeatures().forEach((element) => {
                 if ((element as any).id_ == e.id) {
                   (element as any).setStyle(
-                    Styles.getStyleForWaypoint(e, zoom)
+                    Styles.getStyleForWaypoint(e, zoom, this.projectParam)
                   );
                 }
               });

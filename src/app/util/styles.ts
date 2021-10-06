@@ -1,5 +1,6 @@
 import { Color } from "@angular-material-components/color-picker";
 import { Circle, Fill, Icon, Stroke, Style, Text } from "ol/style";
+import { ProjectCategoryEntity } from "../entities/ProjectEntity";
 import { SchoolPersonEntity } from "../entities/SchoolPersonEntity";
 
 export class Styles {
@@ -16,6 +17,10 @@ export class Styles {
         offsetY: -20,
         font: "bold italic " + zoom * 1.15 + "px/1.0 sans-serif",
       }),
+      // image: new Icon({
+      //   scale: 0.03,
+      //   src: "assets/logo/zsllogo.png",
+      // }),
       image: new Circle({
         radius: 6,
         fill: new Fill({ color: "#ff0000" }),
@@ -23,9 +28,17 @@ export class Styles {
       }),
     });
   }
-  public static getStyleForWaypoint(e: SchoolPersonEntity, zoom: any) {
+  public static getStyleForWaypoint(
+    e: SchoolPersonEntity,
+    zoom: any,
+    project?: ProjectCategoryEntity
+  ) {
     var textToSet =
       zoom <= 9 && e.shortSchoolName ? e.shortSchoolName : e.schoolName;
+      var selectedProject = project;
+    if (!project) {
+      selectedProject = e.primaryProject;
+    }
     return new Style({
       text: new Text({
         text: textToSet,
@@ -33,8 +46,8 @@ export class Styles {
         font: "bold italic " + zoom * 1.15 + "px/1.0 sans-serif",
       }),
       image: new Icon({
-        scale: e.project.scaling ? e.project.scaling : 0.03,
-        src: e.project.icon,
+        scale: selectedProject.scaling ? selectedProject.scaling : 0.03,
+        src: selectedProject.icon,
       }),
     });
   }
@@ -58,7 +71,7 @@ export class Styles {
           radius: 5,
         }),
         fill: fill,
-        stroke: stroke,
+        // stroke: stroke,
       }),
     ];
   }

@@ -45,6 +45,10 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
     "",
     Validators.required
   );
+  public projectPrimaryCategory: FormControl = new FormControl(
+    "",
+    Validators.required
+  );
   image: string = null;
   public alternativePictureText: FormControl = new FormControl("");
   protected schoolId: number;
@@ -65,6 +69,7 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
     this.shortSchoolName = new FormControl("");
     this.alternativePictureText = new FormControl("");
     this.projectCategory = new FormControl("");
+    this.projectPrimaryCategory = new FormControl("");
   }
 
   async loadNewSchool(id: number) {

@@ -14,7 +14,7 @@
     <mat-label>Anzeigeicon</mat-label> -->
   <label>Verwendetes Anzeigeicon:</label>
   <div>
-    <div [style.visibility]="isSvg ? 'visible' : 'hidden'" #imgContainer></div>
+    <div [style.visibility]="isSvg ? 'visible' : 'hidden'" #imgContainer    style="max-width: 80px; max-height: 80px; margin-top: 20px"></div>
     <img [style.visibility]="isSvg ? 'hidden' : 'visible'"
       mat-card-image
       [src]="data.icon"

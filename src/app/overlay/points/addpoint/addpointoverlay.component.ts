@@ -98,6 +98,7 @@ export class AddPointOverlay
       schoolName: this.schoolName,
       schoolPicture: this.schoolPicture,
       projectCategory: this.projectCategory,
+      projectPrimaryCategory: this.projectPrimaryCategory,
       alternativePictureText: this.alternativePictureText,
     });
     this.criterias = [];
@@ -146,6 +147,7 @@ export class AddPointOverlay
     this.newPointForm.reset();
     this.schoolPicture.reset();
     this.projectCategory.reset();
+    this.projectPrimaryCategory.reset();
     this.alternativePictureText.reset();
     this.criterias = [];
   }
@@ -188,6 +190,7 @@ export class AddPointOverlay
     school.longitude = this.long;
     school.shortSchoolName = this.shortSchoolName.value;
     school.schoolName = this.schoolName.value;
+    school.primaryProject = this.projectPrimaryCategory.value;
     // school.color = this.colorCtr.value.hex;
 
     var allPersonViewInstances: PersonFunctionalityEntity[] = [];
@@ -206,7 +209,9 @@ export class AddPointOverlay
       criteriaEntity.criteriaName = e.criteriaName.value;
       school.matchingCriterias.push(criteriaEntity);
     });
-    school.project = this.projectCategory.value;
+    this.projectCategory.value.forEach((element) => {
+      school.projects.push(element);
+    });
     if (this.image) {
       school.schoolPicture = this.image;
       school.alternativePictureText = this.alternativePictureText.value;
@@ -260,9 +265,19 @@ export class AddPointOverlay
   public prefillByPointId(pointId: number): void {
     this.init();
     this.loadNewSchool(pointId).then((res: SchoolPersonEntity) => {
-      this.projectCategory.setValue(
-        this.projectCategories.filter((p) => p.id == res.project.id)[0]
-      );
+      var matchingProjects = [];
+      res.projects.forEach((e) => {
+        var curProjInstance = this.projectCategories.filter(
+          (p) => p.id == e.id
+        )[0];
+        if (curProjInstance) {
+          matchingProjects.push(curProjInstance);
+          if (curProjInstance.id == res.primaryProject.id) {
+            this.projectPrimaryCategory.setValue(curProjInstance);
+          }
+        }
+      });
+      this.projectCategory.setValue(matchingProjects);
       this.prefilled = true;
       res.matchingCriterias.forEach((e) => {
         var currentComponent = this.addCriteriaButton();
