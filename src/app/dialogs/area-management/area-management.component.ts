@@ -17,6 +17,8 @@ import { Position } from "src/app/entities/Position";
 import { AreaService } from "src/app/services/area.service";
 import { Observable } from "rxjs";
 import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
+import GeoJSON from "ol/format/GeoJSON";
+import { transform } from "ol/proj";
 
 @Component({
   selector: "app-area-management",
@@ -72,6 +74,21 @@ export class AreaManagementComponent
     this.areaSelectionService.emitAreaSelectionEvent(this.data);
     this.dialogRef.close();
   }
+
+  handleFileInput(files: FileList) {
+    var file = files.item(0);
+    var reader = new FileReader();
+    reader.readAsBinaryString(file);
+    reader.onloadend = () => {
+      var feature = new GeoJSON().readFeature(reader.result.toString());
+      this.data.area = [];
+      feature.getGeometry().getCoordinates()[0].forEach(element => {
+        // transform(element, "EPSG:4326", "EPSG:3857")
+        this.data.area.push(element);
+      });;
+    };
+  }
+
   async saveChanges() {
     var area = new AreaEntity();
     area.id = this.data.id;

@@ -22,6 +22,6 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
-## Further help
+## GeoJSON-Data
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+All GeoJSON-Files which can be found under src/assets/geojson have been provided by the 'Bundesamt für Kartographie und Geodäsie' (Bkg). Those files were licensed under the 'Open Data Datenlizenz Deutschland', copyright GeoBasis-DE / BKG (2021)

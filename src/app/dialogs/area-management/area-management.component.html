@@ -14,11 +14,7 @@
   <div>
     <mat-form-field>
       <mat-label>Punktfarbe</mat-label>
-      <input
-        matInput
-        [ngxMatColorPicker]="picker"
-        [formControl]="colorCtr"
-      />
+      <input matInput [ngxMatColorPicker]="picker" [formControl]="colorCtr" />
       <ngx-mat-color-toggle matSuffix [for]="picker"></ngx-mat-color-toggle>
       <ngx-mat-color-picker
         #picker
@@ -40,6 +36,22 @@
     <button mat-raised-button (click)="setArea()" color="primary">
       Bezirksgebiet einzeichnen
     </button>
+    <button
+      style="margin-left: 20px"
+      mat-raised-button
+      (click)="fileInput.click()"
+      color="primary"
+    >
+      Bezirksgebiet hochladen
+    </button>
+    <input
+      style="visibility: hidden"
+      #fileInput
+      (change)="handleFileInput($event.target.files)"
+      type="file"
+      id="file"
+      accept="application/geo+json"
+    />
   </div>
 </div>
 <div mat-dialog-actions>
