@@ -13,7 +13,7 @@
     >
       <mat-card-header>
         <mat-card-title>{{ school.schoolName }}</mat-card-title>
-        <mat-card-subtitle>Gruppe: {{ school.project.name }}</mat-card-subtitle>
+        <mat-card-subtitle>{{ getProjectList(school) }}</mat-card-subtitle>
         <mat-card-subtitle
           >Zugehöriger Regionalstellenbezirk:
           {{ school.correspondingAreaName }}</mat-card-subtitle

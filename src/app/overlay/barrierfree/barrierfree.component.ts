@@ -21,4 +21,16 @@ export class BarrierFree {
     });
   }
 
+  public getProjectList(school: SchoolPersonEntity): string {
+    var projectNames = "Gruppe";
+    if (school.projects.length > 1) {
+      projectNames += "n";
+    }
+    projectNames += ": ";
+    school.projects.forEach((e) => {
+      projectNames += e.name + ", ";
+    });
+    projectNames = projectNames.substring(0, projectNames.length - 2);
+    return projectNames;
+  }
 }
