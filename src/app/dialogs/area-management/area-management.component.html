@@ -59,4 +59,5 @@
   <button mat-button (click)="saveChanges()" cdkFocusInitial>
     Änderungen speichern
   </button>
+  <button *ngIf="data.id" mat-button (click)="deleteCurrent()">Gebiet löschen</button>
 </div>

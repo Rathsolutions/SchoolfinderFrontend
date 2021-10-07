@@ -66,6 +66,7 @@ import { VisibilityEventService } from "src/app/broadcast-event-service/Visibili
 import { VisibilityEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/VisibilityEventStrategy";
 import { AreaShowEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/AreaShowEventStrategy";
 import { AreaHideEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/AreaHideEventStrategy";
+import { CriteriaListEntriesChangedService } from "src/app/broadcast-event-service/CriteriaListEntriesChangedService";
 
 @Component({
   selector: "criteria-filter-component",
@@ -106,12 +107,18 @@ export class CriteriaFilterComponent implements OnInit {
     private functionalityService: FunctionalityService,
     private areaService: AreaService,
     private dialog: MatDialog,
-    private visibilityEventService: VisibilityEventService
+    private visibilityEventService: VisibilityEventService,
+    private criteriaListEntriesChangedService: CriteriaListEntriesChangedService
   ) {}
   ngOnInit(): void {
     this.updateAllCriteriasList();
     this.updateAllAreasList();
     this.updateAllCategoriesList();
+    this.criteriaListEntriesChangedService.register().subscribe(() => {
+      this.updateAllCriteriasList();
+      this.updateAllAreasList();
+      this.updateAllCategoriesList();
+    });
   }
 
   private updateAllCriteriasList() {
@@ -122,6 +129,9 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   private updateAllAreasList() {
+    if (this.areaSelectionField) {
+      this.areaSelectionField.writeValue(null);
+    }
     this.allAreas = [];
     this.areaService.findAll().subscribe((res) => (this.allAreas = res));
   }
@@ -174,7 +184,6 @@ export class CriteriaFilterComponent implements OnInit {
         })
         .afterClosed()
         .subscribe((res) => {
-          this.areaSelectionField.writeValue(null);
           this.updateAllAreasList();
         });
     });

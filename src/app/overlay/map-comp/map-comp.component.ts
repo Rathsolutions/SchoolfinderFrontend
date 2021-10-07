@@ -224,6 +224,7 @@ export class MapCompComponent implements OnInit {
         this.map.removeInteraction(this.drawInstance);
         this.areaSelectionActive = false;
         this.institutionSelectionActive = false;
+        //TODO do update of area list in criteria component
       });
   }
 

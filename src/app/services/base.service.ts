@@ -93,7 +93,7 @@ export class BaseService<T> {
   }
 
   public delete(id: number): Observable<T> {
-    return this.http.delete<T>(this.requestURL + '/' + id, BaseService.HTTP_OPTIONS)
+    return this.http.delete<T>(this.requestURL + '/delete/' + id, BaseService.HTTP_OPTIONS)
       .pipe(
         catchError(this.handleError(this.entity + ':delete'))
       );

@@ -19,6 +19,7 @@ import { Observable } from "rxjs";
 import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
 import GeoJSON from "ol/format/GeoJSON";
 import { transform } from "ol/proj";
+import { CriteriaListEntriesChangedService } from "src/app/broadcast-event-service/CriteriaListEntriesChangedService";
 
 @Component({
   selector: "app-area-management",
@@ -46,6 +47,7 @@ export class AreaManagementComponent
     private areaService: AreaService,
     toastrService: ToastrService,
     private areaSelectionService: AreaSelectionService,
+    private criteriaListEntriesChangedService: CriteriaListEntriesChangedService,
     mapEventService: MapUpdateEventService
   ) {
     super(
@@ -82,15 +84,52 @@ export class AreaManagementComponent
     reader.onloadend = () => {
       var feature = new GeoJSON().readFeature(reader.result.toString());
       this.data.area = [];
-      feature.getGeometry().getCoordinates()[0].forEach(element => {
-        // transform(element, "EPSG:4326", "EPSG:3857")
-        this.data.area.push(element);
-      });;
+      feature
+        .getGeometry()
+        .getCoordinates()[0]
+        .forEach((element) => {
+          // transform(element, "EPSG:4326", "EPSG:3857")
+          this.data.area.push(element);
+        });
     };
+  }
+
+  public deleteCurrent() {
+    if (this.data.id) {
+      this.areaService.delete(this.data.id).subscribe(
+        (res) => {
+          this.toastrService.success(
+            "Der Regionalstellenbezirk wurde erfolgreich gelöscht!"
+          );
+          this.mapEventService.emit(true);
+          this.criteriaListEntriesChangedService.emit();
+          this.dialogRef.close();
+        },
+        (rej) => {
+          this.toastrService.error(
+            "Beim Löschen des Regionalstellenbezirks ist ein Fehler aufgetreten!"
+          );
+        }
+      );
+    }
   }
 
   async saveChanges() {
     var area = new AreaEntity();
+    if (
+      !this.data.name ||
+      !this.data.color ||
+      !this.data.areaInstitutionPosition ||
+      !this.data.area
+    ) {
+      this.toastrService.error("Bitte füllen Sie alle Felder korrekt aus!");
+      return;
+    }
+    if (this.data.area.length < 3) {
+      this.toastrService.error(
+        "Das Bezirksgebiet muss aus mindestens 3 Punkten bestehen!"
+      );
+    }
     area.id = this.data.id;
     area.name = this.data.name;
     area.color = this.data.color.toRgba();
@@ -112,6 +151,7 @@ export class AreaManagementComponent
           area.name +
           " wurde erfolgreich editiert!"
       );
+      this.criteriaListEntriesChangedService.emit();
     });
   }
 }
