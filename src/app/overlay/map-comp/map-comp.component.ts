@@ -15,7 +15,7 @@ import VectorLayer from "ol/layer/Vector";
 import Map from "ol/Map";
 import Draw from "ol/interaction/Draw";
 import Projection from "ol/proj/Projection";
-import { Vector, XYZ } from "ol/source";
+import { TileJSON, Vector, XYZ } from "ol/source";
 import Overlay from "ol/Overlay";
 import { transform, toLonLat, transformExtent } from "ol/proj";
 import { UserService } from "src/app/services/user.service";
@@ -53,6 +53,9 @@ import { AreaShowEventStrategy } from "src/app/broadcast-event-service/visibilit
 import { VisibilityEventService } from "src/app/broadcast-event-service/VisibilityEventService";
 import { VisibilityDataElement } from "src/app/broadcast-event-service/visibility-event-strategies/VisibilityEventStrategy";
 import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
+import olms from "ol-mapbox-style";
+import stylefunction from "ol-mapbox-style/dist/stylefunction";
+import GeoJSON from "ol/format/GeoJSON";
 
 @Component({
   selector: "app-map-comp",
@@ -61,8 +64,8 @@ import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 })
 export class MapCompComponent implements OnInit {
   private map: Map;
-  private mapLayer: TileLayer<any>;
-  private mapSource: XYZ;
+  private mapLayer: VectorLayer<any>;
+  private mapSource: VectorSource<any>;
 
   @ViewChild("addPointComponentOverlay", { read: ViewContainerRef })
   addPointOverlayPlaceholder: ViewContainerRef;
@@ -87,7 +90,7 @@ export class MapCompComponent implements OnInit {
 
   sourceWaypointVector: VectorSource<any>;
   sourceAreaLayer: VectorLayer<any>;
-
+  sourceWaypointLayer: VectorLayer<any>;
   private clickListenerRef;
   private visibilityDataElement = new VisibilityDataElement();
   areaSelectionActive: boolean = false;
@@ -251,16 +254,18 @@ export class MapCompComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.mapSource = new XYZ({
+    this.mapSource = new VectorSource({
+      format: new GeoJSON(),
       attributions: "© Nico Rath",
-      url: "https://mapserver.rathsolutions.de/styles/liberty/{z}/{x}/{y}.png",
+      url: "https://mapserver.rathsolutions.de/styles/liberty/style.json",
     });
-    this.mapLayer = new TileLayer({
+
+    this.mapLayer = new VectorLayer({
       source: this.mapSource,
     });
     this.sourceAreaVector = new VectorSource({});
     this.sourceWaypointVector = new VectorSource({});
-    var sourceWaypointLayer = new VectorLayer({
+    this.sourceWaypointLayer = new VectorLayer({
       source: this.sourceWaypointVector,
     });
 
@@ -268,12 +273,12 @@ export class MapCompComponent implements OnInit {
       source: this.sourceAreaVector,
     });
     this.map = new Map({
-      layers: [this.mapLayer, this.sourceAreaLayer, sourceWaypointLayer],
+      // layers: [this.sourceAreaLayer, sourceWaypointLayer],
       target: "map",
       view: new View({
         center: transform([8.50965, 48.65851], "EPSG:4326", "EPSG:3857"),
         zoom: 8,
-        minZoom:8
+        minZoom: 8,
       }),
       controls: [],
     });
@@ -292,6 +297,10 @@ export class MapCompComponent implements OnInit {
       this.map,
       this.visibilityDataElement
     );
+    olms(this.map, "https://mapserver.rathsolutions.de/styles/liberty/style.json").then((res) => {
+      this.map.addLayer(this.sourceAreaLayer);
+      this.map.addLayer(this.sourceWaypointLayer);
+    });
   }
 
   public updateWaypoints(): void {
@@ -365,11 +374,11 @@ export class MapCompComponent implements OnInit {
 
   public mapOnClick(evt): void {
     const map: Map = evt.map as Map;
-    var sourceAreaLayerBound = this.sourceAreaLayer;
+    var sourceVectorLayerBound = this.sourceWaypointLayer;
     const point = map.forEachFeatureAtPixel(
       evt.pixel,
       function (feature, layer) {
-        if (sourceAreaLayerBound == layer) {
+        if (sourceVectorLayerBound != layer) {
           return undefined;
         }
         return feature;

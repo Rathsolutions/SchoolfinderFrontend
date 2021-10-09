@@ -18,7 +18,7 @@ export class Styles {
         font: "bold italic " + zoom * 1.15 + "px/1.0 sans-serif",
       }),
       // image: new Icon({
-      //   scale: 0.03,
+      //   scale: 0.01,
       //   src: "assets/logo/zsllogo.png",
       // }),
       image: new Circle({
