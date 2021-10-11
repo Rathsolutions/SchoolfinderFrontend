@@ -10,6 +10,8 @@ import {
   Inject,
   OnInit,
   OnChanges,
+  Output,
+  EventEmitter,
 } from "@angular/core";
 import {
   FormControl,
@@ -94,6 +96,9 @@ export class CriteriaFilterComponent implements OnInit {
   step: number = 0;
   showRegionAreas: boolean = true;
 
+  @Output() disableButtonsEvent = new EventEmitter<boolean>();
+  disabled: boolean = false;
+
   constructor(
     private criteriaService: CriteriaService,
     private toastr: ToastrService,
@@ -109,16 +114,22 @@ export class CriteriaFilterComponent implements OnInit {
     private dialog: MatDialog,
     private visibilityEventService: VisibilityEventService,
     private criteriaListEntriesChangedService: CriteriaListEntriesChangedService
-  ) {}
+  ) { }
   ngOnInit(): void {
     this.updateAllCriteriasList();
     this.updateAllAreasList();
     this.updateAllCategoriesList();
     this.criteriaListEntriesChangedService.register().subscribe(() => {
+      this.setButtonsDisabled(false);
       this.updateAllCriteriasList();
       this.updateAllAreasList();
       this.updateAllCategoriesList();
     });
+  }
+
+  private setButtonsDisabled(val:boolean) {
+    this.disabled = val;
+    this.disableButtonsEvent.emit(val);
   }
 
   private updateAllCriteriasList() {
@@ -156,8 +167,10 @@ export class CriteriaFilterComponent implements OnInit {
       data: {
         adminNotice: "Unbekannt",
         persistStrategy: new CreateStrategy<AreaEntity>(),
+        callbackFunction: () => { this.setButtonsDisabled(false)}
       },
     });
+    this.setButtonsDisabled(true);
   }
 
   public areaSelectionTriggered(evt: any) {
@@ -180,12 +193,14 @@ export class CriteriaFilterComponent implements OnInit {
             areaInstitutionPosition: institutionPositionCoordinates,
             area: areaCoordinates,
             persistStrategy: new EditStrategy<AreaEntity>(),
+            callbackFunction: () => { this.setButtonsDisabled(false);}
           },
         })
         .afterClosed()
         .subscribe((res) => {
           this.updateAllAreasList();
         });
+        this.setButtonsDisabled(true);
     });
   }
 

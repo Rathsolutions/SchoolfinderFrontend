@@ -22,11 +22,10 @@ import { AbstractManagement } from "../abstract-management";
 })
 export class SchoolCategoryManagementComponent
   extends AbstractManagement<
-    SchoolCategoryManagementComponent,
-    SchoolCategoryManagementData
+  SchoolCategoryManagementComponent,
+  SchoolCategoryManagementData
   >
-  implements OnInit, AfterViewInit
-{
+  implements OnInit, AfterViewInit {
   @ViewChild("uploadFileInput") uploadFileInput: ElementRef<HTMLButtonElement>;
   @ViewChild("imgContainer") imgContainer: ElementRef<HTMLDivElement>;
 
@@ -57,9 +56,13 @@ export class SchoolCategoryManagementComponent
     }
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   async saveChanges() {
+    if (!this.data.name || !this.data.icon || !this.data.scaling) {
+      this.toastrService.error("Bitte füllen Sie das Formular vollständig aus!");
+      return;
+    }
     var projectCategoryEntity = new ProjectCategoryEntity();
     projectCategoryEntity.id = this.data.id;
     projectCategoryEntity.name = this.data.name;

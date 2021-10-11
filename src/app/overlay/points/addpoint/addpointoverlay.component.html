@@ -17,7 +17,7 @@
         <div style="margin-left: 16px">
           <mat-form-field style="max-width: 40%">
             <mat-label>Institutionskategorie</mat-label>
-            <mat-select [formControl]="projectCategory" multiple>
+            <mat-select [formControl]="projectCategory" multiple required>
               <mat-option
                 *ngFor="let category of projectCategories"
                 [value]="category"
@@ -27,7 +27,7 @@
           </mat-form-field>
           <mat-form-field style="margin-left: 22px; max-width: 40%">
             <mat-label>Primärkategorie</mat-label>
-            <mat-select [formControl]="projectPrimaryCategory">
+            <mat-select [formControl]="projectPrimaryCategory" required>
               <mat-option
                 *ngFor="let category of projectCategory.value"
                 [value]="category"

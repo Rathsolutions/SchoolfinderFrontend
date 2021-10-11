@@ -10,7 +10,8 @@
     <fa-icon [icon]="alignJustifyIcon"></fa-icon>
   </button>
   <div #adminButton id="adminButton">
-    <button
+    <button 
+      [disabled]="disabledButtons"
       mat-raised-button
       color="{{ adminButtonColor }}"
       (click)="toggleAdminMode()"
@@ -26,7 +27,7 @@
     #filterOverlay
     id="filterOverlay"
   >
-    <criteria-filter-component
+    <criteria-filter-component (disableButtonsEvent)="disableButtonsEvent($event)"
       #criteriaFilterComponent
     ></criteria-filter-component>
   </div>

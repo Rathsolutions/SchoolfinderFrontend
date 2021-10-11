@@ -244,7 +244,13 @@ export class MapCompComponent implements OnInit {
       .getSource()
       .getFeatures()[0]
       .getGeometry() as Polygon;
-    this.currentAreaEventData.area = polygon.getCoordinates()[0];
+    this.currentAreaEventData.area = [];
+    for (let i = 0; i < polygon.getCoordinates()[0].length; i++) {
+      if(i != polygon.getCoordinates()[0].length-2){
+        this.currentAreaEventData.area.push(polygon.getCoordinates()[0][i]);
+      }
+    }
+    // this.currentAreaEventData.area.push(polygon.getCoordinates()[0][0]);
     this.finalizeDrawing(this.currentAreaEventData);
     this.currentAreaEventData = null;
   }

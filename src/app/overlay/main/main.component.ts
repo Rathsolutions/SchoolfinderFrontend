@@ -68,7 +68,8 @@ export class MainComponent implements AfterViewInit, OnInit {
   adminOverlayVisible: boolean;
   adminButtonColor: string = "primary";
   projectParam: number;
-  projectInstance:ProjectCategoryEntity;
+  projectInstance: ProjectCategoryEntity;
+  disabledButtons: boolean = false;
 
   constructor(
     private resolver: ComponentFactoryResolver,
@@ -76,7 +77,7 @@ export class MainComponent implements AfterViewInit, OnInit {
     private dialog: MatDialog,
     private userService: UserService,
     private schoolsService: SchoolsService,
-    private projectCategoryService:ProjectCategoryService,
+    private projectCategoryService: ProjectCategoryService,
     private toastr: ToastrService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private calculationEventService: CalculationEventService,
@@ -93,14 +94,17 @@ export class MainComponent implements AfterViewInit, OnInit {
       console.log(projectParam);
       if (projectParam) {
         this.projectParam = parseInt(projectParam);
-        this.projectCategoryService.read(this.projectParam).subscribe(res=>{
+        this.projectCategoryService.read(this.projectParam).subscribe(res => {
           this.projectInstance = res;
         });
       }
     });
   }
-
-  ngAfterViewInit(): void {}
+  disableButtonsEvent(val: boolean) {
+    this.disabledButtons = val;
+    console.log(this.disabledButtons);
+  }
+  ngAfterViewInit(): void { }
 
   public toggleAdminMode() {
     if (UserService.isLoggedIn()) {

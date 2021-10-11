@@ -57,7 +57,7 @@ export class AreaManagementComponent
       toastrService,
       mapEventService
     );
-    console.log(data);
+    this.dialogRef.disableClose = true;
     this.persistStrategy.setServiceInstance(areaService);
   }
 
@@ -94,6 +94,11 @@ export class AreaManagementComponent
     };
   }
 
+  public onNoClick(){
+    this.data.callbackFunction();
+    super.onNoClick();
+  }
+
   public deleteCurrent() {
     if (this.data.id) {
       this.areaService.delete(this.data.id).subscribe(
@@ -125,10 +130,12 @@ export class AreaManagementComponent
       this.toastrService.error("Bitte füllen Sie alle Felder korrekt aus!");
       return;
     }
-    if (this.data.area.length < 3) {
+    console.log(this.data.area);
+    if (this.data.area.length < 4) {
       this.toastrService.error(
         "Das Bezirksgebiet muss aus mindestens 3 Punkten bestehen!"
       );
+      return;
     }
     area.id = this.data.id;
     area.name = this.data.name;
@@ -153,6 +160,7 @@ export class AreaManagementComponent
       );
       this.criteriaListEntriesChangedService.emit();
     });
+    this.data.callbackFunction();
   }
 }
 export interface AreaManagementData {
@@ -162,4 +170,5 @@ export interface AreaManagementData {
   area: Coordinate[];
   color: Color;
   persistStrategy: PersistStrategy<AreaEntity>;
+  callbackFunction: () => void;
 }

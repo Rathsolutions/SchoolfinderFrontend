@@ -8,6 +8,7 @@
         mat-raised-button
         color="primary"
         cdkFocusInitial
+        [disabled]="disabled"
         (click)="showAllInstitutions()"
       >
         Zeige alle Institution
@@ -44,6 +45,7 @@
             mat-raised-button
             color="primary"
             cdkFocusInitial
+            [disabled]="disabled"
             (click)="searchSchool()"
           >
             Suche nach Institution
@@ -54,6 +56,7 @@
             mat-raised-button
             color="primary"
             cdkFocusInitial
+            [disabled]="disabled"
             (click)="searchStreet()"
           >
             Suche nach Straßenname
@@ -64,6 +67,7 @@
             mat-raised-button
             color="primary"
             cdkFocusInitial
+            [disabled]="disabled"
             (click)="searchCity()"
           >
             Suche nach Stadt
@@ -85,6 +89,7 @@
           <mat-select
             #selectMat
             multiple
+            [disabled]="disabled"
             (selectionChange)="selectChange($event.value)"
           >
             <mat-option *ngFor="let criteria of allCriterias" [value]="criteria"
@@ -96,6 +101,7 @@
           <mat-slide-toggle
             (change)="toggleSearchType()"
             [(ngModel)]="exclusiveSearch"
+            [disabled]="disabled"
           >
             Inklusive Suche
           </mat-slide-toggle>
@@ -120,6 +126,7 @@
           <mat-select
             (selectionChange)="categorySelectionTriggered($event)"
             #categorySelectionField
+            [disabled]="disabled"
           >
             <mat-optgroup label="Institutionskategorien">
               <mat-option
@@ -141,6 +148,7 @@
           mat-raised-button
           color="primary"
           #workOnCategoryButton
+          [disabled]="disabled"
           (click)="createCategory()"
         >
           Kategorie erstellen
@@ -155,7 +163,7 @@
         <mat-expansion-panel-header>
           <mat-panel-title> Anzeigekonfiguration </mat-panel-title>
         </mat-expansion-panel-header>
-        <mat-slide-toggle
+        <mat-slide-toggle [disabled]="disabled"
           (change)="toggleShowRegionAreas()"
           [(ngModel)]="showRegionAreas"
           >Bezirke anzeigen</mat-slide-toggle
@@ -173,7 +181,8 @@
         </mat-expansion-panel-header>
         <mat-form-field *ngIf="isAdmin()">
           <mat-label>Existente Regionalstellenbezirke</mat-label>
-          <mat-select
+          <mat-select 
+            [disabled]="disabled"
             (selectionChange)="areaSelectionTriggered($event)"
             #areaSelectionField
           >
@@ -186,6 +195,7 @@
           mat-raised-button
           color="primary"
           #workOnCategoryButton
+          [disabled]="disabled"
           (click)="createArea()"
         >
           Regionalstellenbezirk erstellen
