@@ -161,6 +161,18 @@ export class AddPointOverlay
     };
   }
 
+  institutionCategoryOpened(): void {
+    this.projectCategoryService.findAll().subscribe((res) => {
+      res.forEach((e) => {
+        if (!this.projectCategories.some((f) => f.id == e.id)) {
+          this.projectCategories.push(e);
+        }else if(this.projectCategories.some((f) => f.id == e.id && f.name != e.name)){
+          this.projectCategories.find((f) => f.id == e.id).name = e.name;
+        }
+      });
+    });
+  }
+
   deleteCurrent(): void {
     this.schoolService.deleteSchool(this.schoolId).subscribe(
       (result) => {

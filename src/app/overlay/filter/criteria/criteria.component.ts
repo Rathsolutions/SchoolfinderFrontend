@@ -114,12 +114,13 @@ export class CriteriaFilterComponent implements OnInit {
     private dialog: MatDialog,
     private visibilityEventService: VisibilityEventService,
     private criteriaListEntriesChangedService: CriteriaListEntriesChangedService
-  ) { }
+  ) {}
   ngOnInit(): void {
     this.updateAllCriteriasList();
     this.updateAllAreasList();
     this.updateAllCategoriesList();
     this.criteriaListEntriesChangedService.register().subscribe(() => {
+      console.log("update");
       this.setButtonsDisabled(false);
       this.updateAllCriteriasList();
       this.updateAllAreasList();
@@ -127,7 +128,7 @@ export class CriteriaFilterComponent implements OnInit {
     });
   }
 
-  private setButtonsDisabled(val:boolean) {
+  private setButtonsDisabled(val: boolean) {
     this.disabled = val;
     this.disableButtonsEvent.emit(val);
   }
@@ -144,7 +145,9 @@ export class CriteriaFilterComponent implements OnInit {
       this.areaSelectionField.writeValue(null);
     }
     this.allAreas = [];
-    this.areaService.findAll().subscribe((res) => (this.allAreas = res));
+    this.areaService.findAll().subscribe((res) => {
+      this.allAreas = res;
+    });
   }
 
   private updateAllCategoriesList() {
@@ -167,7 +170,9 @@ export class CriteriaFilterComponent implements OnInit {
       data: {
         adminNotice: "Unbekannt",
         persistStrategy: new CreateStrategy<AreaEntity>(),
-        callbackFunction: () => { this.setButtonsDisabled(false)}
+        callbackFunction: () => {
+          this.setButtonsDisabled(false);
+        },
       },
     });
     this.setButtonsDisabled(true);
@@ -193,19 +198,45 @@ export class CriteriaFilterComponent implements OnInit {
             areaInstitutionPosition: institutionPositionCoordinates,
             area: areaCoordinates,
             persistStrategy: new EditStrategy<AreaEntity>(),
-            callbackFunction: () => { this.setButtonsDisabled(false);}
+            callbackFunction: () => {
+              this.setButtonsDisabled(false);
+            },
           },
         })
         .afterClosed()
         .subscribe((res) => {
           this.updateAllAreasList();
         });
-        this.setButtonsDisabled(true);
+      this.setButtonsDisabled(true);
     });
   }
 
-  public categorySelectionTriggered(evt: any) {
-    this.projectCategoryService.findProjectByName(evt.value.name).subscribe(
+  public personCategorySelectionTriggered(entity: ProjectCategoryEntity) {
+    this.functionalityService.findByName(entity.name).subscribe(
+      (res) => {
+        var openedDialog = this.dialog.open(PersonCategoryManagementComponent, {
+          data: {
+            adminNotice:
+              "In dieser Ansicht haben Sie die Möglichkeit, die Personenkategorie " +
+              res.name +
+              " zu bearbeiten.",
+            name: res.name,
+            id: res.id,
+            persistStrategy: new EditStrategy<FunctionalityEntity>(),
+          },
+        });
+        openedDialog
+          .afterClosed()
+          .subscribe(this.handleCategoryDialogClose.bind(this));
+      },
+      (rejTwo) => {
+        this.throwErrorMessage();
+      }
+    );
+  }
+
+  public institutionCategorySelectionTriggered(entity: ProjectCategoryEntity) {
+    this.projectCategoryService.findProjectByName(entity.name).subscribe(
       (res) => {
         var openedDialog = this.dialog.open(SchoolCategoryManagementComponent, {
           data: {
@@ -225,34 +256,7 @@ export class CriteriaFilterComponent implements OnInit {
           .subscribe(this.handleCategoryDialogClose.bind(this));
       },
       (rej) => {
-        if (rej.status == 404) {
-          this.functionalityService.findByName(evt.value.name).subscribe(
-            (res) => {
-              var openedDialog = this.dialog.open(
-                PersonCategoryManagementComponent,
-                {
-                  data: {
-                    adminNotice:
-                      "In dieser Ansicht haben Sie die Möglichkeit, die Personenkategorie " +
-                      res.name +
-                      " zu bearbeiten.",
-                    name: res.name,
-                    id: res.id,
-                    persistStrategy: new EditStrategy<FunctionalityEntity>(),
-                  },
-                }
-              );
-              openedDialog
-                .afterClosed()
-                .subscribe(this.handleCategoryDialogClose.bind(this));
-            },
-            (rejTwo) => {
-              this.throwErrorMessage();
-            }
-          );
-        } else {
-          this.throwErrorMessage();
-        }
+        this.throwErrorMessage();
       }
     );
   }

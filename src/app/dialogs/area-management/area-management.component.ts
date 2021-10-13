@@ -153,6 +153,7 @@ export class AreaManagementComponent
     });
     area.areaPolygon = areaPolygon;
     super.saveChanges(area).then((res) => {
+      console.log(res);
       this.toastrService.success(
         "Der Regionalstellenbezirk " +
           area.name +

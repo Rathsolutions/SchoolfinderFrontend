@@ -11,27 +11,26 @@ export abstract class SavableComponent {
   constructor(
     protected calculationEventService: CalculationEventService,
     protected toastrService: ToastrService,
-    persistStrategy:PersistStrategy<any>,
-    protected mapEventService:MapUpdateEventService
+    persistStrategy: PersistStrategy<any>,
+    protected mapEventService: MapUpdateEventService
   ) {
     this.persistStrategy = persistStrategy;
   }
 
   protected async saveChanges(entityToPersist: any) {
     this.calculationEventService.emit(true);
-    this.persistStrategy.persist(entityToPersist).subscribe(
-      (res) => {
-        this.calculationEventService.emit(false);
-        this.mapEventService.emit(true);
-        return Promise.resolve(res);
-      },
-      (rej) => {
-        this.calculationEventService.emit(false);
-        this.toastrService.error(
-          "Bei der Erstellung ist ein Fehler aufgetreten! Bitte überprüfen Sie alle eingetragenen Werte"
-        );
-        return Promise.reject(rej);
-      }
-    );
+    try {
+      var response = await this.persistStrategy
+        .persist(entityToPersist)
+        .toPromise();
+      this.calculationEventService.emit(false);
+      this.mapEventService.emit(true);
+      return response;
+    } catch (err) {
+      this.calculationEventService.emit(false);
+      this.toastrService.error(
+        "Bei der Erstellung ist ein Fehler aufgetreten! Bitte überprüfen Sie alle eingetragenen Werte"
+      );
+    }
   }
 }

@@ -29,7 +29,19 @@ export class AddPersonComponent extends AbstractPersonViewData {
       this.functionalityName = data;
     });
     this.functionalityService.findAll().subscribe((res) => {
-      res.forEach((e) => this.functionalities.push(e.name));
+      res.forEach((e) => this.functionalities.push(e));
+    });
+  }
+
+  public personCategoryOpened(): void {
+    this.functionalityService.findAll().subscribe((res) => {
+      res.forEach((e) => {
+        if (!this.functionalities.some((f) => f.id == e.id)) {
+          this.functionalities.push(e);
+        }else if(this.functionalities.some((f) => f.id == e.id && f.name != e.name)){
+          this.functionalities.find((f) => f.id == e.id).name = e.name;
+        }
+      });
     });
   }
 

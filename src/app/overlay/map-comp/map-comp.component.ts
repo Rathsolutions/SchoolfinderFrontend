@@ -64,8 +64,8 @@ import GeoJSON from "ol/format/GeoJSON";
 })
 export class MapCompComponent implements OnInit {
   private map: Map;
-  private mapLayer: VectorLayer<any>;
-  private mapSource: VectorSource<any>;
+  private mapLayer: TileLayer<any>;
+  private mapSource: XYZ;
 
   @ViewChild("addPointComponentOverlay", { read: ViewContainerRef })
   addPointOverlayPlaceholder: ViewContainerRef;
@@ -227,7 +227,6 @@ export class MapCompComponent implements OnInit {
         this.map.removeInteraction(this.drawInstance);
         this.areaSelectionActive = false;
         this.institutionSelectionActive = false;
-        //TODO do update of area list in criteria component
       });
   }
 
@@ -246,7 +245,7 @@ export class MapCompComponent implements OnInit {
       .getGeometry() as Polygon;
     this.currentAreaEventData.area = [];
     for (let i = 0; i < polygon.getCoordinates()[0].length; i++) {
-      if(i != polygon.getCoordinates()[0].length-2){
+      if (i != polygon.getCoordinates()[0].length - 2) {
         this.currentAreaEventData.area.push(polygon.getCoordinates()[0][i]);
       }
     }
@@ -260,13 +259,12 @@ export class MapCompComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.mapSource = new VectorSource({
-      format: new GeoJSON(),
-      attributions: "© Nico Rath",
-      url: "https://mapserver.rathsolutions.de/styles/liberty/style.json",
+    this.mapSource = new XYZ({
+      attributions:
+        '© <a href=https://rathsolutions.de target="_blank">Nico Rath</a>, <a href="http://www.openstreetmaps.org/" target="_blank">OpenStreetMaps</a>, <a href="https://openlayers.org/" target="_blank">OpenLayers</a>',
+      url: "https://mapserver.rathsolutions.de/styles/liberty/{z}/{x}/{y}.png",
     });
-
-    this.mapLayer = new VectorLayer({
+    this.mapLayer = new TileLayer({
       source: this.mapSource,
     });
     this.sourceAreaVector = new VectorSource({});
@@ -303,10 +301,12 @@ export class MapCompComponent implements OnInit {
       this.map,
       this.visibilityDataElement
     );
-    olms(this.map, "https://mapserver.rathsolutions.de/styles/liberty/style.json").then((res) => {
-      this.map.addLayer(this.sourceAreaLayer);
-      this.map.addLayer(this.sourceWaypointLayer);
-    });
+    this.map.addLayer(this.mapLayer);
+    this.map.addLayer(this.sourceAreaLayer);
+    this.map.addLayer(this.sourceWaypointLayer);
+    // olms(this.map, "https://mapserver.rathsolutions.de/styles/liberty/style.json").then((res) => {
+
+    // });
   }
 
   public updateWaypoints(): void {
