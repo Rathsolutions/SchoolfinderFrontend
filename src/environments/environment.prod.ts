@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: "https://schoolfinderbackend.rathsolutions.de/api/v1/"
+  baseUrl: "https://schoolfinderbackendnew.rathsolutions.de/api/v1/"
 };

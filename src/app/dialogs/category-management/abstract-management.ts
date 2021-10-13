@@ -31,11 +31,12 @@ export abstract class AbstractManagement<
   }
 
   protected async saveChanges(entityToPersist: any) {
-    super.saveChanges(entityToPersist).then((res) => {
-      this.dialogRef.close(entityToPersist);
-      return Promise.resolve(res);
-    }).catch(rej=>{
-      return Promise.reject(rej);
-    });
+    return super
+      .saveChanges(entityToPersist)
+      .then((res) => {
+        console.log(res);
+        this.dialogRef.close(entityToPersist);
+      })
+      .catch((rej) => {});
   }
 }

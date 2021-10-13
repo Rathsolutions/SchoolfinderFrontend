@@ -29,7 +29,7 @@ export abstract class AbstractPersonViewData {
   newPointForm: FormGroup;
 
   emails: string[] = [];
-  functionalities: string[] = [];
+  functionalities: FunctionalityEntity[] = [];
 
   constructor(protected personsService: PersonsService) {}
 
