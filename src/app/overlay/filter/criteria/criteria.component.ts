@@ -69,6 +69,10 @@ import { VisibilityEventStrategy } from "src/app/broadcast-event-service/visibil
 import { AreaShowEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/AreaShowEventStrategy";
 import { AreaHideEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/AreaHideEventStrategy";
 import { CriteriaListEntriesChangedService } from "src/app/broadcast-event-service/CriteriaListEntriesChangedService";
+import { InformationType } from "src/app/entities/InformationType";
+import { InformationTypeService } from "src/app/services/information-type.service";
+import { AddAdditionalInformation } from "src/app/viewdata/additional-information/add/add-additional-information.component";
+import { AdditionalCategoryManagementComponentComponent as AdditionalCategoryTypeManagementComponentComponent } from "src/app/dialogs/category-management/additional-category-management-component/additional-category-management-component.component";
 
 @Component({
   selector: "criteria-filter-component",
@@ -83,6 +87,7 @@ export class CriteriaFilterComponent implements OnInit {
 
   allCriterias: CriteriaEntity[] = [];
   allAreas: AreaEntity[];
+  allAdditionalInformationTypes: InformationType[];
   allPersonCategories: FunctionalityEntity[] = [];
   allInstitutionCategories: ProjectCategoryEntity[] = [];
   selectedCriterias: CriteriaEntity[] = [];
@@ -110,6 +115,7 @@ export class CriteriaFilterComponent implements OnInit {
     private citiesService: CitiesService,
     private projectCategoryService: ProjectCategoryService,
     private functionalityService: FunctionalityService,
+    private informationTypeService: InformationTypeService,
     private areaService: AreaService,
     private dialog: MatDialog,
     private visibilityEventService: VisibilityEventService,
@@ -120,7 +126,6 @@ export class CriteriaFilterComponent implements OnInit {
     this.updateAllAreasList();
     this.updateAllCategoriesList();
     this.criteriaListEntriesChangedService.register().subscribe(() => {
-      console.log("update");
       this.setButtonsDisabled(false);
       this.updateAllCriteriasList();
       this.updateAllAreasList();
@@ -153,11 +158,15 @@ export class CriteriaFilterComponent implements OnInit {
   private updateAllCategoriesList() {
     this.allPersonCategories = [];
     this.allInstitutionCategories = [];
+    this.allAdditionalInformationTypes = [];
     this.functionalityService.findAll().subscribe((res) => {
       res.forEach((e) => this.allPersonCategories.push(e));
     });
     this.projectCategoryService.findAll().subscribe((res) => {
       res.forEach((e) => this.allInstitutionCategories.push(e));
+    });
+    this.informationTypeService.findAll().subscribe((result) => {
+      result.forEach((e) => this.allAdditionalInformationTypes.push(e));
     });
   }
 
@@ -235,6 +244,33 @@ export class CriteriaFilterComponent implements OnInit {
     );
   }
 
+  additionalInformationTypesSelectionTriggered(entity: InformationType) {
+    this.informationTypeService.findByValue(entity.name).subscribe(
+      (res) => {
+        var openedDialog = this.dialog.open(
+          AdditionalCategoryTypeManagementComponentComponent,
+          {
+            data: {
+              adminNotice:
+                "In dieser Ansicht haben Sie die Möglichkeit, die Zusatzkategorie " +
+                res.name +
+                " zu bearbeiten.",
+              name: res.name,
+              id: res.id,
+              persistStrategy: new EditStrategy<InformationType>(),
+            },
+          }
+        );
+        openedDialog
+          .afterClosed()
+          .subscribe(this.handleCategoryDialogClose.bind(this));
+      },
+      (rejTwo) => {
+        this.throwErrorMessage();
+      }
+    );
+  }
+
   public institutionCategorySelectionTriggered(entity: ProjectCategoryEntity) {
     this.projectCategoryService.findProjectByName(entity.name).subscribe(
       (res) => {
@@ -288,7 +324,7 @@ export class CriteriaFilterComponent implements OnInit {
               this.categoryName +
               " zu erstellen.",
             name: this.categoryName,
-            persistStrategy: new CreateStrategy<FunctionalityEntity>(),
+            persistStrategy: new CreateStrategy<any>(),
           },
         });
         openedDialog

@@ -35,7 +35,11 @@ export abstract class AbstractManagement<
       .saveChanges(entityToPersist)
       .then((res) => {
         console.log(res);
-        this.dialogRef.close(entityToPersist);
+        if(res){
+          this.dialogRef.close(entityToPersist);
+        }else{
+          this.dialogRef.close();
+        }
       })
       .catch((rej) => {});
   }

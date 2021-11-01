@@ -44,6 +44,8 @@ import { SchoolCategoryManagementComponent } from "./dialogs/category-management
 import { CreateCategoryComponent } from "./dialogs/category-management/create-category/create-category.component";
 import { PersonCategoryManagementComponent } from "./dialogs/category-management/person-category-management/person-category-management.component";
 import { AreaManagementComponent } from "./dialogs/area-management/area-management.component";
+import { AddAdditionalInformation } from "./viewdata/additional-information/add/add-additional-information.component";
+import { AdditionalCategoryManagementComponentComponent } from './dialogs/category-management/additional-category-management-component/additional-category-management-component.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +65,8 @@ import { AreaManagementComponent } from "./dialogs/area-management/area-manageme
     CreateCategoryComponent,
     PersonCategoryManagementComponent,
     AreaManagementComponent,
+    AddAdditionalInformation,
+    AdditionalCategoryManagementComponentComponent,
   ],
   imports: [
     BrowserModule,

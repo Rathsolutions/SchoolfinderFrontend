@@ -141,6 +141,13 @@
                 >{{ category.name }}</mat-option
               >
             </mat-optgroup>
+            <mat-optgroup label="Zusatzkategorien">
+              <mat-option #matOption (click)="additionalInformationTypesSelectionTriggered(category)"
+                *ngFor="let category of allAdditionalInformationTypes"
+                [value]="category"
+                >{{ category.name }}</mat-option
+              >
+            </mat-optgroup>
           </mat-select>
         </mat-form-field>
         <button

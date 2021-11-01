@@ -1,0 +1,15 @@
+<!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
+<h1 mat-dialog-title>Zusatzkategorie editieren</h1>
+<div mat-dialog-content id="dialogContent">
+  <p>
+    {{ data.adminNotice }}
+  </p>
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="data.name" />
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Abbruch</button>
+  <button mat-button (click)="saveChanges()">Änderungen speichern</button>
+</div>

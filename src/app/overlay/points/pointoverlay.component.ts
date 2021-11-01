@@ -37,8 +37,8 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
   public schoolName: FormControl = new FormControl("", Validators.required);
   public shortSchoolName: FormControl = new FormControl("");
   // public colorCtr: AbstractControl = new FormControl("#ff0000", [
-    // Validators.required,
-    // Validators.pattern("^#[0-9A-Fa-f]{6}$"),
+  // Validators.required,
+  // Validators.pattern("^#[0-9A-Fa-f]{6}$"),
   // ]);
 
   public projectCategory: FormControl = new FormControl(
@@ -72,40 +72,37 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
     this.projectPrimaryCategory = new FormControl("");
   }
 
-  async loadNewSchool(id: number) {
+  async loadNewSchool(id: number): Promise<SchoolPersonEntity> {
     this.prepareNewSchool();
-    return new Promise((resolve) => {
-      this.schoolsService.getSchoolDetails(id).subscribe((result) => {
-        this.schoolId = result.id;
-        this.shortSchoolName.setValue(result.shortSchoolName);
-        this.schoolName.setValue(result.schoolName);
-        // if (result.color) {
-        //   var r = parseInt(result.color.substr(0, 2), 16);
-        //   var g = parseInt(result.color.substr(2, 2), 16);
-        //   var b = parseInt(result.color.substr(4, 2), 16);
-          // this.colorCtr.setValue(new Color(r, g, b));
-        // } else {
-          // this.colorCtr.setValue(new Color(255, 0, 0));
-        // }
-        result.personSchoolMapping.forEach((e) => {
-          var personViewInstance = this.appendPersonViewDataInstance();
-          personViewInstance.prefill(e);
-          this.persons.push(personViewInstance);
-        });
-        if (result.schoolPicture) {
-          var buffer = new ArrayBuffer(result.schoolPicture.length);
-          var intArray = new Uint8Array(buffer);
-          for (let i = 0; i < result.schoolPicture.length; i++) {
-            intArray[i] = result.schoolPicture.charCodeAt(i);
-          }
-          this.image = result.schoolPicture;
-          this.alternativePictureText.setValue(result.alternativePictureText);
-        } else {
-          this.image = null;
-        }
-        resolve(result);
-      });
+    var result = await this.schoolsService.getSchoolDetails(id).toPromise();
+    this.schoolId = result.id;
+    this.shortSchoolName.setValue(result.shortSchoolName);
+    this.schoolName.setValue(result.schoolName);
+    // if (result.color) {
+    //   var r = parseInt(result.color.substr(0, 2), 16);
+    //   var g = parseInt(result.color.substr(2, 2), 16);
+    //   var b = parseInt(result.color.substr(4, 2), 16);
+    // this.colorCtr.setValue(new Color(r, g, b));
+    // } else {
+    // this.colorCtr.setValue(new Color(255, 0, 0));
+    // }
+    result.personSchoolMapping.forEach((e) => {
+      var personViewInstance = this.appendPersonViewDataInstance();
+      personViewInstance.prefill(e);
+      this.persons.push(personViewInstance);
     });
+    if (result.schoolPicture) {
+      var buffer = new ArrayBuffer(result.schoolPicture.length);
+      var intArray = new Uint8Array(buffer);
+      for (let i = 0; i < result.schoolPicture.length; i++) {
+        intArray[i] = result.schoolPicture.charCodeAt(i);
+      }
+      this.image = result.schoolPicture;
+      this.alternativePictureText.setValue(result.alternativePictureText);
+    } else {
+      this.image = null;
+    }
+    return result;
   }
 
   protected abstract appendPersonViewDataInstance(): AbstractPersonViewData;

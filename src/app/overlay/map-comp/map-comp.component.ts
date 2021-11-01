@@ -408,13 +408,15 @@ export class MapCompComponent implements OnInit {
         this.showPointOverlayPlaceholder.clear();
       }
       this.map.addOverlay(overlayMap);
-      this.addPointOverlay.setLat(latlong[0]);
-      this.addPointOverlay.setLong(latlong[1]);
-      this.addPointOverlay.setVisible(true);
-      this.addPointOverlay.prepareNewSchool();
-      if (point) {
-        this.addPointOverlay.prefillByPointId((point as any).getId());
-      }
+      this.addPointOverlay.init().then((res) => {
+        this.addPointOverlay.setLat(latlong[0]);
+        this.addPointOverlay.setLong(latlong[1]);
+        this.addPointOverlay.prepareNewSchool();
+        this.addPointOverlay.setVisible(true);
+        if (point) {
+          this.addPointOverlay.prefillByPointId((point as any).getId());
+        }
+      });
     } else if (!UserService.isLoggedIn() && point && point.getId()) {
       this.showPointOverlayPlaceholder.clear();
       var compFactoryShowPoint =

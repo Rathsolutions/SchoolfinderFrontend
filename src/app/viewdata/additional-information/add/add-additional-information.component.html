@@ -1,0 +1,26 @@
+<!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
+<mat-expansion-panel>
+    <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
+        <mat-panel-title>
+            Weitere Information - {{type.value}}
+        </mat-panel-title>
+        <mat-panel-description>
+            Eine weitere Information dieser Institution
+        </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div>
+        <mat-form-field appearance="fill">
+            <mat-label>Typ</mat-label>
+            <mat-select [formControl]="type" (opened)="typeOpened()">
+              <mat-option *ngFor="let func of informationTypes" [value]="func.name">{{
+                func.name
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        <mat-form-field>
+            <mat-label>Wert</mat-label>
+            <input matInput [formControl]="value" required>
+        </mat-form-field>
+    </div>
+    <button mat-raised-button color="warn" (click)="removeFromSchool()">Kriterium löschen</button>
+</mat-expansion-panel>

@@ -6,6 +6,7 @@ import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdate
 import { FunctionalityService } from "src/app/services/functionality.service";
 import { ProjectCategoryService } from "src/app/services/project-category.service";
 import { AbstractManagement } from "../abstract-management";
+import { AdditionalCategoryManagementComponentComponent } from "../additional-category-management-component/additional-category-management-component.component";
 import { PersonCategoryManagementComponent } from "../person-category-management/person-category-management.component";
 import { SchoolCategoryManagementComponent } from "../school-category-management/school-category-management.component";
 
@@ -43,6 +44,12 @@ export class CreateCategoryComponent
   onCreatePersonCategoryClicked(): void {
     var type: Type<PersonCategoryManagementComponent> =
       PersonCategoryManagementComponent;
+    this.dialogRef.close(type);
+  }
+
+  onCreateAdditionalCategoryClicked(): void {
+    var type: Type<AdditionalCategoryManagementComponentComponent> =
+      AdditionalCategoryManagementComponentComponent;
     this.dialogRef.close(type);
   }
 }

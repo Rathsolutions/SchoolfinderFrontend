@@ -82,17 +82,11 @@ export class AddPointOverlay
     private saveEventService: MapUpdateEventService
   ) {
     super(schoolService, personsService);
-    this.init();
-    this.projectCategoryService.findAll().subscribe((res) => {
-      res.forEach((e) => {
-        this.projectCategories.push(e);
-      });
-    });
   }
 
   ngOnInit(): void {}
 
-  private init() {
+  public async init() {
     this.newPointForm = this.formBuilder.group({
       shortSchoolName: this.shortSchoolName,
       schoolName: this.schoolName,
@@ -103,6 +97,12 @@ export class AddPointOverlay
     });
     this.criterias = [];
     this.prefilled = false;
+    var res = await this.projectCategoryService.findAll().toPromise();
+    this.projectCategories = [];
+    res.forEach((e) => {
+      console.log(e);
+      this.projectCategories.push(e);
+    });
   }
 
   public prepareNewSchool() {
@@ -166,7 +166,9 @@ export class AddPointOverlay
       res.forEach((e) => {
         if (!this.projectCategories.some((f) => f.id == e.id)) {
           this.projectCategories.push(e);
-        }else if(this.projectCategories.some((f) => f.id == e.id && f.name != e.name)){
+        } else if (
+          this.projectCategories.some((f) => f.id == e.id && f.name != e.name)
+        ) {
           this.projectCategories.find((f) => f.id == e.id).name = e.name;
         }
       });
@@ -274,27 +276,26 @@ export class AddPointOverlay
       });
   }
 
-  public prefillByPointId(pointId: number): void {
+  public async prefillByPointId(pointId: number) {
     this.init();
-    this.loadNewSchool(pointId).then((res: SchoolPersonEntity) => {
-      var matchingProjects = [];
-      res.projects.forEach((e) => {
-        var curProjInstance = this.projectCategories.filter(
-          (p) => p.id == e.id
-        )[0];
-        if (curProjInstance) {
-          matchingProjects.push(curProjInstance);
-          if (curProjInstance.id == res.primaryProject.id) {
-            this.projectPrimaryCategory.setValue(curProjInstance);
-          }
+    var res = await this.loadNewSchool(pointId);
+    var matchingProjects = [];
+    res.projects.forEach((e) => {
+      var curProjInstance = this.projectCategories.filter(
+        (p) => p.id == e.id
+      )[0];
+      if (curProjInstance) {
+        matchingProjects.push(curProjInstance);
+        if (curProjInstance.id == res.primaryProject.id) {
+          this.projectPrimaryCategory.setValue(curProjInstance);
         }
-      });
-      this.projectCategory.setValue(matchingProjects);
-      this.prefilled = true;
-      res.matchingCriterias.forEach((e) => {
-        var currentComponent = this.addCriteriaButton();
-        currentComponent.instance.criteriaName.setValue(e.criteriaName);
-      });
+      }
+    });
+    this.projectCategory.setValue(matchingProjects);
+    this.prefilled = true;
+    res.matchingCriterias.forEach((e) => {
+      var currentComponent = this.addCriteriaButton();
+      currentComponent.instance.criteriaName.setValue(e.criteriaName);
     });
   }
 
