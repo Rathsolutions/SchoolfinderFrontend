@@ -25,6 +25,7 @@ import { SchoolPersonEntity } from "src/app/entities/SchoolPersonEntity";
 import { Color } from "@angular-material-components/color-picker";
 import { parse } from "url";
 import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
+import { AbstractAdditionalInformation } from "src/app/viewdata/additional-information/AbstractAdditionalInformation";
 
 @Directive()
 export abstract class PointOverlay implements AfterViewInit, OnDestroy {
@@ -91,6 +92,11 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
       personViewInstance.prefill(e);
       this.persons.push(personViewInstance);
     });
+    result.additionalInformation.forEach((e) => {
+      var additionalInformationInstance =
+        this.appendAdditionalInformationInstance();
+      additionalInformationInstance.prefill(e);
+    });
     if (result.schoolPicture) {
       var buffer = new ArrayBuffer(result.schoolPicture.length);
       var intArray = new Uint8Array(buffer);
@@ -104,6 +110,8 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
     }
     return result;
   }
+
+  protected abstract appendAdditionalInformationInstance(): AbstractAdditionalInformation;
 
   protected abstract appendPersonViewDataInstance(): AbstractPersonViewData;
 

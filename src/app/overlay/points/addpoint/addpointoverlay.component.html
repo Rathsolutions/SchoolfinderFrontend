@@ -1,6 +1,6 @@
 <!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
 <div [ngStyle]="{ display: visible ? 'block' : 'none' }">
-  <mat-card style="max-width: inherit; width: 400px; margin: 10px">
+  <mat-card style="max-width: inherit; width: 450px; margin: 10px">
     <mat-card-header>
       <mat-card-title>Institution hinzufügen</mat-card-title>
       <mat-card-subtitle
@@ -119,6 +119,18 @@
                 style="margin-left: 16px"
               >
                 Person hinzufügen
+              </button>
+            </div>
+            <div #additionalInformationPlaceholder></div>
+            <div class="spaceAround">
+              <button
+                style="margin-right: 10px; margin-left: 16px"
+                mat-raised-button
+                color="primary"
+                (click)="addAdditionalInformationButton()"
+                type="button"
+              >
+                Zusatzeigenschaft hinzufügen
               </button>
             </div>
             <div #criteriaPlaceholder></div>

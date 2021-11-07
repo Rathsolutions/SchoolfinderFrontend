@@ -1,40 +1,43 @@
 /*Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE*/
 .gradient {
-    background: #f5f5f5;
-    border: 1px solid #FFF;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    box-shadow: 1px 2px 4px rgba(0,0,0,.4);
+  background: #f5f5f5;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.4);
+}
+/* expansion panel max width for having an equal span in cards */
+.mat-expansion-panel-header-title {
+  width: 200px;
 }
 
-.spaceAround{
-    margin-top: 10px;
-    margin-right: 10px;
+.spaceAround {
+  margin-top: 10px;
+  margin-right: 10px;
 }
 
 #file {
-    display: none;
+  display: none;
 }
 
-@media only screen and (max-width : 500px) {
-    .gradient{
-        max-width: 70vw;
-    }
-    .propertiesForm{
-        max-height: 60vh;
-        overflow-y: auto;
-    }
+@media only screen and (max-width: 500px) {
+  .gradient {
+    max-width: 70vw;
+  }
+  .propertiesForm {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
 }
 
-@media only screen and (min-width : 501px) {
-    .gradient{
-        max-width: 30vw;
-    }
-    .propertiesForm{
-        max-height: 80vh;
-        overflow-x: hidden;
-        overflow-y: auto;
-    }
-
+@media only screen and (min-width: 501px) {
+  .gradient {
+    max-width: 30vw;
+  }
+  .propertiesForm {
+    max-height: 80vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
 }

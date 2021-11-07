@@ -20,6 +20,7 @@ import { ToastrService } from "ngx-toastr";
 import { Observable, Subject } from "rxjs";
 import { map } from "rxjs/operators";
 import { CriteriaEntity } from "src/app/entities/CriteriaEntity";
+import { RemoveableComponent } from "src/app/viewdata/RemoveableComponent";
 
 import { CriteriaService } from "../../../../services/criteria.service";
 import { AddPointOverlay } from "../addpointoverlay.component";
@@ -29,12 +30,12 @@ import { AddPointOverlay } from "../addpointoverlay.component";
   templateUrl: "./addcriteria.component.html",
   styleUrls: ["./addcriteria.component.css"],
 })
-export class AddCriteriaComponent {
+export class AddCriteriaComponent implements RemoveableComponent {
   criteriaName: FormControl = new FormControl("");
   newPointForm: FormGroup;
   possibleCriterias: string[] = [];
 
-  removeListener: Subject<string> = new Subject();
+  private removeListener: Subject<AddCriteriaComponent> = new Subject();
 
   collapsedHeight = "5vh";
 
@@ -43,9 +44,18 @@ export class AddCriteriaComponent {
       this.updateCriteriaCache(data);
     });
   }
+  onRemove(): Subject<any> {
+    return this.removeListener;
+  }
+
+  public toCriteriaEntity(): CriteriaEntity {
+    var entity = new CriteriaEntity();
+    entity.criteriaName = this.criteriaName.value;
+    return entity;
+  }
 
   public removeCriteriaFromSchool() {
-    this.removeListener.next(this.criteriaName.value);
+    this.removeListener.next(this);
   }
 
   public setNewPointForm(newPointForm: FormGroup) {

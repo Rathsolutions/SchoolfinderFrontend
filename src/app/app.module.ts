@@ -46,6 +46,7 @@ import { PersonCategoryManagementComponent } from "./dialogs/category-management
 import { AreaManagementComponent } from "./dialogs/area-management/area-management.component";
 import { AddAdditionalInformation } from "./viewdata/additional-information/add/add-additional-information.component";
 import { AdditionalCategoryManagementComponentComponent } from './dialogs/category-management/additional-category-management-component/additional-category-management-component.component';
+import { ShowAdditionalInformation } from "./viewdata/additional-information/show/show-additional-information.component";
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { AdditionalCategoryManagementComponentComponent } from './dialogs/catego
     PersonCategoryManagementComponent,
     AreaManagementComponent,
     AddAdditionalInformation,
+    ShowAdditionalInformation,
     AdditionalCategoryManagementComponentComponent,
   ],
   imports: [

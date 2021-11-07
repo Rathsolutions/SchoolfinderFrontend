@@ -39,6 +39,8 @@ import { ThemePalette } from "@angular/material/core";
 import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
 import { ProjectCategoryService } from "src/app/services/project-category.service";
 import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
+import { AddAdditionalInformation } from "src/app/viewdata/additional-information/add/add-additional-information.component";
+import { RemoveableComponent } from "src/app/viewdata/RemoveableComponent";
 
 @Component({
   selector: "addpointeroverlay-component",
@@ -51,7 +53,8 @@ export class AddPointOverlay
 {
   @ViewChild("criteriaPlaceholder", { read: ViewContainerRef })
   criteriaPlaceholder: ViewContainerRef;
-
+  @ViewChild("additionalInformationPlaceholder", { read: ViewContainerRef })
+  additionalInformationPlaceholder: ViewContainerRef;
   @ViewChild("addPersonOverlay", { read: ViewContainerRef })
   addPersonOverlay: ViewContainerRef;
 
@@ -62,6 +65,7 @@ export class AddPointOverlay
 
   projectCategories: ProjectCategoryEntity[] = [];
   private personsComponent: AddPersonComponent[] = [];
+  private additionalInformationComponent: AddAdditionalInformation[] = [];
 
   collapsedHeight = "10vh";
 
@@ -100,7 +104,6 @@ export class AddPointOverlay
     var res = await this.projectCategoryService.findAll().toPromise();
     this.projectCategories = [];
     res.forEach((e) => {
-      console.log(e);
       this.projectCategories.push(e);
     });
   }
@@ -115,27 +118,40 @@ export class AddPointOverlay
     this.resetForm();
   }
 
-  public addPersonButton(): AddPersonComponent {
-    var addPersonComponentFactory =
-      this.componentFactoryResolver.resolveComponentFactory(AddPersonComponent);
-    var personInstance = this.addPersonOverlay.createComponent(
-      addPersonComponentFactory
-    ).instance;
-    personInstance.removeListener.subscribe((res: AddPersonComponent) => {
-      var remainingPersons = [];
+  public addPersonButton(): ComponentRef<AddPersonComponent> {
+    return this.handleViewButtonClicked(
+      AddPersonComponent,
+      this.addPersonOverlay,
+      this.personsComponent
+    );
+  }
+
+  private handleViewButtonClicked<T extends RemoveableComponent>(
+    componentToRegister: Type<T>,
+    viewContainer: ViewContainerRef,
+    componentArray: RemoveableComponent[]
+  ): ComponentRef<T> {
+    var componentFactory =
+      this.componentFactoryResolver.resolveComponentFactory(
+        componentToRegister
+      );
+    var viewInstance = viewContainer.createComponent(componentFactory);
+    viewInstance.instance.onRemove().subscribe((res: any) => {
+      var remainingComponents = [];
       var i = 0;
-      this.personsComponent.forEach((e) => {
+      componentArray.forEach((e) => {
         if (e != res) {
-          remainingPersons.push(e);
+          remainingComponents.push(e);
         } else {
-          this.addPersonOverlay.remove(i);
+          viewContainer.remove(i);
         }
         i++;
       });
-      this.personsComponent = remainingPersons;
+      componentArray.splice(0, componentArray.length);
+      remainingComponents.forEach((e) => componentArray.push(e));
     });
-    this.personsComponent.push(personInstance);
-    return personInstance;
+    componentArray.push(viewInstance.instance);
+    return viewInstance;
   }
 
   resetForm() {
@@ -212,16 +228,16 @@ export class AddPointOverlay
     this.personsComponent.forEach(async (person) => {
       promisesToWait.push(
         person.getOrInsertPerson().then((e) => {
-          console.log(e);
           allPersonViewInstances.push(e);
           return e;
         })
       );
     });
     this.criterias.forEach((e) => {
-      var criteriaEntity = new CriteriaEntity();
-      criteriaEntity.criteriaName = e.criteriaName.value;
-      school.matchingCriterias.push(criteriaEntity);
+      school.matchingCriterias.push(e.toCriteriaEntity());
+    });
+    this.additionalInformationComponent.forEach((e) => {
+      school.additionalInformation.push(e.toAdditionalInformationEntity());
     });
     this.projectCategory.value.forEach((element) => {
       school.projects.push(element);
@@ -299,27 +315,24 @@ export class AddPointOverlay
     });
   }
 
+  protected appendAdditionalInformationInstance(): AddAdditionalInformation {
+    return this.addAdditionalInformationButton().instance;
+  }
+
   addCriteriaButton(): ComponentRef<AddCriteriaComponent> {
-    var componentFactory =
-      this.componentFactoryResolver.resolveComponentFactory(
-        AddCriteriaComponent
-      );
-    var component = this.criteriaPlaceholder.createComponent(componentFactory);
-    component.instance.removeListener.subscribe((res) => {
-      var remainingCriterias = [];
-      var i = 0;
-      this.criterias.forEach((e) => {
-        if (e.criteriaName.value != res) {
-          remainingCriterias.push(e);
-        } else {
-          this.criteriaPlaceholder.remove(i);
-        }
-        i++;
-      });
-      this.criterias = remainingCriterias;
-    });
-    this.criterias.push(component.instance);
-    return component;
+    return this.handleViewButtonClicked(
+      AddCriteriaComponent,
+      this.criteriaPlaceholder,
+      this.criterias
+    );
+  }
+
+  addAdditionalInformationButton(): ComponentRef<AddAdditionalInformation> {
+    return this.handleViewButtonClicked(
+      AddAdditionalInformation,
+      this.additionalInformationPlaceholder,
+      this.additionalInformationComponent
+    );
   }
 
   removeAllCriteriaButtons() {
@@ -333,7 +346,7 @@ export class AddPointOverlay
   ngOnDestroy() {}
 
   protected appendPersonViewDataInstance(): AbstractPersonViewData {
-    return this.addPersonButton();
+    return this.addPersonButton().instance;
   }
 
   public setLat(lat: number): void {

@@ -1,4 +1,4 @@
-export class AdditionalInformationEntity{
+export class AdditionalInformationDTO{
     id:number;
     value:string;
     type:string;

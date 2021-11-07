@@ -7,15 +7,16 @@ import { PersonEntity } from "src/app/entities/PersonEntity";
 import { Component } from "@angular/core";
 import { FunctionalityService } from "src/app/services/functionality.service";
 import { Subject } from "rxjs";
+import { RemoveableComponent } from "../RemoveableComponent";
 
 @Component({
   selector: "addperson-overlay-component",
   templateUrl: "./addperson.component.html",
   styleUrls: ["./addperson.component.css"],
 })
-export class AddPersonComponent extends AbstractPersonViewData {
+export class AddPersonComponent extends AbstractPersonViewData implements RemoveableComponent{
   functionalityName: string = "Auszufüllende";
-  removeListener: Subject<AddPersonComponent> = new Subject();
+  private removeListener: Subject<AddPersonComponent> = new Subject();
   constructor(
     protected personsService: PersonsService,
     private toastr: ToastrService,
@@ -31,6 +32,9 @@ export class AddPersonComponent extends AbstractPersonViewData {
     this.functionalityService.findAll().subscribe((res) => {
       res.forEach((e) => this.functionalities.push(e));
     });
+  }
+  onRemove(): Subject<any> {
+    return this.removeListener;
   }
 
   public personCategoryOpened(): void {

@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
 import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
-import { AdditionalInformationEntity } from "src/app/entities/AdditionalInformationEntity";
+import { AdditionalInformationDTO } from "src/app/entities/AdditionalInformationEntity";
 import { FunctionalityEntity } from "src/app/entities/FunctionalityEntity";
 import { InformationType } from "src/app/entities/InformationType";
 import { AdditionalInformationService } from "src/app/services/additional-information.service";

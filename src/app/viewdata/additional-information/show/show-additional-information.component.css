@@ -1,0 +1,20 @@
+.entrySet {
+  display: flex;
+  flex-direction: row;
+}
+/* expansion panel max width for having an equal span in cards */
+.mat-expansion-panel-header-title {
+  max-width: 30%;
+}
+.subheadline {
+  flex-grow: 1;
+  /* align-self: flex-start; */
+  max-width: 30%;
+  margin-right: 13px;
+  font-weight: bold;
+}
+
+.content {
+  flex-grow: 2;
+  /* align-self: flex-end; */
+}

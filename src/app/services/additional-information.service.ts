@@ -2,31 +2,22 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AdditionalInformationEntity } from "../entities/AdditionalInformationEntity";
+import { AdditionalInformationDTO } from "../entities/AdditionalInformationEntity";
 import { AreaEntity } from "../entities/AreaEntity";
 import { OsmPOIEntity } from "../entities/OsmPOIEntity";
 import { BaseService } from "./base.service";
 @Injectable({
   providedIn: "root",
 })
-export class AdditionalInformationService extends BaseService<AdditionalInformationEntity> {
+export class AdditionalInformationService extends BaseService<AdditionalInformationDTO> {
   constructor(http: HttpClient) {
     super(http, "additional-information");
   }
 
 
-  public findAllTypes(): Observable<String[]> {
+  public findByName(name: string): Observable<AdditionalInformationDTO> {
     return this.http
-      .get<String[]>(this.requestURL + "/search/findAllTypes", {
-        withCredentials: BaseService.HTTP_OPTIONS.withCredentials,
-        headers: BaseService.HTTP_OPTIONS.headers,
-      })
-      .pipe();
-  }
-
-  public findByName(name: string): Observable<AdditionalInformationEntity> {
-    return this.http
-      .get<AdditionalInformationEntity>(
+      .get<AdditionalInformationDTO>(
         this.requestURL + "/search/findByName",
         {
           params: {

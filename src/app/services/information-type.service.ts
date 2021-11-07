@@ -2,7 +2,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AdditionalInformationEntity } from "../entities/AdditionalInformationEntity";
+import { AdditionalInformationDTO } from "../entities/AdditionalInformationEntity";
 import { AreaEntity } from "../entities/AreaEntity";
 import { InformationType } from "../entities/InformationType";
 import { OsmPOIEntity } from "../entities/OsmPOIEntity";

@@ -11,6 +11,7 @@ import {
   ViewChildren,
   ComponentFactoryResolver,
   ViewContainerRef,
+  ComponentRef,
 } from "@angular/core";
 import {
   FormControl,
@@ -26,6 +27,8 @@ import { PersonsService } from "src/app/services/persons.service";
 import { AbstractPersonViewData } from "../../../viewdata/AbstractPersonViewData";
 import { ShowPersonComponent } from "../../../viewdata/viewonly-person/showperson.component";
 import * as olPixel from "ol/pixel";
+import { AbstractAdditionalInformation } from "src/app/viewdata/additional-information/AbstractAdditionalInformation";
+import { ShowAdditionalInformation } from "src/app/viewdata/additional-information/show/show-additional-information.component";
 
 @Component({
   selector: "showpoint-component",
@@ -38,8 +41,10 @@ export class ShowPointOverlay
 {
   currentFontRatio = 1.0;
 
-  @ViewChild("showPersonOverlay", { read: ViewContainerRef })
-  showPersonOverlay: ViewContainerRef;
+  @ViewChild("informationOverlay", { read: ViewContainerRef })
+  informationOverlay: ViewContainerRef;
+
+  additionalInformationComponent: ComponentRef<ShowAdditionalInformation>;
 
   collapsedHeight = "60px";
 
@@ -58,19 +63,28 @@ export class ShowPointOverlay
   setVisible(visible: boolean) {
     this.visible = visible;
   }
-
+  protected appendAdditionalInformationInstance(): ShowAdditionalInformation {
+    return this.additionalInformationComponent.instance;
+  }
   protected appendPersonViewDataInstance(): AbstractPersonViewData {
     var addPersonComponentFactory =
       this.componentFactoryResolver.resolveComponentFactory(
         ShowPersonComponent
       );
-    return this.showPersonOverlay.createComponent(addPersonComponentFactory)
+    return this.informationOverlay.createComponent(addPersonComponentFactory)
       .instance;
   }
 
   onSubmit(data) {}
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+    var componentFactory =
+      this.componentFactoryResolver.resolveComponentFactory(
+        ShowAdditionalInformation
+      );
+    this.additionalInformationComponent =
+      this.informationOverlay.createComponent(componentFactory);
+  }
 
   ngOnDestroy() {}
 }
