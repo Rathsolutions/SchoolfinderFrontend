@@ -6,7 +6,7 @@ import { AdditionalInformationDTO } from "./AdditionalInformationEntity";
 
 export class SchoolPersonEntity {
   id: number;
-  imageIcon:string;
+  imageIcon: string;
   shortSchoolName: string;
   schoolName: string;
   schoolPicture: string;
@@ -16,7 +16,12 @@ export class SchoolPersonEntity {
   personSchoolMapping: PersonFunctionalityEntity[] = [];
   matchingCriterias: CriteriaEntity[] = [];
   projects: ProjectCategoryEntity[] = [];
-  primaryProject:ProjectCategoryEntity;
-  correspondingAreaName:string;
-  additionalInformation:AdditionalInformationDTO[] = [];
+  primaryProject: ProjectCategoryEntity;
+  correspondingAreaName: string;
+  additionalInformation: AdditionalInformationDTO[] = [];
+  schoolType: string;
+  address: string;
+  generalPhoneNumber: string;
+  generalEmail: string;
+  homepage: string;
 }

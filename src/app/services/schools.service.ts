@@ -78,7 +78,7 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
     }
     return this.http.get<SchoolPersonEntity[]>(
       this.requestURL +
-        "/search/findAllSchoolsInBoundsHavingCriteriasAndProject",
+      "/search/findAllSchoolsInBoundsHavingCriteriasAndProject",
       {
         params: paramsObj,
       }
@@ -135,6 +135,10 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
     );
   }
 
+  public getAllTypes(): Observable<String[]> {
+    return this.http.get<String[]>(this.requestURL + "/search/getAllTypes", BaseService.HTTP_OPTIONS);
+  }
+
   public findPersonFunctionalityForPersonSchoolMapping(
     schoolId: number,
     personId: number,
@@ -142,7 +146,7 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
   ) {
     return this.http.get<number>(
       this.requestURL +
-        "/search/findPersonFunctionalityForPersonAndSchoolAndFunctionality",
+      "/search/findPersonFunctionalityForPersonAndSchoolAndFunctionality",
       {
         params: {
           schoolId: schoolId.toString(),

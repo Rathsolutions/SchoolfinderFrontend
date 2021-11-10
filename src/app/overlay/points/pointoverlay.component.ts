@@ -35,6 +35,13 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
 
   persons: AbstractPersonViewData[] = [];
 
+
+  public kind: FormControl = new FormControl("", Validators.required);
+  public address: FormControl = new FormControl("", Validators.required);
+  public generalPhoneNumber: FormControl = new FormControl("", Validators.required);
+  public generalEmail: FormControl = new FormControl("", Validators.required);
+  public homepage: FormControl = new FormControl("", Validators.required);
+
   public schoolName: FormControl = new FormControl("", Validators.required);
   public shortSchoolName: FormControl = new FormControl("");
   // public colorCtr: AbstractControl = new FormControl("#ff0000", [
@@ -57,7 +64,7 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
   constructor(
     protected schoolsService: SchoolsService,
     protected personsService: PersonsService
-  ) {}
+  ) { }
 
   setVisible(visible: boolean) {
     this.visible = visible;
@@ -71,6 +78,11 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
     this.alternativePictureText = new FormControl("");
     this.projectCategory = new FormControl("");
     this.projectPrimaryCategory = new FormControl("");
+    this.kind = new FormControl("");
+    this.address = new FormControl("");
+    this.generalPhoneNumber = new FormControl("");
+    this.generalEmail = new FormControl("");
+    this.homepage = new FormControl("");
   }
 
   async loadNewSchool(id: number): Promise<SchoolPersonEntity> {
@@ -79,6 +91,11 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
     this.schoolId = result.id;
     this.shortSchoolName.setValue(result.shortSchoolName);
     this.schoolName.setValue(result.schoolName);
+    this.kind.setValue(result.schoolType);
+    this.address.setValue(result.address);
+    this.generalPhoneNumber.setValue(result.generalPhoneNumber);
+    this.generalEmail.setValue(result.generalEmail);
+    this.homepage.setValue(result.homepage);
     // if (result.color) {
     //   var r = parseInt(result.color.substr(0, 2), 16);
     //   var g = parseInt(result.color.substr(2, 2), 16);
@@ -115,9 +132,9 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
 
   protected abstract appendPersonViewDataInstance(): AbstractPersonViewData;
 
-  onSubmit(data) {}
+  onSubmit(data) { }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() { }
 
-  ngOnDestroy() {}
+  ngOnDestroy() { }
 }

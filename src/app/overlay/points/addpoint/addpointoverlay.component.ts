@@ -49,8 +49,7 @@ import { RemoveableComponent } from "src/app/viewdata/RemoveableComponent";
 })
 export class AddPointOverlay
   extends PointOverlay
-  implements AfterViewInit, OnDestroy, OnInit
-{
+  implements AfterViewInit, OnDestroy, OnInit {
   @ViewChild("criteriaPlaceholder", { read: ViewContainerRef })
   criteriaPlaceholder: ViewContainerRef;
   @ViewChild("additionalInformationPlaceholder", { read: ViewContainerRef })
@@ -75,6 +74,7 @@ export class AddPointOverlay
   visible: boolean;
   prefilled: boolean = false;
   newPointForm: FormGroup;
+  allSchoolTypes: String[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -86,9 +86,12 @@ export class AddPointOverlay
     private saveEventService: MapUpdateEventService
   ) {
     super(schoolService, personsService);
+    schoolService.getAllTypes().subscribe(res => {
+      this.allSchoolTypes = res;
+    })
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   public async init() {
     this.newPointForm = this.formBuilder.group({
@@ -196,8 +199,8 @@ export class AddPointOverlay
       (result) => {
         this.toastr.success(
           "Die Institution '" +
-            this.schoolName.value +
-            "' wurde erfolgreich gelöscht!"
+          this.schoolName.value +
+          "' wurde erfolgreich gelöscht!"
         );
         this.setVisible(false);
         this.saveEventService.emit(true);
@@ -221,7 +224,11 @@ export class AddPointOverlay
     school.shortSchoolName = this.shortSchoolName.value;
     school.schoolName = this.schoolName.value;
     school.primaryProject = this.projectPrimaryCategory.value;
-    // school.color = this.colorCtr.value.hex;
+    school.schoolType = this.kind.value;
+    school.address = this.address.value;
+    school.generalPhoneNumber = this.generalPhoneNumber.value;
+    school.generalEmail = this.generalEmail.value;
+    school.homepage = this.homepage.value;
 
     var allPersonViewInstances: PersonFunctionalityEntity[] = [];
     var promisesToWait: Promise<PersonFunctionalityEntity>[] = [];
@@ -341,9 +348,9 @@ export class AddPointOverlay
     }
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() { }
 
-  ngOnDestroy() {}
+  ngOnDestroy() { }
 
   protected appendPersonViewDataInstance(): AbstractPersonViewData {
     return this.addPersonButton().instance;
