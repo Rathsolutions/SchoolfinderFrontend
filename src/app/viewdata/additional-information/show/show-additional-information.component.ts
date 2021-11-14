@@ -11,6 +11,7 @@ import { RemoveableComponent } from "../../RemoveableComponent";
 import { AdditionalInformationDTO } from "src/app/entities/AdditionalInformationEntity";
 import { InformationTypeService } from "src/app/services/information-type.service";
 import { InformationType } from "src/app/entities/InformationType";
+import { SchoolPersonEntity } from "src/app/entities/SchoolPersonEntity";
 
 @Component({
   selector: "show-additional-information-component",
@@ -22,6 +23,7 @@ export class ShowAdditionalInformation
 {
   collapsedHeight = "50px";
   contentMap: Map<string, string[]>;
+  correspondingSchoolEntity: SchoolPersonEntity;
   constructor(
     additionalInformationService: AdditionalInformationService,
     private informationTypeService: InformationTypeService
@@ -33,6 +35,9 @@ export class ShowAdditionalInformation
   }
   toAdditionalInformationEntity(): AdditionalInformationDTO {
     throw new Error("Method not implemented.");
+  }
+  prefillGeneralInformation(dto: SchoolPersonEntity): void {
+    this.correspondingSchoolEntity = dto;
   }
   prefill(dto: AdditionalInformationDTO): void {
     if (!this.contentMap.has(dto.type)) {

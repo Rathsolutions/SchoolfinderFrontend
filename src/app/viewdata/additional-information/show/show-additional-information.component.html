@@ -6,6 +6,54 @@
       Allgemeine Informationen zur Institution
     </mat-panel-description>
   </mat-expansion-panel-header>
+  <div
+    class="entrySet generalDiv"
+    *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.schoolType"
+  >
+    <div class="subheadline">Schulart</div>
+    <div class="content">
+      {{ correspondingSchoolEntity.schoolType }}
+    </div>
+  </div>
+  <div
+    class="entrySet generalDiv"
+    *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.address"
+  >
+    <div class="subheadline">Adresse</div>
+    <div class="content">
+      {{ correspondingSchoolEntity.address }}
+    </div>
+  </div>
+  <div
+    class="entrySet generalDiv"
+    *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.generalEmail"
+  >
+    <div class="subheadline">Allgemeine E-Mail</div>
+    <div class="content">
+      {{ correspondingSchoolEntity.generalEmail }}
+    </div>
+  </div>
+  <div
+    class="entrySet generalDiv"
+    *ngIf="
+      correspondingSchoolEntity && correspondingSchoolEntity.generalPhoneNumber
+    "
+  >
+    <div class="subheadline">Allgemeine Telefonnummer</div>
+    <div class="content">
+      {{ correspondingSchoolEntity.generalPhoneNumber }}
+    </div>
+  </div>
+  <div
+    class="entrySet generalDiv"
+    *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.homepage"
+  >
+    <div class="subheadline">Homepage</div>
+    <div class="content">
+      {{ correspondingSchoolEntity.homepage }}
+    </div>
+  </div>
+  <div class="divider"></div>
   <div *ngFor="let entry of contentMap | keyvalue">
     <!-- <div mat-subheader>{{ entry.key }}</div>
       <div mat-line *ngFor="let value of entry.value">{{ value }}</div> -->

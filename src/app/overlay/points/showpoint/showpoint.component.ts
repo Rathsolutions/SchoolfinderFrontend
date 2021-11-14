@@ -29,6 +29,7 @@ import { ShowPersonComponent } from "../../../viewdata/viewonly-person/showperso
 import * as olPixel from "ol/pixel";
 import { AbstractAdditionalInformation } from "src/app/viewdata/additional-information/AbstractAdditionalInformation";
 import { ShowAdditionalInformation } from "src/app/viewdata/additional-information/show/show-additional-information.component";
+import { SchoolPersonEntity } from "src/app/entities/SchoolPersonEntity";
 
 @Component({
   selector: "showpoint-component",
@@ -84,6 +85,15 @@ export class ShowPointOverlay
       );
     this.additionalInformationComponent =
       this.informationOverlay.createComponent(componentFactory);
+    // this.additionalInformationComponent.instance.prefillGeneralInformation();
+  }
+
+  async loadNewSchool(id: number): Promise<SchoolPersonEntity> {
+    var entity = await super.loadNewSchool(id);
+    this.additionalInformationComponent.instance.prefillGeneralInformation(
+      entity
+    );
+    return entity;
   }
 
   ngOnDestroy() {}

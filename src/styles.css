@@ -7,3 +7,15 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+.subheadline {
+  flex-grow: 1;
+  /* align-self: flex-start; */
+  max-width: 30%;
+  margin-right: 13px;
+  font-weight: bold;
+  word-wrap: break-word;
+}
+.entrySet {
+  display: flex;
+  flex-direction: row;
+}

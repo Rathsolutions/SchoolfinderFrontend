@@ -7,19 +7,24 @@
             Weitere Infos
         </mat-panel-description>
     </mat-expansion-panel-header>
-    <div>
-        <h4>Vorname: {{prename.value}}</h4>
+    <div class="entrySet">
+        <div class="subheadline">Vorname:</div>
+        <h4>{{prename.value}}</h4>
     </div>
-    <div>
-        <h4>Nachname: {{lastname.value}}</h4>
+    <div class="entrySet">
+        <div class="subheadline">Nachname:</div>
+        <h4>{{lastname.value}}</h4>
     </div>
-    <div>
-        <h4>Email-Adresse: {{email.value}}</h4>
+    <div class="entrySet">
+        <div class="subheadline">Email-Adresse:</div>
+        <h4>{{email.value}}</h4>
     </div>
-    <div>
-        <h4>Telefonnummer: {{phonenumber.value}}</h4>
+    <div class="entrySet">
+        <div class="subheadline">Telefonnummer:</div>
+        <h4>{{phonenumber.value}}</h4>
     </div>
-    <div>
-        <h4>Projektbeschreibung: {{getProjectDescription()}}</h4>
+    <div class="entrySet">
+        <div class="subheadline">Projektbeschreibung</div>
+        <h4>{{getProjectDescription()}}</h4>
     </div>
 </mat-expansion-panel>
