@@ -1,7 +1,7 @@
 <!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
 <mat-expansion-panel>
   <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
-    <mat-panel-title> Allgemeine Information </mat-panel-title>
+    <mat-panel-title class="expansionsPanelHeaderTitle"> Allgemeine Information </mat-panel-title>
     <mat-panel-description>
       Allgemeine Informationen zur Institution
     </mat-panel-description>
@@ -11,7 +11,7 @@
     *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.schoolType"
   >
     <div class="subheadline">Schulart</div>
-    <div class="content">
+    <div class="content shownContentText">
       {{ correspondingSchoolEntity.schoolType }}
     </div>
   </div>
@@ -20,7 +20,7 @@
     *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.address"
   >
     <div class="subheadline">Adresse</div>
-    <div class="content">
+    <div class="content shownContentText">
       {{ correspondingSchoolEntity.address }}
     </div>
   </div>
@@ -29,7 +29,7 @@
     *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.generalEmail"
   >
     <div class="subheadline">Allgemeine E-Mail</div>
-    <div class="content">
+    <div class="content shownContentText">
       {{ correspondingSchoolEntity.generalEmail }}
     </div>
   </div>
@@ -40,7 +40,7 @@
     "
   >
     <div class="subheadline">Allgemeine Telefonnummer</div>
-    <div class="content">
+    <div class="content shownContentText">
       {{ correspondingSchoolEntity.generalPhoneNumber }}
     </div>
   </div>
@@ -49,7 +49,7 @@
     *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.homepage"
   >
     <div class="subheadline">Homepage</div>
-    <div class="content">
+    <div class="content shownContentText">
       {{ correspondingSchoolEntity.homepage }}
     </div>
   </div>
@@ -59,7 +59,7 @@
       <div mat-line *ngFor="let value of entry.value">{{ value }}</div> -->
     <div class="entrySet">
       <div class="subheadline">{{ entry.key }}</div>
-      <div class="content">
+      <div class="content shownContentText">
         <div *ngFor="let value of entry.value">
           <p>{{ value }}</p>
         </div>

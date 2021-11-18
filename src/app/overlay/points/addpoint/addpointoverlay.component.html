@@ -53,7 +53,7 @@
           <!--Additional general information-->
           <mat-expansion-panel>
             <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
-              <mat-panel-title> Allgemeine Informationen </mat-panel-title>
+              <mat-panel-title class="expansionsPanelHeaderTitle"> Allgemeine Informationen </mat-panel-title>
               <mat-panel-description>
                 Allgemeine Informationen zur Institution
               </mat-panel-description>
@@ -97,20 +97,20 @@
 
           <mat-accordion>
             <div #addPersonOverlay></div>
-            <div class="spaceAround" style="margin-bottom: 10px">
-              <button class="spaceAround" mat-raised-button color="primary" (click)="addPersonButton()"
+            <div class="spaceAround">
+              <button mat-raised-button color="primary" (click)="addPersonButton()"
                 style="margin-left: 16px">
                 Person hinzufügen
               </button>
             </div>
-            <div #additionalInformationPlaceholder></div>
+            <div style="margin-top:10px;margin-bottom: 10px;" #additionalInformationPlaceholder></div>
             <div class="spaceAround">
-              <button style="margin-right: 10px; margin-left: 16px" mat-raised-button color="primary"
+              <button style="margin-right: 10px; margin-left: 16px;" mat-raised-button color="primary"
                 (click)="addAdditionalInformationButton()" type="button">
                 Zusatzeigenschaft hinzufügen
               </button>
             </div>
-            <div #criteriaPlaceholder></div>
+            <div style="margin-top:10px;margin-bottom: 10px;" #criteriaPlaceholder></div>
             <div class="spaceAround">
               <button style="margin-right: 10px; margin-left: 16px" mat-raised-button color="primary"
                 (click)="addCriteriaButton()" type="button">

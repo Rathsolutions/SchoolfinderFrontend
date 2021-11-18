@@ -6,7 +6,12 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-
+.contentHeaderPanel{
+  width: 30%;
+}
+.shownContentText{
+  max-width: 65%;
+}
 .subheadline {
   flex-grow: 1;
   /* align-self: flex-start; */
@@ -14,6 +19,9 @@ body {
   margin-right: 13px;
   font-weight: bold;
   word-wrap: break-word;
+}
+.expansionsPanelHeaderTitle{
+  max-width:30%;
 }
 .entrySet {
   display: flex;

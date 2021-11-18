@@ -1,13 +1,3 @@
-/* expansion panel max width for having an equal span in cards */
-.mat-expansion-panel-header-title {
-  max-width: 30%;
-}
-
-
-.content {
-  /* flex-grow: 2; */
-  /* align-self: flex-end; */
-}
 .generalDiv {
   margin-top: 10px;
 }

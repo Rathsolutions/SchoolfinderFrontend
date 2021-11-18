@@ -1,6 +1,6 @@
 <mat-expansion-panel>
   <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
-    <mat-panel-title> {{ functionalityName }}-Ansprechperson </mat-panel-title>
+    <mat-panel-title class="expansionsPanelHeaderTitle"> {{ functionalityName }}-Ansprechperson </mat-panel-title>
     <mat-panel-description>
       Ansprechperson zum Thema {{ functionalityName }}
     </mat-panel-description>
@@ -50,14 +50,18 @@
       </mat-option>
     </mat-autocomplete>
   </div>
-  <mat-form-field>
-    <mat-label>Telefonnummer</mat-label>
-    <input matInput [formControl]="phonenumber" />
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Projektbeschreibung</mat-label>
-    <input matInput [formControl]="projectDescription" />
-  </mat-form-field>
+  <div>
+    <mat-form-field>
+      <mat-label>Telefonnummer</mat-label>
+      <input matInput [formControl]="phonenumber" />
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field>
+      <mat-label>Projektbeschreibung</mat-label>
+      <input matInput [formControl]="projectDescription" />
+    </mat-form-field>
+  </div>
   <div>
     <button mat-raised-button color="warn" (click)="removePersonFromSchool()">
       Person löschen

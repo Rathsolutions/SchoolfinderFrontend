@@ -1,6 +1,6 @@
 <mat-expansion-panel *ngIf="isFilled()">
     <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
-        <mat-panel-title>
+        <mat-panel-title class="contentHeaderPanel expansionsPanelHeaderTitle">
             {{functionality.value}}
         </mat-panel-title>
         <mat-panel-description>
@@ -9,22 +9,22 @@
     </mat-expansion-panel-header>
     <div class="entrySet">
         <div class="subheadline">Vorname:</div>
-        <h4>{{prename.value}}</h4>
+        <h4 class="shownContentText">{{prename.value}}</h4>
     </div>
     <div class="entrySet">
         <div class="subheadline">Nachname:</div>
-        <h4>{{lastname.value}}</h4>
+        <h4 class="shownContentText">{{lastname.value}}</h4>
     </div>
     <div class="entrySet">
         <div class="subheadline">Email-Adresse:</div>
-        <h4>{{email.value}}</h4>
+        <h4 class="shownContentText">{{email.value}}</h4>
     </div>
     <div class="entrySet">
         <div class="subheadline">Telefonnummer:</div>
-        <h4>{{phonenumber.value}}</h4>
+        <h4 class="shownContentText">{{phonenumber.value}}</h4>
     </div>
     <div class="entrySet">
         <div class="subheadline">Projektbeschreibung</div>
-        <h4>{{getProjectDescription()}}</h4>
+        <h4 class="shownContentText">{{getProjectDescription()}}</h4>
     </div>
 </mat-expansion-panel>
