@@ -7,47 +7,62 @@
     </h3>
   </div>
   <div class="contentTable">
-    <mat-card
-      *ngFor="let school of data"
-      style="min-width: 300px; margin: 10px"
-    >
+    <mat-card *ngFor="let school of data" style="min-width: 300px; margin: 10px">
       <mat-card-header>
         <mat-card-title>{{ school.schoolName }}</mat-card-title>
         <mat-card-subtitle>{{ getProjectList(school) }}</mat-card-subtitle>
-        <mat-card-subtitle
-          >Zugehöriger Regionalstellenbezirk:
-          {{ school.correspondingAreaName }}</mat-card-subtitle
-        >
+        <mat-card-subtitle>Zugehöriger Regionalstellenbezirk:
+          {{ school.correspondingAreaName }}</mat-card-subtitle>
       </mat-card-header>
       <div *ngIf="school.schoolPicture">
-        <img
-          [src]="school.schoolPicture"
-          [alt]="school.alternativePictureText"
-          width="300px"
-        />
+        <img [src]="school.schoolPicture" [alt]="school.alternativePictureText" width="300px" />
       </div>
       <mat-card-content>
+        <mat-divider></mat-divider>
+        <div id="generalInformationDiv">
+          <div class="functionalityDiv">
+            Allgemeine Informationen
+          </div>
+          <mat-divider></mat-divider>
+          <div class="contentMargin">
+            <div *ngIf="school.schoolType" mat-line>
+              Schulart: {{school.schoolType}}
+            </div>
+            <div *ngIf="school.generalEmail" mat-line>Allgemeine E-Mail-Adresse: {{ school.generalEmail }}</div>
+            <div *ngIf="school.generalPhoneNumber" mat-line>Allgemeine Telefonnummer: {{ school.generalPhoneNumber }}
+            </div>
+            <div *ngIf="school.homepage" mat-line>Homepage: {{ school.homepage }}</div>
+          </div>
+        </div>
+        <div *ngFor="let additional of additionalInformationList.get(school.id).keys()">
+          <mat-divider></mat-divider>
+          <div class="functionalityDiv">
+            {{additional}}
+          </div>
+          <mat-divider></mat-divider>
+          <div mat-line class="contentMargin additionalInformationContent"
+            *ngFor="let additionalValue of additionalInformationList.get(school.id).get(additional)">
+            - {{additionalValue}}
+          </div>
+        </div>
         <div *ngFor="let person of school.personSchoolMapping">
           <mat-divider></mat-divider>
           <div class="functionalityDiv">
             {{ person.functionality.name }}
           </div>
           <mat-divider></mat-divider>
-          <div style="margin-top: 10px;">
+          <div class="contentMargin">
             <div mat-line>
               Name: {{ person.person.prename }} {{ person.person.lastname }}
             </div>
             <div mat-line>E-Mail: {{ person.person.email }}</div>
             <div mat-line>Telefonnummer: {{ person.person.phoneNumber }}</div>
-            <div
-              mat-line
-              style="
+            <div mat-line style="
                 word-break: break-all;
                 word-wrap: break-word;
                 overflow: visible;
                 white-space: normal;
-              "
-            >
+              ">
               Spezifischer Inhalt: {{ person.description }}
             </div>
           </div>
