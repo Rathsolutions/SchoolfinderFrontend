@@ -5,13 +5,14 @@
     <div style="margin-top: 10px; align-self: center">
       <button
         id="showAllInstitutionsButton"
+        class="criteriaComponentButton"
         mat-raised-button
         color="primary"
         cdkFocusInitial
         [disabled]="disabled"
         (click)="showAllInstitutions()"
       >
-        Zeige alle Institution
+        Zeige alle Institutionen
       </button>
     </div>
     <mat-accordion>
@@ -42,6 +43,7 @@
         </mat-form-field>
         <div *ngIf="isAdmin()" style="margin-bottom: 10px">
           <button
+          class="criteriaComponentButton"
             mat-raised-button
             color="primary"
             cdkFocusInitial
@@ -53,6 +55,7 @@
         </div>
         <div *ngIf="isAdmin()" style="margin-bottom: 10px">
           <button
+          class="criteriaComponentButton"
             mat-raised-button
             color="primary"
             cdkFocusInitial
@@ -64,6 +67,7 @@
         </div>
         <div>
           <button
+          class="criteriaComponentButton"
             mat-raised-button
             color="primary"
             cdkFocusInitial

@@ -7,6 +7,9 @@
   -webkit-border-radius: 5px;
   box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.4);
 }
+.button-50 {
+  width: 50%;
+}
 /* expansion panel max width for having an equal span in cards */
 .mat-expansion-panel-header-title {
   width: 200px;

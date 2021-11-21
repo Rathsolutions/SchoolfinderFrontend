@@ -3,22 +3,40 @@
   <mat-card style="max-width: inherit; width: 450px; margin: 10px">
     <mat-card-header>
       <mat-card-title>Institution hinzufügen</mat-card-title>
-      <mat-card-subtitle>In diesem Menü können Sie eine Institution
-        hinzufügen</mat-card-subtitle>
+      <mat-card-subtitle
+        >In diesem Menü können Sie eine Institution
+        hinzufügen</mat-card-subtitle
+      >
     </mat-card-header>
     <mat-card-content>
-      <form class="propertiesForm" [formGroup]="newPointForm" (ngSubmit)="onSubmit()">
+      <form
+        class="propertiesForm"
+        [formGroup]="newPointForm"
+        (ngSubmit)="onSubmit()"
+      >
         <div style="margin-left: 16px">
           <mat-form-field style="max-width: 40%">
             <mat-label>Institutionskategorie</mat-label>
-            <mat-select [formControl]="projectCategory" multiple required (opened)="institutionCategoryOpened()">
-              <mat-option *ngFor="let category of projectCategories" [value]="category">{{ category.name }}</mat-option>
+            <mat-select
+              [formControl]="projectCategory"
+              multiple
+              required
+              (opened)="institutionCategoryOpened()"
+            >
+              <mat-option
+                *ngFor="let category of projectCategories"
+                [value]="category"
+                >{{ category.name }}</mat-option
+              >
             </mat-select>
           </mat-form-field>
           <mat-form-field style="margin-left: 22px; max-width: 40%">
             <mat-label>Primärkategorie</mat-label>
             <mat-select [formControl]="projectPrimaryCategory" required>
-              <mat-option *ngFor="let category of projectCategory.value" [value]="category">{{ category.name }}
+              <mat-option
+                *ngFor="let category of projectCategory.value"
+                [value]="category"
+                >{{ category.name }}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -35,14 +53,29 @@
             </mat-form-field>
           </div>
           <div style="margin-left: 16px">
-            <button type="button" mat-raised-button color="primary" (click)="fileInput.click()">
+            <button
+              type="button"
+              mat-raised-button
+              color="primary"
+              class="button-50"
+              (click)="fileInput.click()"
+            >
               Institutionsbild hochladen
             </button>
-            <input #fileInput (change)="handleFileInput($event.target.files)" type="file" id="file" accept="image/*" />
-
+            <input
+              #fileInput
+              (change)="handleFileInput($event.target.files)"
+              type="file"
+              id="file"
+              accept="image/*"
+            />
           </div>
           <div>
-            <img #schoolPicture [src]="image" style="margin-left: 16px; width: 100%;margin-top: 20px;" />
+            <img
+              #schoolPicture
+              [src]="image"
+              style="margin-left: 16px; width: 100%; margin-top: 20px"
+            />
           </div>
           <div style="margin-left: 16px" *ngIf="image">
             <mat-form-field style="width: 98%">
@@ -53,7 +86,9 @@
           <!--Additional general information-->
           <mat-expansion-panel>
             <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
-              <mat-panel-title class="expansionsPanelHeaderTitle"> Allgemeine Informationen </mat-panel-title>
+              <mat-panel-title class="expansionsPanelHeaderTitle">
+                Allgemeine Informationen
+              </mat-panel-title>
               <mat-panel-description>
                 Allgemeine Informationen zur Institution
               </mat-panel-description>
@@ -62,9 +97,11 @@
               <mat-form-field appearance="fill">
                 <mat-label>Schulart</mat-label>
                 <mat-select [formControl]="kind">
-                  <mat-option *ngFor="let kind of allSchoolTypes" [value]="kind">{{
-                    kind
-                    }}</mat-option>
+                  <mat-option
+                    *ngFor="let kind of allSchoolTypes"
+                    [value]="kind"
+                    >{{ kind }}</mat-option
+                  >
                 </mat-select>
               </mat-form-field>
             </div>
@@ -98,35 +135,74 @@
           <mat-accordion>
             <div #addPersonOverlay></div>
             <div class="spaceAround">
-              <button mat-raised-button color="primary" (click)="addPersonButton()"
-                style="margin-left: 16px">
+              <button
+                mat-raised-button
+                color="primary"
+                class="button-50"
+                (click)="addPersonButton()"
+                style="margin-left: 16px"
+              >
                 Person hinzufügen
               </button>
             </div>
-            <div style="margin-top:10px;margin-bottom: 10px;" #additionalInformationPlaceholder></div>
+            <div
+              style="margin-top: 10px; margin-bottom: 10px"
+              #additionalInformationPlaceholder
+            ></div>
             <div class="spaceAround">
-              <button style="margin-right: 10px; margin-left: 16px;" mat-raised-button color="primary"
-                (click)="addAdditionalInformationButton()" type="button">
+              <button
+                style="margin-right: 10px; margin-left: 16px"
+                class="button-50"
+                mat-raised-button
+                color="primary"
+                (click)="addAdditionalInformationButton()"
+                type="button"
+              >
                 Zusatzeigenschaft hinzufügen
               </button>
             </div>
-            <div style="margin-top:10px;margin-bottom: 10px;" #criteriaPlaceholder></div>
+            <div
+              style="margin-top: 10px; margin-bottom: 10px"
+              #criteriaPlaceholder
+            ></div>
             <div class="spaceAround">
-              <button style="margin-right: 10px; margin-left: 16px" mat-raised-button color="primary"
-                (click)="addCriteriaButton()" type="button">
+              <button
+                style="margin-right: 10px; margin-left: 16px"
+                class="button-50"
+                mat-raised-button
+                color="primary"
+                (click)="addCriteriaButton()"
+                type="button"
+              >
                 Kriterium hinzufügen
               </button>
             </div>
           </mat-accordion>
         </div>
         <div style="margin-top: 10px; margin-left: 16px">
-          <button mat-raised-button color="warn" type="button" (click)="setVisible(false)">
+          <button
+            mat-raised-button
+            color="warn"
+            type="button"
+            (click)="setVisible(false)"
+          >
             Abbrechen
           </button>
-          <button mat-raised-button color="primary" type="submit" style="margin-left: 10px">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            style="margin-left: 10px"
+          >
             Eintragen
           </button>
-          <button mat-raised-button color="warn" type="button" (click)="deleteCurrent()" style="margin-left: 10px">
+          <button
+            mat-raised-button
+            color="warn"
+            type="button"
+            (click)="deleteCurrent()"
+            style="margin-left: 10px"
+          >
             Löschen
           </button>
         </div>
