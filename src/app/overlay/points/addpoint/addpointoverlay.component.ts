@@ -25,10 +25,13 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 import { SchoolsService } from "../../../services/schools.service";
+
+import { SchoolTypeService } from "../../../services/school-type.service";
 import { PersonsService } from "../../../services/persons.service";
 import { PersonEntity } from "../../../entities/PersonEntity";
 import { AddCriteriaComponent } from "./criteria/addcriteria.component";
 import { SchoolPersonEntity } from "../../../entities/SchoolPersonEntity";
+import { SchoolTypeDTO } from "../../../entities/SchoolTypeDTO";
 import { PersonFunctionalityEntity } from "../../../entities/PersonFunctionalityEntity";
 import { PointOverlay } from "../pointoverlay.component";
 import { AbstractPersonViewData } from "../../../viewdata/AbstractPersonViewData";
@@ -41,6 +44,7 @@ import { ProjectCategoryService } from "src/app/services/project-category.servic
 import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 import { AddAdditionalInformation } from "src/app/viewdata/additional-information/add/add-additional-information.component";
 import { RemoveableComponent } from "src/app/viewdata/RemoveableComponent";
+
 
 @Component({
   selector: "addpointeroverlay-component",
@@ -83,10 +87,11 @@ export class AddPointOverlay
     private toastr: ToastrService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private projectCategoryService: ProjectCategoryService,
-    private saveEventService: MapUpdateEventService
+    private saveEventService: MapUpdateEventService,
+    private schoolTypeService: SchoolTypeService
   ) {
     super(schoolService, personsService);
-    schoolService.getAllTypes().subscribe(res => {
+    schoolTypeService.getAllTypes().subscribe(res => {
       this.allSchoolTypes = res;
     })
   }
@@ -224,7 +229,8 @@ export class AddPointOverlay
     school.shortSchoolName = this.shortSchoolName.value;
     school.schoolName = this.schoolName.value;
     school.primaryProject = this.projectPrimaryCategory.value;
-    school.schoolType = this.kind.value;
+    school.schoolType = new SchoolTypeDTO();
+    school.schoolType.schoolTypeValue = this.kind.value
     school.address = this.address.value;
     school.generalPhoneNumber = this.generalPhoneNumber.value;
     school.generalEmail = this.generalEmail.value;

@@ -91,7 +91,9 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
     this.schoolId = result.id;
     this.shortSchoolName.setValue(result.shortSchoolName);
     this.schoolName.setValue(result.schoolName);
-    this.kind.setValue(result.schoolType);
+    if(result.schoolType){
+      this.kind.setValue(result.schoolType.schoolTypeValue);
+    }
     this.address.setValue(result.address);
     this.generalPhoneNumber.setValue(result.generalPhoneNumber);
     this.generalEmail.setValue(result.generalEmail);

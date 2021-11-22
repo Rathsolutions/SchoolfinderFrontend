@@ -3,6 +3,7 @@ import { PersonFunctionalityEntity } from "./PersonFunctionalityEntity";
 import { CriteriaEntity } from "./CriteriaEntity";
 import { ProjectCategoryEntity } from "./ProjectEntity";
 import { AdditionalInformationDTO } from "./AdditionalInformationEntity";
+import {SchoolTypeDTO} from "./SchoolTypeDTO";
 
 export class SchoolPersonEntity {
   id: number;
@@ -19,7 +20,7 @@ export class SchoolPersonEntity {
   primaryProject: ProjectCategoryEntity;
   correspondingAreaName: string;
   additionalInformation: AdditionalInformationDTO[] = [];
-  schoolType: string;
+  schoolType: SchoolTypeDTO;
   address: string;
   generalPhoneNumber: string;
   generalEmail: string;

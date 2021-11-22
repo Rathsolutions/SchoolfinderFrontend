@@ -2,6 +2,7 @@ import { Color } from "@angular-material-components/color-picker";
 import { Circle, Fill, Icon, Stroke, Style, Text } from "ol/style";
 import { ProjectCategoryEntity } from "../entities/ProjectEntity";
 import { SchoolPersonEntity } from "../entities/SchoolPersonEntity";
+import { SchoolTypeDTO } from "../entities/SchoolTypeDTO";
 
 export class Styles {
   //Different Icon, maybe flag or google marker
@@ -39,8 +40,12 @@ export class Styles {
     if (!project) {
       selectedProject = e.primaryProject;
     }
+    var color = e.schoolType ? e.schoolType : {r:0,g:0,b:0};
     return new Style({
       text: new Text({
+        fill: new Fill({
+          color: "rgb(" + (color.r) + "," + (color.g) + "," + (color.b) + ")"
+        }),
         text: textToSet,
         offsetY: -20,
         font: "bold italic " + zoom * 1.15 + "px/1.0 sans-serif",
