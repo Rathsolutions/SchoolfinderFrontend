@@ -11,7 +11,7 @@
 
 @media only screen and (max-width : 500px) {
     .gradient{
-        max-width: 70vw;
+        max-width: 80vw;
     }
     .example-card{
         max-height: 60vh;

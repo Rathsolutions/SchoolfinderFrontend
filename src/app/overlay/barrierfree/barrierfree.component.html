@@ -26,7 +26,7 @@
           <mat-divider></mat-divider>
           <div class="contentMargin">
             <div *ngIf="school.schoolType" mat-line>
-              Schulart: {{school.schoolType}}
+              Schulart: {{school.schoolType.schoolTypeValue}}
             </div>
             <div *ngIf="school.generalEmail" mat-line>Allgemeine E-Mail-Adresse: {{ school.generalEmail }}</div>
             <div *ngIf="school.generalPhoneNumber" mat-line>Allgemeine Telefonnummer: {{ school.generalPhoneNumber }}

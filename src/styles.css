@@ -7,10 +7,11 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 .contentHeaderPanel{
-  width: 30%;
+  width: 30%; 
 }
 .shownContentText{
   max-width: 65%;
+  word-wrap: break-word;
 }
 .subheadline {
   flex-grow: 1;
@@ -21,7 +22,7 @@ body {
   word-wrap: break-word;
 }
 .expansionsPanelHeaderTitle{
-  max-width:30%;
+  /* max-width:30%; */
 }
 .entrySet {
   display: flex;

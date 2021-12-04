@@ -1,9 +1,9 @@
 <mat-expansion-panel>
   <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
     <mat-panel-title class="expansionsPanelHeaderTitle"> {{ functionalityName }}-Ansprechperson </mat-panel-title>
-    <mat-panel-description>
+    <!-- <mat-panel-description>
       Ansprechperson zum Thema {{ functionalityName }}
-    </mat-panel-description>
+    </mat-panel-description> -->
   </mat-expansion-panel-header>
   <div>
     <mat-form-field appearance="fill">
@@ -34,16 +34,12 @@
         (click)="emailClicked()"
         matInput
         [formControl]="email"
-        required
         [matAutocomplete]="auto"
       />
-      <mat-error *ngIf="email.invalid"
-        >Bitte tragen Sie hier einen validen Wert ein!
-      </mat-error>
     </mat-form-field>
+    <!-- (optionSelected)="autocompleteChoosen($event.option.value)" -->
     <mat-autocomplete
       #auto="matAutocomplete"
-      (optionSelected)="autocompleteChoosen($event.option.value)"
     >
       <mat-option *ngFor="let mail of emails" [value]="mail"
         >{{ mail }}

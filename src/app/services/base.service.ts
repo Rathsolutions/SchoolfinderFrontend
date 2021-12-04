@@ -17,7 +17,6 @@ export class BaseService<T> {
     withCredentials: true,
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': 'Basic ' + btoa("simon:!simon123")
     })
   };
 

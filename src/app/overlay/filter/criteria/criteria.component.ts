@@ -73,6 +73,8 @@ import { InformationType } from "src/app/entities/InformationType";
 import { InformationTypeService } from "src/app/services/information-type.service";
 import { AddAdditionalInformation } from "src/app/viewdata/additional-information/add/add-additional-information.component";
 import { AdditionalCategoryManagementComponentComponent as AdditionalCategoryTypeManagementComponentComponent } from "src/app/dialogs/category-management/additional-category-management-component/additional-category-management-component.component";
+import { SchoolTypeService } from "src/app/services/school-type.service";
+import { SchoolTypeDTO } from "src/app/entities/SchoolTypeDTO";
 
 @Component({
   selector: "criteria-filter-component",
@@ -104,6 +106,8 @@ export class CriteriaFilterComponent implements OnInit {
   @Output() disableButtonsEvent = new EventEmitter<boolean>();
   disabled: boolean = false;
 
+  allSchoolTypes: SchoolTypeDTO[];
+
   constructor(
     private criteriaService: CriteriaService,
     private toastr: ToastrService,
@@ -119,8 +123,14 @@ export class CriteriaFilterComponent implements OnInit {
     private areaService: AreaService,
     private dialog: MatDialog,
     private visibilityEventService: VisibilityEventService,
-    private criteriaListEntriesChangedService: CriteriaListEntriesChangedService
-  ) {}
+    private criteriaListEntriesChangedService: CriteriaListEntriesChangedService,
+    private schoolTypeService: SchoolTypeService
+  ) {
+    schoolTypeService.findAll().subscribe(res => {
+      console.log(res);
+      this.allSchoolTypes = res;
+    });
+  }
   ngOnInit(): void {
     this.updateAllCriteriasList();
     this.updateAllAreasList();
@@ -136,6 +146,10 @@ export class CriteriaFilterComponent implements OnInit {
   private setButtonsDisabled(val: boolean) {
     this.disabled = val;
     this.disableButtonsEvent.emit(val);
+  }
+
+  toRGBString(schoolType: SchoolTypeDTO) {
+    return 'rgb(' + schoolType.r + ',' + schoolType.g + ',' + schoolType.b + ')';
   }
 
   private updateAllCriteriasList() {

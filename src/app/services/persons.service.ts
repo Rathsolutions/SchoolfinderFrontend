@@ -39,7 +39,8 @@ export class PersonsService extends BaseService<PersonEntity> {
   public getPerson(
     prename: string,
     lastname: string,
-    email: string
+    email: string,
+    phoneNumber:string
   ): Observable<PersonEntity> {
     var credentials = BaseService.HTTP_OPTIONS;
     return this.http
@@ -48,6 +49,7 @@ export class PersonsService extends BaseService<PersonEntity> {
           prename: prename,
           lastname: lastname,
           email: email,
+          phoneNumber: phoneNumber
         },
         withCredentials: credentials.withCredentials,
         headers: credentials.headers,

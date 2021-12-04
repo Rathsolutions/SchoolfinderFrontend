@@ -78,7 +78,7 @@ export class AddPointOverlay
   visible: boolean;
   prefilled: boolean = false;
   newPointForm: FormGroup;
-  allSchoolTypes: String[];
+  allSchoolTypes: SchoolTypeDTO[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -91,7 +91,7 @@ export class AddPointOverlay
     private schoolTypeService: SchoolTypeService
   ) {
     super(schoolService, personsService);
-    schoolTypeService.getAllTypes().subscribe(res => {
+    schoolTypeService.findAll().subscribe(res => {
       this.allSchoolTypes = res;
     })
   }
@@ -116,10 +116,10 @@ export class AddPointOverlay
     });
   }
 
-  public prepareNewSchool() {
+  public async prepareNewSchool() {
     super.prepareNewSchool();
     this.removeAllCriteriaButtons();
-    this.init();
+    await this.init();
   }
   setVisible(visible: boolean) {
     this.visible = visible;
@@ -306,7 +306,6 @@ export class AddPointOverlay
   }
 
   public async prefillByPointId(pointId: number) {
-    this.init();
     var res = await this.loadNewSchool(pointId);
     var matchingProjects = [];
     res.projects.forEach((e) => {

@@ -89,9 +89,9 @@
               <mat-panel-title class="expansionsPanelHeaderTitle">
                 Allgemeine Informationen
               </mat-panel-title>
-              <mat-panel-description>
+              <!-- <mat-panel-description>
                 Allgemeine Informationen zur Institution
-              </mat-panel-description>
+              </mat-panel-description> -->
             </mat-expansion-panel-header>
             <div>
               <mat-form-field appearance="fill">
@@ -99,8 +99,8 @@
                 <mat-select [formControl]="kind">
                   <mat-option
                     *ngFor="let kind of allSchoolTypes"
-                    [value]="kind"
-                    >{{ kind }}</mat-option
+                    [value]="kind.schoolTypeValue"
+                    >{{ kind.schoolTypeValue }}</mat-option
                   >
                 </mat-select>
               </mat-form-field>

@@ -118,7 +118,7 @@ export class AddPersonComponent extends AbstractPersonViewData implements Remove
     person: PersonEntity
   ): Promise<PersonEntity> {
     var personFromDb = this.personsService
-      .getPerson(person.prename, person.lastname, person.email)
+      .getPerson(person.prename, person.lastname, person.email, person.phoneNumber)
       .toPromise();
     return personFromDb;
   }

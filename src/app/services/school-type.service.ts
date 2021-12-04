@@ -18,8 +18,4 @@ export class SchoolTypeService extends BaseService<SchoolTypeDTO> {
     super(http, "schoolType");
   }
 
-  public getAllTypes(): Observable<String[]> {
-    return this.http.get<String[]>(this.requestURL + "/search/getAllTypes", BaseService.HTTP_OPTIONS);
-  }
-
 }

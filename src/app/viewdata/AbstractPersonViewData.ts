@@ -48,7 +48,7 @@ export abstract class AbstractPersonViewData {
   }
 
   public autocompleteChoosen(value) {
-    this.personsService.getPerson("", "", value).subscribe(
+    this.personsService.getPerson("", "", value, "").subscribe(
       (result) => {
         this.phonenumber.setValue(result.phoneNumber);
         this.newPointForm.patchValue({ phonenumber: result.phoneNumber });
@@ -91,11 +91,9 @@ export abstract class AbstractPersonViewData {
     return (
       this.prename.status === "VALID" &&
       this.lastname.status === "VALID" &&
-      this.email.status === "VALID" &&
       this.functionality.status === "VALID" &&
       this.prename.value !== "" &&
       this.lastname.value !== "" &&
-      this.email.value !== "" &&
       this.functionality.value !== ""
     );
   }

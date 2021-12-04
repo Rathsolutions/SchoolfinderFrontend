@@ -14,8 +14,9 @@ import { VisibilityDataElement, VisibilityEventStrategy } from "./VisibilityEven
 export class AreaShowEventStrategy implements VisibilityEventStrategy {
   constructor(private areaService: AreaService) {}
 
-  performActionOnLayer(source: VectorSource<any>, map:Map, visibilityDataElement:VisibilityDataElement) {
-    source.clear();
+  performActionOnLayer(areaSource: VectorSource<any>, markerSource:VectorSource<any>, map:Map, visibilityDataElement:VisibilityDataElement) {
+    areaSource.clear();
+    markerSource.clear();
     this.areaService.findAll().subscribe((res) => {
       res.forEach((e) => {
         var coordinatePoly: Coordinate[] = [];
@@ -29,14 +30,14 @@ export class AreaShowEventStrategy implements VisibilityEventStrategy {
         var color: Color = ColorParser.parseRgbaString(e.color);
         polygon.setStyle(Styles.getDrawStyle(color));
         polygon.setId(e.id);
-        source.addFeature(polygon);
+        areaSource.addFeature(polygon);
         var institutionFeature = FeatureFactory.createInstitutionFeature(
           e.id,
           e.name,
           e.areaInstitutionPosition,
           map.getView().getZoom()
         );
-        source.addFeature(institutionFeature);
+        markerSource.addFeature(institutionFeature);
         visibilityDataElement.activeAreaStrategy = this;
       });
     });

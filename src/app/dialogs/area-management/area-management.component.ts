@@ -86,11 +86,12 @@ export class AreaManagementComponent
       this.data.area = [];
       feature
         .getGeometry()
-        .getCoordinates()[0]
-        .forEach((element) => {
-          // transform(element, "EPSG:4326", "EPSG:3857")
-          this.data.area.push(element);
-        });
+        .getCoordinates().forEach(co=>{
+          co.forEach((element) => {
+            transform(element, "EPSG:4326", "EPSG:3857");
+            this.data.area.push(element);
+          });
+        })
     };
   }
 

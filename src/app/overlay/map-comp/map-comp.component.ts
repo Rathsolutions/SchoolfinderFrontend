@@ -15,7 +15,7 @@ import VectorLayer from "ol/layer/Vector";
 import Map from "ol/Map";
 import Draw from "ol/interaction/Draw";
 import Projection from "ol/proj/Projection";
-import { TileJSON, Vector, XYZ } from "ol/source";
+import { Cluster, TileJSON, Vector, XYZ } from "ol/source";
 import Overlay from "ol/Overlay";
 import { transform, toLonLat, transformExtent } from "ol/proj";
 import { UserService } from "src/app/services/user.service";
@@ -53,6 +53,7 @@ import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 import olms from "ol-mapbox-style";
 import stylefunction from "ol-mapbox-style/dist/stylefunction";
 import GeoJSON from "ol/format/GeoJSON";
+import { Style } from "ol/style";
 
 @Component({
   selector: "app-map-comp",
@@ -74,6 +75,8 @@ export class MapCompComponent implements OnInit {
   @ViewChild("pointOverlayWrapper")
   pointOverlayWrapper: ElementRef<HTMLElement>;
 
+  zoomBeforeMove: number;
+
   showPointOverlay: ShowPointOverlay;
 
   private drawInstance: Draw;
@@ -85,16 +88,20 @@ export class MapCompComponent implements OnInit {
   @Input()
   private projectParam: ProjectCategoryEntity;
 
-  sourceWaypointVector: VectorSource<any>;
-  sourceAreaLayer: VectorLayer<any>;
-  sourceWaypointLayer: VectorLayer<any>;
+  sourceWaypointImageVector: VectorSource<any>;
+  sourceWaypointTextVector: VectorSource<any>;
+  sourceAreaImageLayer: VectorLayer<any>;
+  sourceAreaTextLayer: VectorLayer<any>;
+  sourceWaypointImageLayer: VectorLayer<any>;
   private clickListenerRef;
   private visibilityDataElement = new VisibilityDataElement();
   areaSelectionActive: boolean = false;
   institutionSelectionActive: boolean = false;
 
   currentAreaEventData: AreaManagementData;
-  sourceAreaVector: VectorSource<any>;
+  sourceAreaImageVector: VectorSource<any>;
+  sourceAreaTextVector: VectorSource<any>;
+  sourceWaypointTextLayer: VectorLayer<Vector<any>>;
 
   constructor(
     private schoolsService: SchoolsService,
@@ -111,7 +118,8 @@ export class MapCompComponent implements OnInit {
     );
     visiblityEventService.register().subscribe((res) => {
       res.performActionOnLayer(
-        this.sourceAreaVector,
+        this.sourceAreaImageVector,
+        this.sourceAreaTextVector,
         this.map,
         this.visibilityDataElement
       );
@@ -121,7 +129,8 @@ export class MapCompComponent implements OnInit {
         this.resetAllWaypoint();
         this.updateWaypoints();
         this.visibilityDataElement.activeAreaStrategy.performActionOnLayer(
-          this.sourceAreaVector,
+          this.sourceAreaImageVector,
+          this.sourceAreaTextVector,
           this.map,
           this.visibilityDataElement
         );
@@ -140,13 +149,13 @@ export class MapCompComponent implements OnInit {
       this.areaSelectionActive = true;
       unByKey(this.clickListenerRef);
       this.drawInstance = new Draw({
-        source: this.sourceAreaVector,
+        source: this.sourceAreaImageVector,
         type: GeometryType.POLYGON,
         style: Styles.getDrawStyle(res.color),
       });
-      this.sourceAreaVector.getFeatures().forEach((e) => {
+      this.sourceAreaImageVector.getFeatures().forEach((e) => {
         if (e.getId() == res.id) {
-          this.sourceAreaVector.removeFeature(e);
+          this.sourceAreaImageVector.removeFeature(e);
         }
       });
       this.map.addInteraction(this.drawInstance);
@@ -175,19 +184,18 @@ export class MapCompComponent implements OnInit {
       this.institutionSelectionActive = true;
       unByKey(this.clickListenerRef);
       this.drawInstance = new Draw({
-        source: this.sourceAreaVector,
+        source: this.sourceAreaTextVector,
         type: GeometryType.POINT,
       });
       this.drawInstance.on("drawend", (drawEndEvent) => {
         var point: Point = drawEndEvent.feature.getGeometry() as Point;
-        this.sourceAreaVector.getFeatures().forEach((e) => {
+        this.sourceAreaTextVector.getFeatures().forEach((e) => {
           if (e.getId() == res.id + FeatureFactory.POINT) {
-            this.sourceAreaVector.removeFeature(e);
+            this.sourceAreaTextVector.removeFeature(e);
           }
         });
 
         var latlong = toLonLat(point.getCoordinates());
-        console.log(latlong);
         res.areaInstitutionPosition = latlong;
         var pos = new Position();
         pos.latitude = latlong[0];
@@ -198,7 +206,7 @@ export class MapCompComponent implements OnInit {
           pos,
           this.map.getView().getZoom()
         );
-        this.sourceAreaVector.addFeature(institutionFeature);
+        this.sourceAreaTextVector.addFeature(institutionFeature);
         this.finalizeDrawing(res);
       });
       this.map.addInteraction(this.drawInstance);
@@ -217,7 +225,8 @@ export class MapCompComponent implements OnInit {
           this.mapOnClick.bind(this)
         );
         this.visibilityDataElement.activeAreaStrategy.performActionOnLayer(
-          this.sourceAreaVector,
+          this.sourceAreaImageVector,
+          this.sourceAreaTextVector,
           this.map,
           this.visibilityDataElement
         );
@@ -264,17 +273,29 @@ export class MapCompComponent implements OnInit {
     this.mapLayer = new TileLayer({
       source: this.mapSource,
     });
-    this.sourceAreaVector = new VectorSource({});
-    this.sourceWaypointVector = new VectorSource({});
-    this.sourceWaypointLayer = new VectorLayer({
-      source: this.sourceWaypointVector,
+    this.sourceAreaImageVector = new VectorSource({});
+    this.sourceAreaTextVector = new VectorSource({});
+    this.sourceWaypointTextVector = new VectorSource({});
+    this.sourceWaypointImageVector = new VectorSource({});
+    const clusterSource = new Cluster({
+      source: this.sourceWaypointTextVector,
     });
-
-    this.sourceAreaLayer = new VectorLayer({
-      source: this.sourceAreaVector,
+    this.sourceWaypointImageLayer = new VectorLayer({
+      source: this.sourceWaypointImageVector,
+    });
+    this.sourceWaypointTextLayer = new VectorLayer({
+      source: clusterSource,
+      style: this.styleFunction,
+      declutter: true
+    });
+    this.sourceAreaImageLayer = new VectorLayer({
+      source: this.sourceAreaImageVector,
+    });
+    this.sourceAreaTextLayer = new VectorLayer({
+      source: this.sourceAreaTextVector,
+      declutter: true
     });
     this.map = new Map({
-      // layers: [this.sourceAreaLayer, sourceWaypointLayer],
       target: "map",
       view: new View({
         center: transform([8.50965, 48.65851], "EPSG:4326", "EPSG:3857"),
@@ -285,25 +306,38 @@ export class MapCompComponent implements OnInit {
     });
     this.map.addControl(new Attribution());
     this.clickListenerRef = this.map.on("click", this.mapOnClick.bind(this));
+    this.map.on("movestart", () => {
+      this.zoomBeforeMove = this.map.getView().getZoom();
+    })
     this.map.on("moveend", () => {
       this.updateWaypoints();
-      // this.visibilityDataElement.activeAreaStrategy.performActionOnLayer(
-      //   this.sourceAreaVector,
-      //   this.map,
-      //   this.visibilityDataElement
-      // );
     });
     this.visibilityDataElement.activeAreaStrategy.performActionOnLayer(
-      this.sourceAreaVector,
+      this.sourceAreaImageVector,
+      this.sourceAreaTextVector,
       this.map,
       this.visibilityDataElement
     );
+    this.mapLayer.setZIndex(1);
+    this.sourceAreaImageLayer.setZIndex(2);
+    this.sourceWaypointImageLayer.setZIndex(3);
+    this.sourceWaypointTextLayer.setZIndex(4);
+    this.sourceAreaTextLayer.setZIndex(5);
     this.map.addLayer(this.mapLayer);
-    this.map.addLayer(this.sourceAreaLayer);
-    this.map.addLayer(this.sourceWaypointLayer);
-    // olms(this.map, "https://mapserver.rathsolutions.de/styles/liberty/style.json").then((res) => {
+    this.map.addLayer(this.sourceAreaImageLayer);
+    this.map.addLayer(this.sourceWaypointImageLayer);
+    this.map.addLayer(this.sourceWaypointTextLayer);
+    this.map.addLayer(this.sourceAreaTextLayer);
+  }
 
-    // });
+  private styleFunction(feature, resolution) {
+    const originalFeature = feature.get('features');
+    console.log(originalFeature);
+    if (feature.get('features').length == 1) {
+      return originalFeature[0].style_;
+    } else {
+      return new Style({});
+    }
   }
 
   public updateWaypoints(): void {
@@ -324,7 +358,12 @@ export class MapCompComponent implements OnInit {
       .subscribe(
         (success) => {
           success.forEach((e) => {
-            var waypoint = new Feature({
+            var waypointImage = new Feature({
+              geometry: new Point(
+                transform([e.latitude, e.longitude], "EPSG:4326", "EPSG:3857")
+              ),
+            });
+            var waypointText = new Feature({
               geometry: new Point(
                 transform([e.latitude, e.longitude], "EPSG:4326", "EPSG:3857")
               ),
@@ -344,20 +383,29 @@ export class MapCompComponent implements OnInit {
                 splitPoint = splitPoint - 1;
               }
             }
-            var style = Styles.getStyleForWaypoint(e, zoom, this.projectParam);
-            waypoint.setStyle(style);
-            waypoint.setId(e.id);
+            waypointImage.setStyle(Styles.getImageStyleForWaypoint(e, zoom, this.projectParam));
+            waypointImage.setId(e.id);
+            waypointText.setStyle(Styles.getTextStyleForWaypoint(e, zoom, this.projectParam));
+            waypointText.setId(e.id);
             var res = this.existingWaypointAtGeometry.find(
               (element) => element[0] == e.latitude && element[1] == e.longitude
             );
             if (!res) {
-              this.sourceWaypointVector.addFeature(waypoint);
+              this.sourceWaypointImageVector.addFeature(waypointImage);
+              this.sourceWaypointTextVector.addFeature(waypointText);
               this.existingWaypointAtGeometry.push([e.latitude, e.longitude]);
             } else {
-              this.sourceWaypointVector.getFeatures().forEach((element) => {
+              this.sourceWaypointImageVector.getFeatures().forEach((element) => {
                 if ((element as any).id_ == e.id) {
                   (element as any).setStyle(
-                    Styles.getStyleForWaypoint(e, zoom, this.projectParam)
+                    Styles.getImageStyleForWaypoint(e, zoom, this.projectParam)
+                  );
+                }
+              });
+              this.sourceWaypointTextVector.getFeatures().forEach((element) => {
+                if ((element as any).id_ == e.id) {
+                  (element as any).setStyle(
+                    Styles.getTextStyleForWaypoint(e, zoom, this.projectParam)
                   );
                 }
               });
@@ -371,13 +419,14 @@ export class MapCompComponent implements OnInit {
   }
 
   public resetAllWaypoint(): void {
-    this.sourceWaypointVector.clear();
+    this.sourceWaypointImageVector.clear();
+    this.sourceWaypointTextVector.clear();
     this.existingWaypointAtGeometry = [];
   }
 
   public mapOnClick(evt): void {
     const map: Map = evt.map as Map;
-    var sourceVectorLayerBound = this.sourceWaypointLayer;
+    var sourceVectorLayerBound = this.sourceWaypointImageLayer;
     const point = map.forEachFeatureAtPixel(
       evt.pixel,
       function (feature, layer) {
@@ -405,10 +454,9 @@ export class MapCompComponent implements OnInit {
         this.showPointOverlayPlaceholder.clear();
       }
       this.map.addOverlay(overlayMap);
-      this.addPointOverlay.init().then((res) => {
-        this.addPointOverlay.setLat(latlong[0]);
-        this.addPointOverlay.setLong(latlong[1]);
-        this.addPointOverlay.prepareNewSchool();
+      this.addPointOverlay.setLat(latlong[0]);
+      this.addPointOverlay.setLong(latlong[1]);
+      this.addPointOverlay.prepareNewSchool().then(resTwo => {
         this.addPointOverlay.setVisible(true);
         if (point) {
           this.addPointOverlay.prefillByPointId((point as any).getId());
@@ -429,7 +477,7 @@ export class MapCompComponent implements OnInit {
         .loadNewSchool((point as any).getId())
         .then((res) => {
           var pixel = map.getPixelFromCoordinate(evt.coordinate);
-          pixel[0] += map.getSize()[0] / 4;
+          pixel[0] += map.getSize()[0] / 3.2;
           pixel[1] += map.getSize()[1] / 2.5;
           var box = map.getCoordinateFromPixel(pixel);
           // this.map.getView().fit(box,{
