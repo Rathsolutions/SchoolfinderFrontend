@@ -30,7 +30,7 @@ import { MainComponent } from "src/app/overlay/main/main.component";
 import { SchoolsService } from "../../../services/schools.service";
 import { BaseService } from "src/app/services/base.service";
 import { UserService } from "src/app/services/user.service";
-import { CitiesService } from "src/app/services/cities.service";
+import { SearchService } from "src/app/services/search.service";
 import {
   MatDialog,
   MatDialogRef,
@@ -97,6 +97,7 @@ export class CriteriaFilterComponent implements OnInit {
   streetname: string;
   housenumber: string;
   city: string = "";
+  institutionQueryParam: string = "";
   amount: number;
   exclusiveSearch: boolean = false;
   categoryName: string = "";
@@ -116,7 +117,7 @@ export class CriteriaFilterComponent implements OnInit {
     private mapUpdateEventService: MapUpdateEventService,
     private calculationEventService: CalculationEventService,
     private schoolService: SchoolsService,
-    private citiesService: CitiesService,
+    private citiesService: SearchService,
     private projectCategoryService: ProjectCategoryService,
     private functionalityService: FunctionalityService,
     private informationTypeService: InformationTypeService,
@@ -355,6 +356,20 @@ export class CriteriaFilterComponent implements OnInit {
 
   private handleClosedCategoryDialog(toastrMessage: string) {
     this.toastr.success(toastrMessage);
+  }
+
+  public searchGeneral():void{
+    this.calculationEventService.emit(true);
+    var foundOsmEntity = this.citiesService
+      .searchGeneralInstitutionContentInDatabase(this.institutionQueryParam, 10)
+      .subscribe(
+        (result) => {
+          var dialogViewdata: SelectionDialogViewData[] =
+            this.convertOsmPoiEntityArrayToSelectionDialogViewDataArray(result);
+          this.renderResult(dialogViewdata);
+        },
+        (err) => this.errorOnRequest(err)
+      );
   }
 
   public searchCity(): void {

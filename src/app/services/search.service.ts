@@ -9,10 +9,19 @@ import { OsmPOIEntity } from '../entities/OsmPOIEntity';
 @Injectable({
     providedIn: 'root'
 })
-export class CitiesService extends BaseService<CriteriaEntity> {
+export class SearchService extends BaseService<CriteriaEntity> {
     constructor(
         http: HttpClient) {
-        super(http, "cities");
+        super(http, "finder");
+    }
+
+    public searchGeneralInstitutionContentInDatabase(queryString:string, amount:number):Observable<OsmPOIEntity[]>{
+        return this.http.get<OsmPOIEntity[]>(this.requestURL + "/search/findGeneralInstitutionContentInDatabase", {
+            params: {
+                query: queryString,
+                amount: amount.toString()
+            }
+        });
     }
 
     public searchCityInOsmFile(cityname: string, amount:number): Observable<OsmPOIEntity[]> {

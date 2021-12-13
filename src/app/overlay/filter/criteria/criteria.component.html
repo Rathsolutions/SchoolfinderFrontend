@@ -18,6 +18,16 @@
           <input [(ngModel)]="schoolname" matInput />
         </mat-form-field>
         <mat-form-field>
+          <mat-label>Allgemeine Suche</mat-label>
+          <input [(ngModel)]="institutionQueryParam" matInput />
+        </mat-form-field>
+        <div>
+          <button class="criteriaComponentButton" mat-raised-button color="primary" cdkFocusInitial
+            [disabled]="disabled" (click)="searchGeneral()">
+            Allgemeine Suche
+          </button>
+        </div>
+        <mat-form-field>
           <mat-label>Stadtname</mat-label>
           <input [(ngModel)]="city" matInput />
         </mat-form-field>
