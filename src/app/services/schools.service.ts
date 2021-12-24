@@ -8,6 +8,7 @@ import { catchError } from "rxjs/operators";
 import { Observable } from "rxjs";
 import { CriteriaEntity } from "../entities/CriteriaEntity";
 import { ProjectCategoryEntity } from "../entities/ProjectEntity";
+import { SchoolTypeDTO } from "../entities/SchoolTypeDTO";
 
 @Injectable({
   providedIn: "root",
@@ -52,24 +53,31 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
     });
   }
 
-  public getSchoolsByBoundsAndCriteriasAndProject(
+  public getSchoolsByBoundsAndCriteriasAndSchoolTypesAndProject(
     leftLatBound: number,
     rightLatBound: number,
     topLongBound: number,
     bottomLongBound: number,
     project: ProjectCategoryEntity,
     criterias: CriteriaEntity[],
+    schoolTypes:SchoolTypeDTO[],
     exclusiveSearch: boolean
   ): Observable<SchoolPersonEntity[]> {
     var criteriasIds = [];
     criterias.forEach((e) => {
       criteriasIds.push(e.id);
     });
+    var schoolTypeIds = [];
+    schoolTypes.forEach((e) => {
+      schoolTypeIds.push(e.id);
+    });
+    console.log(schoolTypes);
     var paramsObj = {
       leftLatBound: leftLatBound.toString(),
       rightLatBound: rightLatBound.toString(),
       topLongBound: topLongBound.toString(),
       bottomLongBound: bottomLongBound.toString(),
+      schoolTypeIds: schoolTypeIds,
       criteriaNumbers: criteriasIds,
       exclusiveSearch: exclusiveSearch.toString(),
     };
@@ -84,34 +92,6 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
       }
     );
   }
-  public getSchoolsByBoundsAndCriterias(
-    leftLatBound: number,
-    rightLatBound: number,
-    topLongBound: number,
-    bottomLongBound: number,
-    criterias: CriteriaEntity[],
-    exclusiveSearch: boolean
-  ): Observable<SchoolPersonEntity[]> {
-    var criteriasIds = [];
-    criterias.forEach((e) => {
-      criteriasIds.push(e.id);
-    });
-    console.log(JSON.stringify(criteriasIds));
-    return this.http.get<SchoolPersonEntity[]>(
-      this.requestURL + "/search/findAllSchoolsInBounds",
-      {
-        params: {
-          leftLatBound: leftLatBound.toString(),
-          rightLatBound: rightLatBound.toString(),
-          topLongBound: topLongBound.toString(),
-          bottomLongBound: bottomLongBound.toString(),
-          criteriaNumbers: criteriasIds,
-          exclusiveSearch: exclusiveSearch.toString(),
-        },
-      }
-    );
-  }
-
   public getAllSchools(): Observable<SchoolPersonEntity[]> {
     return this.http.get<SchoolPersonEntity[]>(
       this.requestURL + "/search/findAllSchools"

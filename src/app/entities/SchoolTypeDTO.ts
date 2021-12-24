@@ -1,4 +1,5 @@
 export class SchoolTypeDTO {
+    id:number;
     r: number;
     g: number;
     b: number;

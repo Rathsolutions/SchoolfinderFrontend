@@ -21,7 +21,7 @@ import {
 } from "@angular/forms";
 import { MatSelect } from "@angular/material/select";
 import { ToastrService } from "ngx-toastr";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 
 import { CriteriaService } from "../../../services/criteria.service";
@@ -93,6 +93,7 @@ export class CriteriaFilterComponent implements OnInit {
   allPersonCategories: FunctionalityEntity[] = [];
   allInstitutionCategories: ProjectCategoryEntity[] = [];
   selectedCriterias: CriteriaEntity[] = [];
+  selectedSchoolTypes: SchoolTypeDTO[] = [];
   schoolname: string;
   streetname: string;
   housenumber: string;
@@ -127,7 +128,7 @@ export class CriteriaFilterComponent implements OnInit {
     private criteriaListEntriesChangedService: CriteriaListEntriesChangedService,
     private schoolTypeService: SchoolTypeService
   ) {
-    schoolTypeService.findAll().subscribe(res => {
+    schoolTypeService.findAll().subscribe((res) => {
       console.log(res);
       this.allSchoolTypes = res;
     });
@@ -150,7 +151,9 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   toRGBString(schoolType: SchoolTypeDTO) {
-    return 'rgb(' + schoolType.r + ',' + schoolType.g + ',' + schoolType.b + ')';
+    return (
+      "rgb(" + schoolType.r + "," + schoolType.g + "," + schoolType.b + ")"
+    );
   }
 
   private updateAllCriteriasList() {
@@ -358,7 +361,7 @@ export class CriteriaFilterComponent implements OnInit {
     this.toastr.success(toastrMessage);
   }
 
-  public searchGeneral():void{
+  public searchGeneral(): void {
     this.calculationEventService.emit(true);
     var foundOsmEntity = this.citiesService
       .searchGeneralInstitutionContentInDatabase(this.institutionQueryParam, 10)
@@ -524,8 +527,21 @@ export class CriteriaFilterComponent implements OnInit {
     this.toggleShowRegionAreas();
   }
 
-  public selectChange(val) {
-    this.selectedCriterias = val;
+  public schoolTypeSelectChange(val) {
+    this.selectChange(val, this.selectedSchoolTypes);
+  }
+
+  public criteriaSelectChange(val) {
+    this.selectChange(val, this.selectedCriterias);
+  }
+
+  private selectChange(val, matchingArray: any[]) {
+    var elementFoundIdx = matchingArray.indexOf(val);
+    if (elementFoundIdx == -1) {
+      matchingArray.push(val);
+    } else {
+      matchingArray.splice(elementFoundIdx, 1);
+    }
     this.mapUpdateEventService.emit(true);
     this.toggleShowRegionAreas();
   }

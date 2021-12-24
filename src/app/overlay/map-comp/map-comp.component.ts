@@ -346,13 +346,14 @@ export class MapCompComponent implements OnInit {
     var box = transformExtent(glbox, "EPSG:3857", "EPSG:4326");
     var replaceRegex = "/(.{5})/g,  $1\n";
     this.schoolsService
-      .getSchoolsByBoundsAndCriteriasAndProject(
+      .getSchoolsByBoundsAndCriteriasAndSchoolTypesAndProject(
         box[0],
         box[2],
         box[1],
         box[3],
         this.projectParam,
         this.criteriasObject.selectedCriterias,
+        this.criteriasObject.selectedSchoolTypes,
         this.criteriasObject.exclusiveSearch
       )
       .subscribe(
