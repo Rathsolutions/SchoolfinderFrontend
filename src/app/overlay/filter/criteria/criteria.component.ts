@@ -140,6 +140,13 @@ export class CriteriaFilterComponent implements OnInit {
       this.updateAllAreasList();
       this.updateAllCategoriesList();
     });
+    this.updateColorLegend();
+    this.mapUpdateEventService.register().subscribe(() => {
+      this.updateColorLegend();
+    });
+  }
+
+  private updateColorLegend() {
     if (this.projectParamId) {
       this.schoolTypeService
         .findSchoolTypesInProject(this.projectParamId)
