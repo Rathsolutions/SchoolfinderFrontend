@@ -15,13 +15,17 @@
         <div class="subheadline">Nachname:</div>
         <h4 class="shownContentText">{{lastname.value}}</h4>
     </div>
-    <div class="entrySet" *ngIf="email.value != ''">
+    <div class="entrySet" *ngIf="email.value">
         <div class="subheadline">Email-Adresse:</div>
         <h4 class="shownContentText">{{email.value}}</h4>
     </div>
-    <div class="entrySet" *ngIf="phonenumber.value != ''">
+    <div class="entrySet" *ngIf="phonenumber.value">
         <div class="subheadline">Telefonnummer:</div>
         <h4 class="shownContentText">{{phonenumber.value}}</h4>
+    </div>
+    <div class="entrySet" *ngIf="institutionalFunctionality.value">
+        <div class="subheadline">Funktion:</div>
+        <h4 class="shownContentText">{{institutionalFunctionality.value}}</h4>
     </div>
     <div class="entrySet">
         <div class="subheadline">Projektbeschreibung</div>

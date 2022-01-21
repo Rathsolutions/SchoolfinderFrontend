@@ -1,7 +1,9 @@
 <!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
 <mat-expansion-panel>
   <mat-expansion-panel-header [collapsedHeight]="collapsedHeight">
-    <mat-panel-title class="expansionsPanelHeaderTitle"> Allgemeine Information </mat-panel-title>
+    <mat-panel-title class="expansionsPanelHeaderTitle">
+      Allgemeine Information
+    </mat-panel-title>
     <!-- <mat-panel-description>
       Allgemeine Informationen zur Institution
     </mat-panel-description> -->
@@ -50,7 +52,11 @@
   >
     <div class="subheadline">Homepage</div>
     <div class="content shownContentText">
-      {{ correspondingSchoolEntity.homepage }}
+      <a
+        [href]="convertToValidUrl(correspondingSchoolEntity.homepage)"
+        target="_blank"
+        >{{ correspondingSchoolEntity.homepage }}</a
+      >
     </div>
   </div>
   <div class="divider"></div>
@@ -61,7 +67,13 @@
       <div class="subheadline">{{ entry.key }}</div>
       <div class="content shownContentText">
         <div *ngFor="let value of entry.value">
-          <p>{{ value }}</p>
+          <p *ngIf="!isUrl(value)">{{ value }}</p>
+          <a
+            [href]="convertToValidUrl(value)"
+            target="_blank"
+            *ngIf="isUrl(value)"
+            >{{ value }}</a
+          >
         </div>
       </div>
     </div>

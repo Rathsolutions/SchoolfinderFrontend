@@ -1,5 +1,10 @@
 <!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
-<app-map-comp #mapComponent [criteriasObject]="criteriasObject" [projectParam]="projectInstance"></app-map-comp>
+<app-map-comp
+  #mapComponent
+  [criteriasObject]="criteriasObject"
+  [projectParam]="projectInstance"
+  [projectParamId]="projectParam"
+></app-map-comp>
 <div #overlay id="overlay">
   <div
     #backgroundOverlayDiv
@@ -10,7 +15,7 @@
     <fa-icon [icon]="alignJustifyIcon"></fa-icon>
   </button>
   <div #adminButton id="adminButton">
-    <button 
+    <button
       [disabled]="disabledButtons"
       mat-raised-button
       color="{{ adminButtonColor }}"
@@ -27,7 +32,9 @@
     #filterOverlay
     id="filterOverlay"
   >
-    <criteria-filter-component (disableButtonsEvent)="disableButtonsEvent($event)"
+    <criteria-filter-component
+      (disableButtonsEvent)="disableButtonsEvent($event)"
+      [projectParamId]="projectParam"
       #criteriaFilterComponent
     ></criteria-filter-component>
   </div>

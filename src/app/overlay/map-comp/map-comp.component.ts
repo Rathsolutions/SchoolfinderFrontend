@@ -88,6 +88,9 @@ export class MapCompComponent implements OnInit {
   @Input()
   private projectParam: ProjectCategoryEntity;
 
+  @Input()
+  private projectParamId: number;
+
   sourceWaypointImageVector: VectorSource<any>;
   sourceWaypointTextVector: VectorSource<any>;
   sourceAreaImageLayer: VectorLayer<any>;
@@ -286,14 +289,14 @@ export class MapCompComponent implements OnInit {
     this.sourceWaypointTextLayer = new VectorLayer({
       source: clusterSource,
       style: this.styleFunction,
-      declutter: true
+      declutter: true,
     });
     this.sourceAreaImageLayer = new VectorLayer({
       source: this.sourceAreaImageVector,
     });
     this.sourceAreaTextLayer = new VectorLayer({
       source: this.sourceAreaTextVector,
-      declutter: true
+      declutter: true,
     });
     this.map = new Map({
       target: "map",
@@ -308,7 +311,7 @@ export class MapCompComponent implements OnInit {
     this.clickListenerRef = this.map.on("click", this.mapOnClick.bind(this));
     this.map.on("movestart", () => {
       this.zoomBeforeMove = this.map.getView().getZoom();
-    })
+    });
     this.map.on("moveend", () => {
       this.updateWaypoints();
     });
@@ -331,9 +334,9 @@ export class MapCompComponent implements OnInit {
   }
 
   private styleFunction(feature, resolution) {
-    const originalFeature = feature.get('features');
+    const originalFeature = feature.get("features");
     console.log(originalFeature);
-    if (feature.get('features').length == 1) {
+    if (feature.get("features").length == 1) {
       return originalFeature[0].style_;
     } else {
       return new Style({});
@@ -351,7 +354,7 @@ export class MapCompComponent implements OnInit {
         box[2],
         box[1],
         box[3],
-        this.projectParam,
+        this.projectParamId,
         this.criteriasObject.selectedCriterias,
         this.criteriasObject.selectedSchoolTypes,
         this.criteriasObject.exclusiveSearch
@@ -384,9 +387,13 @@ export class MapCompComponent implements OnInit {
                 splitPoint = splitPoint - 1;
               }
             }
-            waypointImage.setStyle(Styles.getImageStyleForWaypoint(e, zoom, this.projectParam));
+            waypointImage.setStyle(
+              Styles.getImageStyleForWaypoint(e, zoom, this.projectParam)
+            );
             waypointImage.setId(e.id);
-            waypointText.setStyle(Styles.getTextStyleForWaypoint(e, zoom, this.projectParam));
+            waypointText.setStyle(
+              Styles.getTextStyleForWaypoint(e, zoom, this.projectParam)
+            );
             waypointText.setId(e.id);
             var res = this.existingWaypointAtGeometry.find(
               (element) => element[0] == e.latitude && element[1] == e.longitude
@@ -396,13 +403,19 @@ export class MapCompComponent implements OnInit {
               this.sourceWaypointTextVector.addFeature(waypointText);
               this.existingWaypointAtGeometry.push([e.latitude, e.longitude]);
             } else {
-              this.sourceWaypointImageVector.getFeatures().forEach((element) => {
-                if ((element as any).id_ == e.id) {
-                  (element as any).setStyle(
-                    Styles.getImageStyleForWaypoint(e, zoom, this.projectParam)
-                  );
-                }
-              });
+              this.sourceWaypointImageVector
+                .getFeatures()
+                .forEach((element) => {
+                  if ((element as any).id_ == e.id) {
+                    (element as any).setStyle(
+                      Styles.getImageStyleForWaypoint(
+                        e,
+                        zoom,
+                        this.projectParam
+                      )
+                    );
+                  }
+                });
               this.sourceWaypointTextVector.getFeatures().forEach((element) => {
                 if ((element as any).id_ == e.id) {
                   (element as any).setStyle(
@@ -457,7 +470,7 @@ export class MapCompComponent implements OnInit {
       this.map.addOverlay(overlayMap);
       this.addPointOverlay.setLat(latlong[0]);
       this.addPointOverlay.setLong(latlong[1]);
-      this.addPointOverlay.prepareNewSchool().then(resTwo => {
+      this.addPointOverlay.prepareNewSchool().then((resTwo) => {
         this.addPointOverlay.setVisible(true);
         if (point) {
           this.addPointOverlay.prefillByPointId((point as any).getId());

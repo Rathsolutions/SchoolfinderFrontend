@@ -12,6 +12,7 @@ import { AdditionalInformationDTO } from "src/app/entities/AdditionalInformation
 import { InformationTypeService } from "src/app/services/information-type.service";
 import { InformationType } from "src/app/entities/InformationType";
 import { SchoolPersonEntity } from "src/app/entities/SchoolPersonEntity";
+import { UrlUtils } from "../../../util/url-utils";
 
 @Component({
   selector: "show-additional-information-component",
@@ -44,5 +45,11 @@ export class ShowAdditionalInformation
       this.contentMap.set(dto.type, []);
     }
     this.contentMap.get(dto.type).push(dto.value);
+  }
+  convertToValidUrl(url: string): string {
+    return UrlUtils.convertToValidUrl(url);
+  }
+  isUrl(possibleUrl: string): boolean {
+    return UrlUtils.isUrl(possibleUrl);
   }
 }

@@ -12,7 +12,7 @@ export class ShowPersonComponent extends AbstractPersonViewData {
     if(this.projectDescription.value){
       return this.projectDescription.value;
     }else{
-      return "Für weitere Informationen kontaktieren Sie bitte die oben angegebene Ansprechperson!"
+      return "Für weitere Informationen kontaktieren Sie bitte den angegebenen Ansprechpartner oder die Institution!"
     }
   }
 
