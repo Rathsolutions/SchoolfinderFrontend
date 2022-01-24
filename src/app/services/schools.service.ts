@@ -58,9 +58,9 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
     rightLatBound: number,
     topLongBound: number,
     bottomLongBound: number,
-    project: ProjectCategoryEntity,
+    projectId: number,
     criterias: CriteriaEntity[],
-    schoolTypes:SchoolTypeDTO[],
+    schoolTypes: SchoolTypeDTO[],
     exclusiveSearch: boolean
   ): Observable<SchoolPersonEntity[]> {
     var criteriasIds = [];
@@ -71,7 +71,6 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
     schoolTypes.forEach((e) => {
       schoolTypeIds.push(e.id);
     });
-    console.log(schoolTypes);
     var paramsObj = {
       leftLatBound: leftLatBound.toString(),
       rightLatBound: rightLatBound.toString(),
@@ -81,17 +80,18 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
       criteriaNumbers: criteriasIds,
       exclusiveSearch: exclusiveSearch.toString(),
     };
-    if (project && project.id) {
-      (paramsObj as any).projectId = project.id;
+    if (projectId) {
+      (paramsObj as any).projectId = projectId;
     }
     return this.http.get<SchoolPersonEntity[]>(
       this.requestURL +
-      "/search/findAllSchoolsInBoundsHavingCriteriasAndProject",
+        "/search/findAllSchoolsInBoundsHavingCriteriasAndProject",
       {
         params: paramsObj,
       }
     );
   }
+
   public getAllSchools(): Observable<SchoolPersonEntity[]> {
     return this.http.get<SchoolPersonEntity[]>(
       this.requestURL + "/search/findAllSchools"
@@ -122,7 +122,7 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
   ) {
     return this.http.get<number>(
       this.requestURL +
-      "/search/findPersonFunctionalityForPersonAndSchoolAndFunctionality",
+        "/search/findPersonFunctionalityForPersonAndSchoolAndFunctionality",
       {
         params: {
           schoolId: schoolId.toString(),

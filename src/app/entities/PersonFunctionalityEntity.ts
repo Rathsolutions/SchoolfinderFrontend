@@ -5,6 +5,7 @@ import { PersonEntity } from './PersonEntity';
 export class PersonFunctionalityEntity {
     mappingId:number
     functionality: FunctionalityEntity;
+    institutionalFunctionality: string;
     person: PersonEntity;
     description:string;
 

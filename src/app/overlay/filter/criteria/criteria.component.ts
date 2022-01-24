@@ -105,6 +105,8 @@ export class CriteriaFilterComponent implements OnInit {
   step: number = 0;
   showRegionAreas: boolean = true;
 
+  @Input()
+  private projectParamId: number;
   @Output() disableButtonsEvent = new EventEmitter<boolean>();
   disabled: boolean = false;
 
@@ -127,12 +129,7 @@ export class CriteriaFilterComponent implements OnInit {
     private visibilityEventService: VisibilityEventService,
     private criteriaListEntriesChangedService: CriteriaListEntriesChangedService,
     private schoolTypeService: SchoolTypeService
-  ) {
-    schoolTypeService.findAll().subscribe((res) => {
-      console.log(res);
-      this.allSchoolTypes = res;
-    });
-  }
+  ) {}
   ngOnInit(): void {
     this.updateAllCriteriasList();
     this.updateAllAreasList();
@@ -143,6 +140,26 @@ export class CriteriaFilterComponent implements OnInit {
       this.updateAllAreasList();
       this.updateAllCategoriesList();
     });
+    this.updateColorLegend();
+    this.mapUpdateEventService.register().subscribe(() => {
+      this.updateColorLegend();
+    });
+  }
+
+  private updateColorLegend() {
+    if (this.projectParamId) {
+      this.schoolTypeService
+        .findSchoolTypesInProject(this.projectParamId)
+        .subscribe((res) => {
+          this.allSchoolTypes = res;
+        });
+    } else {
+      this.schoolTypeService
+        .findSchoolTypesUsedAtLeastOnce()
+        .subscribe((res) => {
+          this.allSchoolTypes = res;
+        });
+    }
   }
 
   private setButtonsDisabled(val: boolean) {

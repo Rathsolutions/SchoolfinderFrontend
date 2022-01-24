@@ -18,4 +18,22 @@ export class SchoolTypeService extends BaseService<SchoolTypeDTO> {
     super(http, "schoolType");
   }
 
+  public findSchoolTypesUsedAtLeastOnce(): Observable<SchoolTypeDTO[]> {
+    return this.http.get<SchoolTypeDTO[]>(
+      this.requestURL + "/search/findAllTypesUsedAtLeastOnce"
+    );
+  }
+
+  public findSchoolTypesInProject(
+    projectId: number
+  ): Observable<SchoolTypeDTO[]> {
+    return this.http.get<SchoolTypeDTO[]>(
+      this.requestURL + "/search/findAllUsedTypesInProject",
+      {
+        params: {
+          projectId: projectId,
+        },
+      }
+    );
+  }
 }
