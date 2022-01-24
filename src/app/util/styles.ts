@@ -46,16 +46,17 @@ export class Styles {
     zoom: any,
     project?: ProjectCategoryEntity
   ) {
-    var textToSet =
-      zoom <= 9 && e.shortSchoolName ? e.shortSchoolName : e.schoolName;
     var selectedProject = project;
     if (!project) {
       selectedProject = e.primaryProject;
     }
-    var color = e.schoolType ? e.schoolType : { r: 0, g: 0, b: 0 };
+    var scale = selectedProject.scaling ? selectedProject.scaling : 0.03;
+    // if(zoom <=7){
+    //   scale = 0.05;
+    // }
     return new Style({
       image: new Icon({
-        scale: selectedProject.scaling ? selectedProject.scaling : 0.03,
+        scale: scale,
         src: selectedProject.icon,
       }),
     });

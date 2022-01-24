@@ -20,18 +20,17 @@ export abstract class AbstractPersonViewData {
   functionality: FormControl = new FormControl("", Validators.required);
   lastname: FormControl = new FormControl("", Validators.required);
   email: FormControl = new FormControl("", [
-    Validators.required,
     Validators.email,
   ]);
   phonenumber: FormControl = new FormControl("");
-  projectDescription:FormControl = new FormControl("");
+  projectDescription: FormControl = new FormControl("");
 
   newPointForm: FormGroup;
 
   emails: string[] = [];
   functionalities: FunctionalityEntity[] = [];
 
-  constructor(protected personsService: PersonsService) {}
+  constructor(protected personsService: PersonsService) { }
 
   public prefill(personFunctionalityEntity: PersonFunctionalityEntity) {
     var person = personFunctionalityEntity.person;

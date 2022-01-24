@@ -37,10 +37,10 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
 
 
   public kind: FormControl = new FormControl("", Validators.required);
-  public address: FormControl = new FormControl("", Validators.required);
-  public generalPhoneNumber: FormControl = new FormControl("", Validators.required);
-  public generalEmail: FormControl = new FormControl("", Validators.required);
-  public homepage: FormControl = new FormControl("", Validators.required);
+  public address: FormControl = new FormControl("");
+  public generalPhoneNumber: FormControl = new FormControl("");
+  public generalEmail: FormControl = new FormControl("");
+  public homepage: FormControl = new FormControl("");
 
   public schoolName: FormControl = new FormControl("", Validators.required);
   public shortSchoolName: FormControl = new FormControl("");
