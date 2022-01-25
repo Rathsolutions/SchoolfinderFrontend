@@ -20,8 +20,7 @@ import { UrlUtils } from "../../../util/url-utils";
   styleUrls: ["./show-additional-information.component.css"],
 })
 export class ShowAdditionalInformation
-  implements AbstractAdditionalInformation
-{
+  implements AbstractAdditionalInformation {
   collapsedHeight = "50px";
   contentMap: Map<string, string[]>;
   correspondingSchoolEntity: SchoolPersonEntity;
@@ -51,5 +50,21 @@ export class ShowAdditionalInformation
   }
   isUrl(possibleUrl: string): boolean {
     return UrlUtils.isUrl(possibleUrl);
+  }
+
+  deserializeEmail(email:string):string{
+    return UrlUtils.deserializeEmail(email);
+  }
+
+  formatEmailToLink(email: string): string {
+    return UrlUtils.formatEmailToLink(email);
+  }
+
+  isStringEmail(possibleEmail:string):boolean{
+    return UrlUtils.isStringEmail(possibleEmail);
+  }
+
+  generateEmailList(email: string): string[] {
+    return UrlUtils.splitEmailsIntoSingleList(email);
   }
 }

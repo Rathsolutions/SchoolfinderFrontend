@@ -110,7 +110,8 @@ export class CriteriaFilterComponent implements OnInit {
   @Output() disableButtonsEvent = new EventEmitter<boolean>();
   disabled: boolean = false;
 
-  allSchoolTypes: SchoolTypeDTO[];
+  allSchoolTypesForColorLegend: SchoolTypeDTO[] = [];
+  allSchoolTypesForFiltering: SchoolTypeDTO[] = [];
 
   constructor(
     private criteriaService: CriteriaService,
@@ -129,7 +130,7 @@ export class CriteriaFilterComponent implements OnInit {
     private visibilityEventService: VisibilityEventService,
     private criteriaListEntriesChangedService: CriteriaListEntriesChangedService,
     private schoolTypeService: SchoolTypeService
-  ) {}
+  ) { }
   ngOnInit(): void {
     this.updateAllCriteriasList();
     this.updateAllAreasList();
@@ -140,24 +141,31 @@ export class CriteriaFilterComponent implements OnInit {
       this.updateAllAreasList();
       this.updateAllCategoriesList();
     });
-    this.updateColorLegend();
+    this.updateColorLegend(this.allSchoolTypesForColorLegend);
+    this.updateColorLegend(this.allSchoolTypesForFiltering);
     this.mapUpdateEventService.register().subscribe(() => {
-      this.updateColorLegend();
+      this.updateColorLegend(this.allSchoolTypesForColorLegend);
     });
   }
 
-  private updateColorLegend() {
+  private updateColorLegend(arrayToUpdate: SchoolTypeDTO[]) {
     if (this.projectParamId) {
       this.schoolTypeService
         .findSchoolTypesInProject(this.projectParamId)
         .subscribe((res) => {
-          this.allSchoolTypes = res;
+          arrayToUpdate.splice(0, arrayToUpdate.length);
+          res.forEach(e => {
+            arrayToUpdate.push(e);
+          });
         });
     } else {
       this.schoolTypeService
         .findSchoolTypesUsedAtLeastOnce()
         .subscribe((res) => {
-          this.allSchoolTypes = res;
+          arrayToUpdate.splice(0, arrayToUpdate.length);
+          res.forEach(e => {
+            arrayToUpdate.push(e);
+          });
         });
     }
   }
@@ -554,6 +562,8 @@ export class CriteriaFilterComponent implements OnInit {
 
   private selectChange(val, matchingArray: any[]) {
     var elementFoundIdx = matchingArray.indexOf(val);
+    console.log(elementFoundIdx);
+    console.log(val);
     if (elementFoundIdx == -1) {
       matchingArray.push(val);
     } else {

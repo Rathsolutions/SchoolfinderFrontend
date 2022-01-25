@@ -17,7 +17,14 @@
     </div>
     <div class="entrySet" *ngIf="email.value">
         <div class="subheadline">Email-Adresse:</div>
-        <h4 class="shownContentText">{{email.value}}</h4>
+        <div class="mat-h4 mat-subheading-1 mat-typography h4" *ngFor="let emailSingle of generateEmailList(email.value)">
+            <a [href]="emailSingle"
+                class="shownContentText mat-h4 mat-subheading-1 mat-typography h4">{{deserializeEmail(emailSingle)}}</a>
+            <div *ngIf="!isStringEmail(emailSingle)" class="shownContentText">
+                {{ deserializeEmail(emailSingle) }}
+            </div>
+        </div>
+
     </div>
     <div class="entrySet" *ngIf="phonenumber.value">
         <div class="subheadline">Telefonnummer:</div>
@@ -28,7 +35,7 @@
         <h4 class="shownContentText">{{institutionalFunctionality.value}}</h4>
     </div>
     <div class="entrySet">
-        <div class="subheadline">Projektbeschreibung</div>
+        <div class="subheadline">Projektbeschreibung:</div>
         <h4 class="shownContentText">{{getProjectDescription()}}</h4>
     </div>
 </mat-expansion-panel>
