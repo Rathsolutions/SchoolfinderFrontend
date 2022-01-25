@@ -102,7 +102,7 @@ export class CriteriaFilterComponent implements OnInit {
   amount: number;
   exclusiveSearch: boolean = false;
   categoryName: string = "";
-  step: number = 0;
+  step: number = -1;
   showRegionAreas: boolean = true;
 
   @Input()
