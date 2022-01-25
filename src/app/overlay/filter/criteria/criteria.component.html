@@ -109,7 +109,7 @@
           <mat-select #selectMat multiple [disabled]="disabled">
             <mat-optgroup label="Schulart">
               <mat-option
-                *ngFor="let schoolType of allSchoolTypes"
+                *ngFor="let schoolType of allSchoolTypesForFiltering"
                 [value]="schoolType"
                 (onSelectionChange)="schoolTypeSelectChange($event.source.value)"
                 >{{ schoolType.schoolTypeValue }}
@@ -249,7 +249,7 @@
 <div class="borderContainer" style="margin-top: 20px">
   <div style="display: flex; flex-direction: column">
     <h1 class="settingsMenuText">Farblegende</h1>
-    <div class="colorLegendEntry" *ngFor="let color of allSchoolTypes">
+    <div class="colorLegendEntry" *ngFor="let color of allSchoolTypesForColorLegend">
       <div [style.color]="toRGBString(color)">
         - {{ color.schoolTypeValue }}
       </div>
