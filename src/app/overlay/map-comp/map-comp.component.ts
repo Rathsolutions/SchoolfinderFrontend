@@ -462,6 +462,7 @@ export class MapCompComponent implements OnInit {
       var overlayMap = new Overlay({
         element: this.pointOverlayWrapper.nativeElement,
         position: evt.coordinate,
+        id: 'olOverlayContainer'
       });
       if (this.showPointOverlay) {
         this.showPointOverlay.setVisible(false);

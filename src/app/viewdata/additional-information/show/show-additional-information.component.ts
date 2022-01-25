@@ -22,7 +22,7 @@ import { UrlUtils } from "../../../util/url-utils";
 export class ShowAdditionalInformation
   implements AbstractAdditionalInformation {
   collapsedHeight = "50px";
-  contentMap: Map<string, string[]>;
+  contentMap: Map<string, AdditionalInformationDTO[]>;
   correspondingSchoolEntity: SchoolPersonEntity;
   constructor(
     additionalInformationService: AdditionalInformationService,
@@ -43,7 +43,8 @@ export class ShowAdditionalInformation
     if (!this.contentMap.has(dto.type)) {
       this.contentMap.set(dto.type, []);
     }
-    this.contentMap.get(dto.type).push(dto.value);
+    this.contentMap.get(dto.type).push(dto);
+    console.log(this.contentMap);
   }
   convertToValidUrl(url: string): string {
     return UrlUtils.convertToValidUrl(url);

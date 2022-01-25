@@ -11,6 +11,7 @@ body {
 }
 .shownContentText{
   max-width: 65%;
+  width:65%;
   word-wrap: break-word;
 }
 .subheadline {

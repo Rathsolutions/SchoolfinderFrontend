@@ -27,6 +27,7 @@ export class AddAdditionalInformation
 
   value: FormControl = new FormControl("", Validators.required);
   type: FormControl = new FormControl("", Validators.required);
+  homepage: FormControl = new FormControl("");
 
   newPointForm: FormGroup;
   private removeListener: Subject<AddAdditionalInformation> = new Subject();
@@ -63,6 +64,7 @@ export class AddAdditionalInformation
   public prefill(additionalInformationEntity: AdditionalInformationDTO) {
     this.value.setValue(additionalInformationEntity.value);
     this.type.setValue(additionalInformationEntity.type);
+    this.homepage.setValue(additionalInformationEntity.homepage);
   }
 
   public setNewPointForm(newPointForm: FormGroup) {
@@ -72,12 +74,14 @@ export class AddAdditionalInformation
   public resetValues(): void {
     this.value.reset();
     this.type.reset();
+    this.homepage.reset();
   }
 
   public toAdditionalInformationEntity(): AdditionalInformationDTO {
     var entity = new AdditionalInformationDTO();
     entity.type = this.type.value;
     entity.value = this.value.value;
+    entity.homepage = this.homepage.value;
     return entity;
   }
 

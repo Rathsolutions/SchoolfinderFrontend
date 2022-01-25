@@ -7,15 +7,17 @@ export class UrlUtils {
   }
 
   public static isUrl(possibleUrl: string): boolean {
+    console.log(possibleUrl);
     return (
-      possibleUrl.startsWith("https://") ||
-      possibleUrl.startsWith("http://") ||
-      possibleUrl.startsWith("www")
+      possibleUrl &&
+      (possibleUrl.startsWith("https://") ||
+        possibleUrl.startsWith("http://") ||
+        possibleUrl.startsWith("www"))
     );
   }
 
-  public static deserializeEmail(email:string):string{
-    if(email.startsWith("mailto:")){
+  public static deserializeEmail(email: string): string {
+    if (email.startsWith("mailto:")) {
       return email.substring(7);
     }
     return email;
@@ -25,11 +27,13 @@ export class UrlUtils {
     return "mailto:" + email;
   }
 
-  public static isStringEmail(possibleEmail:string):boolean{
+  public static isStringEmail(possibleEmail: string): boolean {
     return possibleEmail.indexOf("@") != -1;
   }
 
   public static splitEmailsIntoSingleList(emails: string): string[] {
-    return emails.split(" ").map(e => this.isStringEmail(e) ? this.formatEmailToLink(e) : e);
+    return emails
+      .split(" ")
+      .map((e) => (this.isStringEmail(e) ? this.formatEmailToLink(e) : e));
   }
 }

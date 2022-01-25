@@ -8,22 +8,35 @@
       Allgemeine Informationen zur Institution
     </mat-panel-description> -->
   </mat-expansion-panel-header>
-  <div class="entrySet generalDiv" *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.schoolType">
+  <div
+    class="entrySet generalDiv"
+    *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.schoolType"
+  >
     <div class="subheadline">Schulart</div>
     <div class="content shownContentText">
       {{ correspondingSchoolEntity.schoolType.schoolTypeValue }}
     </div>
   </div>
-  <div class="entrySet generalDiv" *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.address">
+  <div
+    class="entrySet generalDiv"
+    *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.address"
+  >
     <div class="subheadline">Adresse</div>
     <div class="content shownContentText">
       {{ correspondingSchoolEntity.address }}
     </div>
   </div>
-  <div class="entrySet generalDiv" *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.generalEmail">
+  <div
+    class="entrySet generalDiv"
+    *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.generalEmail"
+  >
     <div class="subheadline">Allgemeine E-Mail</div>
     <div class="content shownContentText">
-      <div *ngFor="let email of generateEmailList(correspondingSchoolEntity.generalEmail)">
+      <div
+        *ngFor="
+          let email of generateEmailList(correspondingSchoolEntity.generalEmail)
+        "
+      >
         <a *ngIf="isStringEmail(email)" href="formatEmailToLink(email)">
           {{ deserializeEmail(email) }}
         </a>
@@ -33,19 +46,28 @@
       </div>
     </div>
   </div>
-  <div class="entrySet generalDiv" *ngIf="
+  <div
+    class="entrySet generalDiv"
+    *ngIf="
       correspondingSchoolEntity && correspondingSchoolEntity.generalPhoneNumber
-    ">
+    "
+  >
     <div class="subheadline">Allgemeine Telefonnummer</div>
     <div class="content shownContentText">
       {{ correspondingSchoolEntity.generalPhoneNumber }}
     </div>
   </div>
-  <div class="entrySet generalDiv" *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.homepage">
+  <div
+    class="entrySet generalDiv"
+    *ngIf="correspondingSchoolEntity && correspondingSchoolEntity.homepage"
+  >
     <div class="subheadline">Homepage</div>
     <div class="content shownContentText">
-      <a [href]="convertToValidUrl(correspondingSchoolEntity.homepage)" target="_blank">{{
-        correspondingSchoolEntity.homepage }}</a>
+      <a
+        [href]="convertToValidUrl(correspondingSchoolEntity.homepage)"
+        target="_blank"
+        >{{ correspondingSchoolEntity.homepage }}</a
+      >
     </div>
   </div>
   <div class="divider"></div>
@@ -56,8 +78,15 @@
       <div class="subheadline">{{ entry.key }}</div>
       <div class="content shownContentText">
         <div *ngFor="let value of entry.value">
-          <p *ngIf="!isUrl(value)">{{ value }}</p>
-          <a [href]="convertToValidUrl(value)" target="_blank" *ngIf="isUrl(value)">{{ value }}</a>
+          <p>
+            {{ value.value }}
+            <a
+              [href]="convertToValidUrl(value.homepage)"
+              target="_blank"
+              *ngIf="isUrl(value.homepage)"
+              ><i>({{ value.homepage }})</i></a
+            >
+          </p>
         </div>
       </div>
     </div>

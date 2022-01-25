@@ -22,6 +22,11 @@
             <mat-label>Wert</mat-label>
             <input matInput [formControl]="value" required>
         </mat-form-field>
+        <br/>
+        <mat-form-field>
+            <mat-label>Homepage</mat-label>
+            <input matInput [formControl]="homepage">
+        </mat-form-field>
     </div>
     <button mat-raised-button color="warn" (click)="removeFromSchool()">Kriterium löschen</button>
 </mat-expansion-panel>
