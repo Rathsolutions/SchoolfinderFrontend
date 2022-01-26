@@ -17,7 +17,7 @@ body {
 .subheadline {
   flex-grow: 1;
   /* align-self: flex-start; */
-  max-width: 30%;
+  width: 50%;
   margin-right: 13px;
   font-weight: bold;
   word-wrap: break-word;

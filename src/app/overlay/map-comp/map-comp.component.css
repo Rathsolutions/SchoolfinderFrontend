@@ -2,19 +2,25 @@
   width: 80%;
 }
 
-.ol-overlay-container {
-  /* width: 80% */
-}
-
 @media only screen and (max-width: 500px) {
   #showPointComponentOverlayContainer {
+    /* max-width: 350px; */
+  }
+  .ol-overlay-container {
     max-width: 350px;
+    /* width: 80% */
   }
 }
 
 @media only screen and (min-width: 601px) {
   #showPointComponentOverlayContainer {
+    /* width: 80%; */
+    min-width: 600px;
+    max-width: 80vw;
+  }
+  .ol-overlay-container {
     width: 80%;
+    max-width: 80vw;
     min-width: 600px;
   }
 }
