@@ -10,14 +10,15 @@ body {
   width: 30%; 
 }
 .shownContentText{
-  max-width: 65%;
-  width:65%;
+  max-width: 50%;
+  width:50%;
   word-wrap: break-word;
 }
 .subheadline {
   flex-grow: 1;
   /* align-self: flex-start; */
   width: 50%;
+  min-width: 50%;
   margin-right: 13px;
   font-weight: bold;
   word-wrap: break-word;

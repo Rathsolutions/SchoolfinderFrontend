@@ -17,11 +17,13 @@
     </div>
     <div class="entrySet" *ngIf="email.value">
         <div class="subheadline">Email-Adresse:</div>
-        <div class="shownContentText mat-h4 mat-subheading-1 mat-typography h4" *ngFor="let emailSingle of generateEmailList(email.value)">
-            <a [href]="emailSingle"
+        <div class="shownContentText">
+            <div class="mat-h4 mat-subheading-1 mat-typography h4" *ngFor="let emailSingle of generateEmailList(email.value)">
+                <a [href]="emailSingle" *ngIf="isStringEmail(emailSingle)"
                 class="shownContentText mat-h4 mat-subheading-1 mat-typography h4">{{deserializeEmail(emailSingle)}}</a>
-            <div *ngIf="!isStringEmail(emailSingle)" class="shownContentText">
-                {{ deserializeEmail(emailSingle) }}
+                <div *ngIf="!isStringEmail(emailSingle)" class="shownContentText">
+                    {{ deserializeEmail(emailSingle) }}
+                </div>
             </div>
         </div>
 
