@@ -47,6 +47,7 @@ import { AreaManagementComponent } from "./dialogs/area-management/area-manageme
 import { AddAdditionalInformation } from "./viewdata/additional-information/add/add-additional-information.component";
 import { AdditionalCategoryManagementComponentComponent } from './dialogs/category-management/additional-category-management-component/additional-category-management-component.component';
 import { ShowAdditionalInformation } from "./viewdata/additional-information/show/show-additional-information.component";
+import { DsgvoComponent } from './dsgvo/dsgvo.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { ShowAdditionalInformation } from "./viewdata/additional-information/sho
     AddAdditionalInformation,
     ShowAdditionalInformation,
     AdditionalCategoryManagementComponentComponent,
+    DsgvoComponent,
   ],
   imports: [
     BrowserModule,

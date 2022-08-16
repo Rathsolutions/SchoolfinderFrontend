@@ -1,258 +1,165 @@
 <!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
-<div class="borderContainer">
-  <div style="display: flex; flex-direction: column">
-    <h1 class="settingsMenuText">Einstellungsmenü</h1>
-    <div style="margin-top: 10px; align-self: center">
-      <button
-        id="showAllInstitutionsButton"
-        class="criteriaComponentButton"
-        mat-raised-button
-        color="primary"
-        cdkFocusInitial
-        [disabled]="disabled"
-        (click)="showAllInstitutions()"
-      >
-        Zeige alle Institutionen
-      </button>
+<div style="display: flex; flex-direction: column;height:100%">
+  <div class="borderContainer">
+    <div style="display: flex; flex-direction: column">
+      <h1 class="settingsMenuText">Einstellungsmenü</h1>
+      <div style="margin-top: 10px; align-self: center">
+        <button id="showAllInstitutionsButton" class="criteriaComponentButton" mat-raised-button color="primary"
+          cdkFocusInitial [disabled]="disabled" (click)="showAllInstitutions()">
+          Zeige alle Institutionen
+        </button>
+      </div>
+      <mat-accordion>
+        <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle class="expansion-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title> Suche </mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-form-field>
+            <mat-label>Allgemeine Suche</mat-label>
+            <input [(ngModel)]="institutionQueryParam" matInput />
+          </mat-form-field>
+          <div>
+            <button class="criteriaComponentButton" mat-raised-button color="primary" cdkFocusInitial
+              [disabled]="disabled" (click)="searchGeneral()">
+              Allgemeine Suche
+            </button>
+          </div>
+          <mat-form-field *ngIf="isAdmin()">
+            <mat-label>Schulname</mat-label>
+            <input [(ngModel)]="schoolname" matInput />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Stadtname</mat-label>
+            <input [(ngModel)]="city" matInput />
+          </mat-form-field>
+          <mat-form-field *ngIf="isAdmin()">
+            <mat-label>Straßenname</mat-label>
+            <input [(ngModel)]="streetname" matInput />
+          </mat-form-field>
+          <mat-form-field *ngIf="isAdmin()">
+            <mat-label>Hausnummer</mat-label>
+            <input [(ngModel)]="housenumber" matInput />
+          </mat-form-field>
+          <div *ngIf="isAdmin()" style="margin-bottom: 10px">
+            <button class="criteriaComponentButton" mat-raised-button color="primary" cdkFocusInitial
+              [disabled]="disabled" (click)="searchSchool()">
+              Suche nach Institution
+            </button>
+          </div>
+          <div *ngIf="isAdmin()" style="margin-bottom: 10px">
+            <button class="criteriaComponentButton" mat-raised-button color="primary" cdkFocusInitial
+              [disabled]="disabled" (click)="searchStreet()">
+              Suche nach Straßenname
+            </button>
+          </div>
+          <div>
+            <button class="criteriaComponentButton" mat-raised-button color="primary" cdkFocusInitial
+              [disabled]="disabled" (click)="searchCity()">
+              Suche nach Stadt
+            </button>
+          </div>
+        </mat-expansion-panel>
+        <!-- <hr /> -->
+        <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle class="expansion-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title> Filter </mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-form-field>
+            <mat-label>Filterkriterien</mat-label>
+            <mat-select #selectMat multiple [disabled]="disabled">
+              <mat-optgroup label="Schulart">
+                <mat-option *ngFor="let schoolType of allSchoolTypesForFiltering" [value]="schoolType"
+                  (onSelectionChange)="schoolTypeSelectChange($event.source.value)">{{ schoolType.schoolTypeValue }}
+                </mat-option>
+              </mat-optgroup>
+              <mat-optgroup label="Ergänzende Filter">
+                <mat-option *ngFor="let criteria of allCriterias" [value]="criteria"
+                  (onSelectionChange)="criteriaSelectChange($event.source.value)">{{ criteria.criteriaName }}
+                </mat-option>
+              </mat-optgroup>
+            </mat-select>
+          </mat-form-field>
+          <div>
+            <mat-slide-toggle (change)="toggleSearchType()" [(ngModel)]="exclusiveSearch" [disabled]="disabled">
+              Inklusive Suche
+            </mat-slide-toggle>
+          </div>
+          <strong *ngIf="selectedSchoolTypes.length > 0">Aktive Filter (Schulart):</strong>
+          <div *ngFor="let type of selectedSchoolTypes">
+            <i>{{ type.schoolTypeValue }}</i>
+          </div>
+          <strong *ngIf="selectedCriterias.length > 0">Aktive Filter (Ergänzend)</strong>
+          <div *ngFor="let criteria of selectedCriterias">
+            <i>{{ criteria.criteriaName }}</i>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel *ngIf="isAdmin()" [expanded]="step === 2" (opened)="setStep(2)" hideToggle
+          class="expansion-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title> Kategorieverwaltung </mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-form-field *ngIf="isAdmin()">
+            <mat-label>Existente Kategorien</mat-label>
+            <mat-select #categorySelectionField [disabled]="disabled">
+              <mat-optgroup label="Institutionskategorien">
+                <mat-option #matOption (click)="institutionCategorySelectionTriggered(category)"
+                  *ngFor="let category of allInstitutionCategories" [value]="category">{{ category.name }}</mat-option>
+              </mat-optgroup>
+              <mat-optgroup label="Personkategorien">
+                <mat-option #matOption (click)="personCategorySelectionTriggered(category)"
+                  *ngFor="let category of allPersonCategories" [value]="category">{{ category.name }}</mat-option>
+              </mat-optgroup>
+              <mat-optgroup label="Zusatzkategorien">
+                <mat-option #matOption (click)="additionalInformationTypesSelectionTriggered(category)"
+                  *ngFor="let category of allAdditionalInformationTypes" [value]="category">{{ category.name }}
+                </mat-option>
+              </mat-optgroup>
+            </mat-select>
+          </mat-form-field>
+          <button mat-raised-button color="primary" #workOnCategoryButton [disabled]="disabled"
+            (click)="createCategory()">
+            Kategorie erstellen
+          </button>
+        </mat-expansion-panel>
+        <mat-expansion-panel [expanded]="step === 3" (opened)="setStep(3)" hideToggle class="expansion-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title> Anzeige </mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-slide-toggle [disabled]="disabled" (change)="toggleShowRegionAreas()" [(ngModel)]="showRegionAreas">
+            Bezirke
+            anzeigen</mat-slide-toggle>
+        </mat-expansion-panel>
+        <mat-expansion-panel *ngIf="isAdmin()" [expanded]="step === 4" (opened)="setStep(4)" hideToggle
+          class="expansion-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title> Regionalstellenbezirke </mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-form-field *ngIf="isAdmin()">
+            <mat-label>Existente Regionalstellenbezirke</mat-label>
+            <mat-select [disabled]="disabled" (selectionChange)="areaSelectionTriggered($event)" #areaSelectionField>
+              <mat-option *ngFor="let area of allAreas" [value]="area">{{
+                area.name
+                }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-raised-button color="primary" #workOnCategoryButton [disabled]="disabled" (click)="createArea()">
+            Regionalstellenbezirk erstellen
+          </button>
+        </mat-expansion-panel>
+      </mat-accordion>
     </div>
-    <mat-accordion>
-      <mat-expansion-panel
-        [expanded]="step === 0"
-        (opened)="setStep(0)"
-        hideToggle
-        class="expansion-panel"
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title> Suche </mat-panel-title>
-        </mat-expansion-panel-header>
-        <mat-form-field>
-          <mat-label>Allgemeine Suche</mat-label>
-          <input [(ngModel)]="institutionQueryParam" matInput />
-        </mat-form-field>
-        <div>
-          <button
-            class="criteriaComponentButton"
-            mat-raised-button
-            color="primary"
-            cdkFocusInitial
-            [disabled]="disabled"
-            (click)="searchGeneral()"
-          >
-            Allgemeine Suche
-          </button>
-        </div>
-        <mat-form-field *ngIf="isAdmin()">
-          <mat-label>Schulname</mat-label>
-          <input [(ngModel)]="schoolname" matInput />
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Stadtname</mat-label>
-          <input [(ngModel)]="city" matInput />
-        </mat-form-field>
-        <mat-form-field *ngIf="isAdmin()">
-          <mat-label>Straßenname</mat-label>
-          <input [(ngModel)]="streetname" matInput />
-        </mat-form-field>
-        <mat-form-field *ngIf="isAdmin()">
-          <mat-label>Hausnummer</mat-label>
-          <input [(ngModel)]="housenumber" matInput />
-        </mat-form-field>
-        <div *ngIf="isAdmin()" style="margin-bottom: 10px">
-          <button
-            class="criteriaComponentButton"
-            mat-raised-button
-            color="primary"
-            cdkFocusInitial
-            [disabled]="disabled"
-            (click)="searchSchool()"
-          >
-            Suche nach Institution
-          </button>
-        </div>
-        <div *ngIf="isAdmin()" style="margin-bottom: 10px">
-          <button
-            class="criteriaComponentButton"
-            mat-raised-button
-            color="primary"
-            cdkFocusInitial
-            [disabled]="disabled"
-            (click)="searchStreet()"
-          >
-            Suche nach Straßenname
-          </button>
-        </div>
-        <div>
-          <button
-            class="criteriaComponentButton"
-            mat-raised-button
-            color="primary"
-            cdkFocusInitial
-            [disabled]="disabled"
-            (click)="searchCity()"
-          >
-            Suche nach Stadt
-          </button>
-        </div>
-      </mat-expansion-panel>
-      <!-- <hr /> -->
-      <mat-expansion-panel
-        [expanded]="step === 1"
-        (opened)="setStep(1)"
-        hideToggle
-        class="expansion-panel"
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title> Filter </mat-panel-title>
-        </mat-expansion-panel-header>
-        <mat-form-field>
-          <mat-label>Filterkriterien</mat-label>
-          <mat-select #selectMat multiple [disabled]="disabled">
-            <mat-optgroup label="Schulart">
-              <mat-option
-                *ngFor="let schoolType of allSchoolTypesForFiltering"
-                [value]="schoolType"
-                (onSelectionChange)="schoolTypeSelectChange($event.source.value)"
-                >{{ schoolType.schoolTypeValue }}
-              </mat-option>
-            </mat-optgroup>
-            <mat-optgroup label="Ergänzende Filter">
-              <mat-option
-                *ngFor="let criteria of allCriterias"
-                [value]="criteria"
-                (onSelectionChange)="criteriaSelectChange($event.source.value)"
-                >{{ criteria.criteriaName }}
-              </mat-option>
-            </mat-optgroup>
-          </mat-select>
-        </mat-form-field>
-        <div>
-          <mat-slide-toggle
-            (change)="toggleSearchType()"
-            [(ngModel)]="exclusiveSearch"
-            [disabled]="disabled"
-          >
-            Inklusive Suche
-          </mat-slide-toggle>
-        </div>
-        <strong *ngIf="selectedSchoolTypes.length > 0">Aktive Filter (Schulart):</strong>
-        <div *ngFor="let type of selectedSchoolTypes">
-          <i>{{ type.schoolTypeValue }}</i>
-        </div>
-        <strong *ngIf="selectedCriterias.length > 0">Aktive Filter (Ergänzend)</strong>
-        <div *ngFor="let criteria of selectedCriterias">
-          <i>{{ criteria.criteriaName }}</i>
-        </div>
-      </mat-expansion-panel>
-      <mat-expansion-panel
-        *ngIf="isAdmin()"
-        [expanded]="step === 2"
-        (opened)="setStep(2)"
-        hideToggle
-        class="expansion-panel"
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title> Kategorieverwaltung </mat-panel-title>
-        </mat-expansion-panel-header>
-        <mat-form-field *ngIf="isAdmin()">
-          <mat-label>Existente Kategorien</mat-label>
-          <mat-select #categorySelectionField [disabled]="disabled">
-            <mat-optgroup label="Institutionskategorien">
-              <mat-option
-                #matOption
-                (click)="institutionCategorySelectionTriggered(category)"
-                *ngFor="let category of allInstitutionCategories"
-                [value]="category"
-                >{{ category.name }}</mat-option
-              >
-            </mat-optgroup>
-            <mat-optgroup label="Personkategorien">
-              <mat-option
-                #matOption
-                (click)="personCategorySelectionTriggered(category)"
-                *ngFor="let category of allPersonCategories"
-                [value]="category"
-                >{{ category.name }}</mat-option
-              >
-            </mat-optgroup>
-            <mat-optgroup label="Zusatzkategorien">
-              <mat-option
-                #matOption
-                (click)="additionalInformationTypesSelectionTriggered(category)"
-                *ngFor="let category of allAdditionalInformationTypes"
-                [value]="category"
-                >{{ category.name }}
-              </mat-option>
-            </mat-optgroup>
-          </mat-select>
-        </mat-form-field>
-        <button
-          mat-raised-button
-          color="primary"
-          #workOnCategoryButton
-          [disabled]="disabled"
-          (click)="createCategory()"
-        >
-          Kategorie erstellen
-        </button>
-      </mat-expansion-panel>
-      <mat-expansion-panel
-        [expanded]="step === 3"
-        (opened)="setStep(3)"
-        hideToggle
-        class="expansion-panel"
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title> Anzeige </mat-panel-title>
-        </mat-expansion-panel-header>
-        <mat-slide-toggle
-          [disabled]="disabled"
-          (change)="toggleShowRegionAreas()"
-          [(ngModel)]="showRegionAreas"
-          >Bezirke anzeigen</mat-slide-toggle
-        >
-      </mat-expansion-panel>
-      <mat-expansion-panel
-        *ngIf="isAdmin()"
-        [expanded]="step === 4"
-        (opened)="setStep(4)"
-        hideToggle
-        class="expansion-panel"
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title> Regionalstellenbezirke </mat-panel-title>
-        </mat-expansion-panel-header>
-        <mat-form-field *ngIf="isAdmin()">
-          <mat-label>Existente Regionalstellenbezirke</mat-label>
-          <mat-select
-            [disabled]="disabled"
-            (selectionChange)="areaSelectionTriggered($event)"
-            #areaSelectionField
-          >
-            <mat-option *ngFor="let area of allAreas" [value]="area">{{
-              area.name
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <button
-          mat-raised-button
-          color="primary"
-          #workOnCategoryButton
-          [disabled]="disabled"
-          (click)="createArea()"
-        >
-          Regionalstellenbezirk erstellen
-        </button>
-      </mat-expansion-panel>
-    </mat-accordion>
   </div>
-</div>
-<div class="borderContainer" style="margin-top: 20px">
-  <div style="display: flex; flex-direction: column">
-    <h1 class="settingsMenuText">Farblegende</h1>
-    <div class="colorLegendEntry" *ngFor="let color of allSchoolTypesForColorLegend">
-      <div [style.color]="toRGBString(color)">
-        - {{ color.schoolTypeValue }}
+  <div class="borderContainer" style="margin-top: 20px">
+    <div style="display: flex; flex-direction: column">
+      <h1 class="settingsMenuText">Farblegende</h1>
+      <div class="colorLegendEntry" *ngFor="let color of allSchoolTypesForColorLegend">
+        <div [style.color]="toRGBString(color)">
+          - {{ color.schoolTypeValue }}
+        </div>
       </div>
     </div>
+  </div>
+  <div style="display: flex;justify-content: space-between;height:100%; flex-direction: column; margin-left: 3%;align-items: center;align-self: stretch;">
+    <a style="margin-top: auto;margin-bottom: 10px;" href="datenschutz">Datenschutzerklärung</a>
   </div>
 </div>

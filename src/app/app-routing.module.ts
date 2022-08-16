@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { MainComponent } from "./overlay/main/main.component";
 import { BarrierFree } from "./overlay/barrierfree/barrierfree.component";
+import { DsgvoComponent } from "./dsgvo/dsgvo.component";
 
 const routes: Routes = [
   {
@@ -18,10 +19,14 @@ const routes: Routes = [
     path: "barrierefrei",
     component: BarrierFree,
   },
+  {
+    path: "datenschutz",
+    component: DsgvoComponent,
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { relativeLinkResolution: "legacy" })],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

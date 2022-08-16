@@ -270,7 +270,7 @@ export class MapCompComponent implements OnInit {
   ngOnInit(): void {
     this.mapSource = new XYZ({
       attributions:
-        '© <a href=https://rathsolutions.de target="_blank">Nico Rath</a>, <a href="http://www.openstreetmaps.org/" target="_blank">OpenStreetMaps</a>, <a href="https://openlayers.org/" target="_blank">OpenLayers</a>',
+        '© <a href=https://rathsolutions.de target="_blank">Nico Rath</a>, <a href="http://www.openstreetmaps.org/" target="_blank">OpenStreetMap Contributors</a>',
       url: "https://mapserver.rathsolutions.de/styles/liberty/{z}/{x}/{y}.png",
     });
     this.mapLayer = new TileLayer({
