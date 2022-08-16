@@ -18,9 +18,8 @@ server {
     location / {
         root   /usr/share/nginx/html/simonlmz;
         index  index.html;
-        try_files $uri $uri/ /index.html;
-        add_header Cache-Control no-cache;
-        expires -1;
+	add_header Cache-Control no-cache;
+	expires -1;
     }
 
     #error_page  404              /404.html;
@@ -55,3 +54,4 @@ server {
     #    deny  all;
     #}
 }
+
