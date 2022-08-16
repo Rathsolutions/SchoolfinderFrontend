@@ -3,11 +3,14 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MainComponent } from './overlay/main/main.component';
 import { BarrierFree } from './overlay/barrierfree/barrierfree.component';
+import { DsgvoComponent } from './dsgvo/dsgvo.component';
 
 const routes: Routes = [{
   path: '', component: MainComponent, pathMatch: 'full'
 }, {
   path: 'barrierefrei', component: BarrierFree
+},{
+  path: 'datenschutz', component: DsgvoComponent
 }];
 
 @NgModule({

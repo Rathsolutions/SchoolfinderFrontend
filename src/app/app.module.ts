@@ -34,6 +34,7 @@ import { MainComponent } from './overlay/main/main.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatListModule } from '@angular/material/list';
 import { BarrierFree } from './overlay/barrierfree/barrierfree.component';
+import { DsgvoComponent } from './dsgvo/dsgvo.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { BarrierFree } from './overlay/barrierfree/barrierfree.component';
     ShowPointOverlay,
     AddCriteriaComponent,
     CriteriaFilterComponent,
-    SearchSelectionComponent
+    SearchSelectionComponent,
+    DsgvoComponent
   ],
   imports: [
     BrowserModule,
@@ -74,6 +76,7 @@ import { BarrierFree } from './overlay/barrierfree/barrierfree.component';
     ToastrModule.forRoot()
   ],
   providers: [{ provide: MAT_COLOR_FORMATS, useValue: NGX_MAT_COLOR_FORMATS }],
+  exports: [AppRoutingModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
