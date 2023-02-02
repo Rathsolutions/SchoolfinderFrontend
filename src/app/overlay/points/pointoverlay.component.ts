@@ -98,14 +98,6 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
     this.generalPhoneNumber.setValue(result.generalPhoneNumber);
     this.generalEmail.setValue(result.generalEmail);
     this.homepage.setValue(result.homepage);
-    // if (result.color) {
-    //   var r = parseInt(result.color.substr(0, 2), 16);
-    //   var g = parseInt(result.color.substr(2, 2), 16);
-    //   var b = parseInt(result.color.substr(4, 2), 16);
-    // this.colorCtr.setValue(new Color(r, g, b));
-    // } else {
-    // this.colorCtr.setValue(new Color(255, 0, 0));
-    // }
     result.personSchoolMapping.forEach((e) => {
       var personViewInstance = this.appendPersonViewDataInstance();
       personViewInstance.prefill(e);

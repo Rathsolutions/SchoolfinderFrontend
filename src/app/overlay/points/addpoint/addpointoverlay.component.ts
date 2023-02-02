@@ -305,9 +305,13 @@ export class AddPointOverlay
       });
   }
 
+  compareInstitutionCategory(object1: ProjectCategoryEntity, object2: ProjectCategoryEntity) {
+    return object1 && object2 && object1.id == object2.id;
+  }
+
   public async prefillByPointId(pointId: number) {
     var res = await this.loadNewSchool(pointId);
-    var matchingProjects = [];
+    var matchingProjects: ProjectCategoryEntity[] = [];
     res.projects.forEach((e) => {
       var curProjInstance = this.projectCategories.filter(
         (p) => p.id == e.id

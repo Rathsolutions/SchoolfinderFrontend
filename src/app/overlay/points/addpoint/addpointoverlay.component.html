@@ -21,6 +21,7 @@
               [formControl]="projectCategory"
               multiple
               required
+              [compareWith]="compareInstitutionCategory"
               (opened)="institutionCategoryOpened()"
             >
               <mat-option
