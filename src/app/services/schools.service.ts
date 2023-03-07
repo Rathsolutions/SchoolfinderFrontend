@@ -85,7 +85,7 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
     }
     return this.http.get<SchoolPersonEntity[]>(
       this.requestURL +
-        "/search/findAllSchoolsInBoundsHavingCriteriasAndProject",
+        "/search/findAllSchoolsInBoundsHavingCriteriasAndProjectWithoutProjectIconInResponse",
       {
         params: paramsObj,
       }

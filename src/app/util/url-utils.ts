@@ -7,7 +7,6 @@ export class UrlUtils {
   }
 
   public static isUrl(possibleUrl: string): boolean {
-    console.log(possibleUrl);
     return (
       possibleUrl &&
       (possibleUrl.startsWith("https://") ||

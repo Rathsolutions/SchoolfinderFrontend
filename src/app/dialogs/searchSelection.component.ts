@@ -26,7 +26,6 @@ export class SearchSelectionComponent implements OnInit {
          }
 
     ngOnInit(): void {
-        console.log(this.entries);
     }
 
     public onCardClick(indice) {

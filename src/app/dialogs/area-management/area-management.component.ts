@@ -62,7 +62,6 @@ export class AreaManagementComponent
   }
 
   ngOnInit(): void {
-    console.log(this.data.color);
     this.colorCtr.setValue(this.data.color);
     this.colorCtr.valueChanges.subscribe((res) => (this.data.color = res));
   }
@@ -131,7 +130,6 @@ export class AreaManagementComponent
       this.toastrService.error("Bitte füllen Sie alle Felder korrekt aus!");
       return;
     }
-    console.log(this.data.area);
     if (this.data.area.length < 4) {
       this.toastrService.error(
         "Das Bezirksgebiet muss aus mindestens 3 Punkten bestehen!"
@@ -154,7 +152,6 @@ export class AreaManagementComponent
     });
     area.areaPolygon = areaPolygon;
     super.saveChanges(area).then((res) => {
-      console.log(res);
       this.toastrService.success(
         "Der Regionalstellenbezirk " +
           area.name +

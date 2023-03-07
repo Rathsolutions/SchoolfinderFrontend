@@ -16,6 +16,13 @@ export class ProjectCategoryService extends BaseService<ProjectCategoryEntity> {
     super(http, "project");
   }
 
+  public findProjectById(id: number): Observable<ProjectCategoryEntity> {
+    return this.http.get<ProjectCategoryEntity>(
+      this.requestURL + "/" + id,
+      BaseService.HTTP_OPTIONS
+    );
+  }
+
   public findProjectByName(name: string): Observable<ProjectCategoryEntity> {
     return this.http.get<ProjectCategoryEntity>(
       this.requestURL + "/search/getProjectByName/" + name,

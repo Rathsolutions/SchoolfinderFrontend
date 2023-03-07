@@ -268,7 +268,6 @@ export class AddPointOverlay
         res.forEach((e) => {
           school.personSchoolMapping.push(e);
         });
-        console.log(school.personSchoolMapping);
         var observableSchool: Observable<SchoolPersonEntity>;
         var successMessage: string;
         if (this.prefilled) {

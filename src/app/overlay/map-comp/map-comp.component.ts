@@ -54,6 +54,7 @@ import olms from "ol-mapbox-style";
 import stylefunction from "ol-mapbox-style/dist/stylefunction";
 import GeoJSON from "ol/format/GeoJSON";
 import { Style } from "ol/style";
+import { SchoolsDao } from "src/app/services/dao/schools.dao";
 
 @Component({
   selector: "app-map-comp",
@@ -107,7 +108,7 @@ export class MapCompComponent implements OnInit {
   sourceWaypointTextLayer: VectorLayer<Vector<any>>;
 
   constructor(
-    private schoolsService: SchoolsService,
+    private schoolsDao: SchoolsDao,
     private componentFactoryResolver: ComponentFactoryResolver,
     private saveEventService: MapUpdateEventService,
     private zoomEventService: ZoomToEventService,
@@ -335,7 +336,6 @@ export class MapCompComponent implements OnInit {
 
   private styleFunction(feature, resolution) {
     const originalFeature = feature.get("features");
-    console.log(originalFeature);
     if (feature.get("features").length == 1) {
       return originalFeature[0].style_;
     } else {
@@ -348,7 +348,7 @@ export class MapCompComponent implements OnInit {
     var zoom = this.map.getView().getZoom();
     var box = transformExtent(glbox, "EPSG:3857", "EPSG:4326");
     var replaceRegex = "/(.{5})/g,  $1\n";
-    this.schoolsService
+    this.schoolsDao
       .getSchoolsByBoundsAndCriteriasAndSchoolTypesAndProject(
         box[0],
         box[2],
@@ -358,78 +358,78 @@ export class MapCompComponent implements OnInit {
         this.criteriasObject.selectedCriterias,
         this.criteriasObject.selectedSchoolTypes,
         this.criteriasObject.exclusiveSearch
-      )
-      .subscribe(
-        (success) => {
-          success.forEach((e) => {
-            var waypointImage = new Feature({
-              geometry: new Point(
-                transform([e.latitude, e.longitude], "EPSG:4326", "EPSG:3857")
-              ),
-            });
-            var waypointText = new Feature({
-              geometry: new Point(
-                transform([e.latitude, e.longitude], "EPSG:4326", "EPSG:3857")
-              ),
-            });
-            var schoolNameReplaced = e.schoolName;
-            var splitPoint = 0;
-            if (e.schoolName.length > 5) {
-              schoolNameReplaced = e.schoolName.replace(/(.{1})/g, "$1\n");
-              splitPoint = schoolNameReplaced.split("\n").length;
-              if (
-                schoolNameReplaced.charAt(schoolNameReplaced.length - 1) == "\n"
-              ) {
-                schoolNameReplaced = schoolNameReplaced.substring(
-                  0,
-                  schoolNameReplaced.length - 1
-                );
-                splitPoint = splitPoint - 1;
+      ).then(promise =>
+        promise.subscribe(
+          (success) => {
+            success.forEach((e) => {
+              var waypointImage = new Feature({
+                geometry: new Point(
+                  transform([e.latitude, e.longitude], "EPSG:4326", "EPSG:3857")
+                ),
+              });
+              var waypointText = new Feature({
+                geometry: new Point(
+                  transform([e.latitude, e.longitude], "EPSG:4326", "EPSG:3857")
+                ),
+              });
+              var schoolNameReplaced = e.schoolName;
+              var splitPoint = 0;
+              if (e.schoolName.length > 5) {
+                schoolNameReplaced = e.schoolName.replace(/(.{1})/g, "$1\n");
+                splitPoint = schoolNameReplaced.split("\n").length;
+                if (
+                  schoolNameReplaced.charAt(schoolNameReplaced.length - 1) == "\n"
+                ) {
+                  schoolNameReplaced = schoolNameReplaced.substring(
+                    0,
+                    schoolNameReplaced.length - 1
+                  );
+                  splitPoint = splitPoint - 1;
+                }
               }
-            }
-            waypointImage.setStyle(
-              Styles.getImageStyleForWaypoint(e, zoom, this.projectParam)
-            );
-            waypointImage.setId(e.id);
-            waypointText.setStyle(
-              Styles.getTextStyleForWaypoint(e, zoom, this.projectParam)
-            );
-            waypointText.setId(e.id);
-            var res = this.existingWaypointAtGeometry.find(
-              (element) => element[0] == e.latitude && element[1] == e.longitude
-            );
-            if (!res) {
-              this.sourceWaypointImageVector.addFeature(waypointImage);
-              this.sourceWaypointTextVector.addFeature(waypointText);
-              this.existingWaypointAtGeometry.push([e.latitude, e.longitude]);
-            } else {
-              this.sourceWaypointImageVector
-                .getFeatures()
-                .forEach((element) => {
+              waypointImage.setStyle(
+                Styles.getImageStyleForWaypoint(e, zoom, this.projectParam)
+              );
+              waypointImage.setId(e.id);
+              waypointText.setStyle(
+                Styles.getTextStyleForWaypoint(e, zoom, this.projectParam)
+              );
+              waypointText.setId(e.id);
+              var res = this.existingWaypointAtGeometry.find(
+                (element) => element[0] == e.latitude && element[1] == e.longitude
+              );
+              if (!res) {
+                this.sourceWaypointImageVector.addFeature(waypointImage);
+                this.sourceWaypointTextVector.addFeature(waypointText);
+                this.existingWaypointAtGeometry.push([e.latitude, e.longitude]);
+              } else {
+                this.sourceWaypointImageVector
+                  .getFeatures()
+                  .forEach((element) => {
+                    if ((element as any).id_ == e.id) {
+                      (element as any).setStyle(
+                        Styles.getImageStyleForWaypoint(
+                          e,
+                          zoom,
+                          this.projectParam
+                        )
+                      );
+                    }
+                  });
+                this.sourceWaypointTextVector.getFeatures().forEach((element) => {
                   if ((element as any).id_ == e.id) {
                     (element as any).setStyle(
-                      Styles.getImageStyleForWaypoint(
-                        e,
-                        zoom,
-                        this.projectParam
-                      )
+                      Styles.getTextStyleForWaypoint(e, zoom, this.projectParam)
                     );
                   }
                 });
-              this.sourceWaypointTextVector.getFeatures().forEach((element) => {
-                if ((element as any).id_ == e.id) {
-                  (element as any).setStyle(
-                    Styles.getTextStyleForWaypoint(e, zoom, this.projectParam)
-                  );
-                }
-              });
-            }
-          });
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+              }
+            });
+          },
+          (error) => {
+            console.log(error);
+          }
+        ));
   }
 
   public resetAllWaypoint(): void {

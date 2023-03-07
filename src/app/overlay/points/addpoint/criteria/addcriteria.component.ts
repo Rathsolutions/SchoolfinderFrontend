@@ -71,7 +71,6 @@ export class AddCriteriaComponent implements RemoveableComponent {
   private updateCriteriaCache(data: string): void {
     this.criteriaService.getPossibleCriterias(data, 5).subscribe((result) => {
       this.possibleCriterias = [];
-      console.log(result);
       result.forEach((e) => this.possibleCriterias.push(e.criteriaName));
     });
   }

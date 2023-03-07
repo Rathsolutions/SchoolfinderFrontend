@@ -562,8 +562,6 @@ export class CriteriaFilterComponent implements OnInit {
 
   private selectChange(val, matchingArray: any[]) {
     var elementFoundIdx = matchingArray.indexOf(val);
-    console.log(elementFoundIdx);
-    console.log(val);
     if (elementFoundIdx == -1) {
       matchingArray.push(val);
     } else {

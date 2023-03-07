@@ -44,7 +44,6 @@ export class ShowAdditionalInformation
       this.contentMap.set(dto.type, []);
     }
     this.contentMap.get(dto.type).push(dto);
-    console.log(this.contentMap);
   }
   convertToValidUrl(url: string): string {
     return UrlUtils.convertToValidUrl(url);

@@ -89,9 +89,7 @@ export class MainComponent implements AfterViewInit, OnInit {
   }
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      console.log(params.get("projectId"));
       var projectParam = params.get("projectId");
-      console.log(projectParam);
       if (projectParam) {
         this.projectParam = parseInt(projectParam);
         this.projectCategoryService.read(this.projectParam).subscribe(res => {
@@ -102,7 +100,6 @@ export class MainComponent implements AfterViewInit, OnInit {
   }
   disableButtonsEvent(val: boolean) {
     this.disabledButtons = val;
-    console.log(this.disabledButtons);
   }
   ngAfterViewInit(): void { }
 
