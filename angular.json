@@ -129,5 +129,8 @@
       }
     }
   },
-  "defaultProject": "schoolfinder"
+  "defaultProject": "schoolfinder",
+  "cli": {
+    "analytics": false
+  }
 }

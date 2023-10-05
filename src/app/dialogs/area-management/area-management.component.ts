@@ -20,6 +20,7 @@ import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdate
 import GeoJSON from "ol/format/GeoJSON";
 import { transform } from "ol/proj";
 import { CriteriaListEntriesChangedService } from "src/app/broadcast-event-service/CriteriaListEntriesChangedService";
+import { Polygon } from "ol/geom";
 
 @Component({
   selector: "app-area-management",
@@ -28,8 +29,7 @@ import { CriteriaListEntriesChangedService } from "src/app/broadcast-event-servi
 })
 export class AreaManagementComponent
   extends AbstractManagement<AreaManagementComponent, AreaManagementData>
-  implements OnInit
-{
+  implements OnInit {
   @ViewChild("picker") pickerInput: NgxMatColorPickerInput;
 
   public colorCtr: AbstractControl = new FormControl("", [
@@ -83,9 +83,9 @@ export class AreaManagementComponent
     reader.onloadend = () => {
       var feature = new GeoJSON().readFeature(reader.result.toString());
       this.data.area = [];
-      feature
-        .getGeometry()
-        .getCoordinates().forEach(co=>{
+      (feature
+        .getGeometry() as Polygon)
+        .getCoordinates().forEach(co => {
           co.forEach((element) => {
             transform(element, "EPSG:4326", "EPSG:3857");
             this.data.area.push(element);
@@ -94,7 +94,7 @@ export class AreaManagementComponent
     };
   }
 
-  public onNoClick(){
+  public onNoClick() {
     this.data.callbackFunction();
     super.onNoClick();
   }
@@ -154,8 +154,8 @@ export class AreaManagementComponent
     super.saveChanges(area).then((res) => {
       this.toastrService.success(
         "Der Regionalstellenbezirk " +
-          area.name +
-          " wurde erfolgreich editiert!"
+        area.name +
+        " wurde erfolgreich editiert!"
       );
       this.criteriaListEntriesChangedService.emit();
     });

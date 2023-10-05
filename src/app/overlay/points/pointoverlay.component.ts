@@ -23,7 +23,6 @@ import { PersonsService } from "../../services/persons.service";
 import { AbstractPersonViewData } from "../../viewdata/AbstractPersonViewData";
 import { SchoolPersonEntity } from "src/app/entities/SchoolPersonEntity";
 import { Color } from "@angular-material-components/color-picker";
-import { parse } from "url";
 import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 import { AbstractAdditionalInformation } from "src/app/viewdata/additional-information/AbstractAdditionalInformation";
 

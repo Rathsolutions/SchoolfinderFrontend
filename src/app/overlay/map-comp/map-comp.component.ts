@@ -20,7 +20,7 @@ import Overlay from "ol/Overlay";
 import { transform, toLonLat, transformExtent } from "ol/proj";
 import { UserService } from "src/app/services/user.service";
 import { SchoolsService } from "src/app/services/schools.service";
-import { LinearRing, Point, Polygon } from "ol/geom";
+import { LinearRing, MultiPolygon, Point, Polygon } from "ol/geom";
 import { CriteriaFilterComponent } from "../filter/criteria/criteria.component";
 import VectorSource from "ol/source/Vector";
 import { AddPointOverlay } from "../points/addpoint/addpointoverlay.component";
@@ -30,7 +30,8 @@ import {
   ZoomEventMessage,
   ZoomToEventService,
 } from "src/app/broadcast-event-service/ZoomToEventService";
-import GeometryType from "ol/geom/GeometryType";
+
+
 import { AreaSelectionService } from "src/app/broadcast-event-service/AreaSelectionService";
 import { MatDialog } from "@angular/material/dialog";
 import {
@@ -154,7 +155,7 @@ export class MapCompComponent implements OnInit {
       unByKey(this.clickListenerRef);
       this.drawInstance = new Draw({
         source: this.sourceAreaImageVector,
-        type: GeometryType.POLYGON,
+        type: 'Polygon',
         style: Styles.getDrawStyle(res.color),
       });
       this.sourceAreaImageVector.getFeatures().forEach((e) => {
@@ -189,7 +190,7 @@ export class MapCompComponent implements OnInit {
       unByKey(this.clickListenerRef);
       this.drawInstance = new Draw({
         source: this.sourceAreaTextVector,
-        type: GeometryType.POINT,
+        type: 'Point',
       });
       this.drawInstance.on("drawend", (drawEndEvent) => {
         var point: Point = drawEndEvent.feature.getGeometry() as Point;

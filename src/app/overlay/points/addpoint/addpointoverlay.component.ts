@@ -44,6 +44,7 @@ import { ProjectCategoryService } from "src/app/services/project-category.servic
 import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 import { AddAdditionalInformation } from "src/app/viewdata/additional-information/add/add-additional-information.component";
 import { RemoveableComponent } from "src/app/viewdata/RemoveableComponent";
+import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
 
 
 @Component({
@@ -88,7 +89,8 @@ export class AddPointOverlay
     private componentFactoryResolver: ComponentFactoryResolver,
     private projectCategoryService: ProjectCategoryService,
     private saveEventService: MapUpdateEventService,
-    private schoolTypeService: SchoolTypeService
+    private schoolTypeService: SchoolTypeService,
+    private calculationEventService: CalculationEventService
   ) {
     super(schoolService, personsService);
     schoolTypeService.findAll().subscribe(res => {
@@ -200,6 +202,7 @@ export class AddPointOverlay
   }
 
   deleteCurrent(): void {
+    this.calculationEventService.emit(true);
     this.schoolService.deleteSchool(this.schoolId).subscribe(
       (result) => {
         this.toastr.success(
@@ -209,8 +212,10 @@ export class AddPointOverlay
         );
         this.setVisible(false);
         this.saveEventService.emit(true);
+        this.calculationEventService.emit(false);
       },
       (err) => {
+        this.calculationEventService.emit(false);
         this.toastr.error("Es ist ein Fehler aufgetreten!");
       }
     );
@@ -222,6 +227,7 @@ export class AddPointOverlay
       return;
     }
 
+    this.calculationEventService.emit(true);
     var school: SchoolPersonEntity = new SchoolPersonEntity();
     school.id = this.schoolId;
     school.latitude = this.lat;
@@ -262,6 +268,7 @@ export class AddPointOverlay
     Promise.all(promisesToWait)
       .then((res) => {
         if (allPersonViewInstances.length <= 0) {
+          this.calculationEventService.emit(false);
           this.toastr.error("Bitte mindestens eine Ansprechperson eintragen!");
           return;
         }
@@ -280,6 +287,7 @@ export class AddPointOverlay
         observableSchool.subscribe(
           (result) => {
             this.resetForm();
+            this.calculationEventService.emit(false);
             this.toastr.success(
               "Die Institution wurde erfolgreich " + successMessage
             );
@@ -288,10 +296,14 @@ export class AddPointOverlay
           },
           (error) => {
             if (error.status == 409) {
+              this.calculationEventService.emit(false);
+
               this.toastr.error(
                 "Diese Institution existiert schon! Bitte an anderer Stelle löschen und erneut versuchen"
               );
             } else {
+              this.calculationEventService.emit(false);
+
               this.toastr.error(
                 "Es ist ein Fehler aufgetreten, bitte alle Werte überprüfen!"
               );
@@ -300,6 +312,7 @@ export class AddPointOverlay
         );
       })
       .catch((err) => {
+        this.calculationEventService.emit(false);
         this.toastr.error(err);
       });
   }
