@@ -41,6 +41,46 @@ export class Styles {
       }),
     });
   }
+
+  public static createTextStyleForWaypoint(color: any, textToSet: string, zoom: number) {
+    console.log(zoom);
+    return new Text({
+      fill: new Fill({
+        color: "rgb(" + (color.r) + "," + (color.g) + "," + (color.b) + ")"
+
+      }),
+      stroke: new Stroke({
+        color: "white"
+      }),
+      text: textToSet,
+      offsetY: -20,
+      font: "bold italic " + zoom * 1.55 + "px/1.0 sans-serif",
+    });
+  }
+
+  public static getCombinedStyleForWaypoint(e: SchoolPersonEntity,
+    zoom: any,
+    project?: ProjectCategoryEntity) {
+    var selectedProject = project;
+    if (!project) {
+      selectedProject = e.primaryProject;
+    }
+    var scale = selectedProject.scaling ? selectedProject.scaling : 0.03;
+    var color = e.schoolType ? e.schoolType : { r: 0, g: 0, b: 0 };
+    var textToSet =
+      zoom <= 9 && e.shortSchoolName ? e.shortSchoolName : e.schoolName;
+
+    return new Style({
+      image: new Icon({
+        scale: scale,
+        src: selectedProject.icon,
+      }),
+      text: Styles.createTextStyleForWaypoint(color, textToSet, zoom),
+      zIndex: 1
+    });
+  }
+
+
   public static getImageStyleForWaypoint(
     e: SchoolPersonEntity,
     zoom: any,
@@ -75,6 +115,16 @@ export class Styles {
     }
     var color = e.schoolType ? e.schoolType : { r: 0, g: 0, b: 0 };
     return new Style({
+      text: this.createTextStyleForWaypoint(color, textToSet, zoom),
+      zIndex: 1
+    });
+  }
+
+
+  public static getTextStyleForClusteredWaypoints(zoom: number, amountOfClusteredEntries: number
+  ) {
+    var color = { r: 0, g: 0, b: 0 };
+    return new Style({
       text: new Text({
         fill: new Fill({
           color: "rgb(" + (color.r) + "," + (color.g) + "," + (color.b) + ")"
@@ -83,7 +133,7 @@ export class Styles {
         stroke: new Stroke({
           color: "white"
         }),
-        text: textToSet,
+        text: "Institutionsanzahl: " + amountOfClusteredEntries,
         offsetY: -20,
         font: "bold italic " + zoom * 1.55 + "px/1.0 sans-serif",
       }),
