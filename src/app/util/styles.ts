@@ -3,6 +3,10 @@ import { Circle, Fill, Icon, Stroke, Style, Text } from "ol/style";
 import { ProjectCategoryEntity } from "../entities/ProjectEntity";
 import { SchoolPersonEntity } from "../entities/SchoolPersonEntity";
 import { SchoolTypeDTO } from "../entities/SchoolTypeDTO";
+import { Polygon } from "ol/geom";
+import { Coordinate } from "ol/coordinate";
+import { boundingExtent } from "ol/extent";
+import { fromExtent } from "ol/geom/Polygon";
 
 export class Styles {
   //Different Icon, maybe flag or google marker
@@ -53,8 +57,8 @@ export class Styles {
         color: "white"
       }),
       text: textToSet,
-      offsetY: -20,
-      font: "bold italic " + zoom * 1.55 + "px/1.0 sans-serif",
+      offsetY: -25,
+      font: "bold italic " + 10 * 1.55 + "px/1.0 sans-serif",
     });
   }
 
@@ -70,13 +74,14 @@ export class Styles {
     var textToSet =
       zoom <= 9 && e.shortSchoolName ? e.shortSchoolName : e.schoolName;
 
+    var icon = new Icon({
+      scale: scale,
+      src: selectedProject.icon
+    });
     return new Style({
-      image: new Icon({
-        scale: scale,
-        src: selectedProject.icon,
-      }),
+      image: icon,
       text: Styles.createTextStyleForWaypoint(color, textToSet, zoom),
-      zIndex: 1
+      zIndex: 1,
     });
   }
 

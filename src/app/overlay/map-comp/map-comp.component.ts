@@ -56,6 +56,8 @@ import stylefunction from "ol-mapbox-style/dist/stylefunction";
 import GeoJSON from "ol/format/GeoJSON";
 import { Style, Text } from "ol/style";
 import { SchoolsDao } from "src/app/services/dao/schools.dao";
+import { Extent, boundingExtent, containsCoordinate, containsExtent } from "ol/extent";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-map-comp",
@@ -114,6 +116,7 @@ export class MapCompComponent implements OnInit {
     private saveEventService: MapUpdateEventService,
     private zoomEventService: ZoomToEventService,
     private areaSelectionService: AreaSelectionService,
+    private toastrService: ToastrService,
     private areaService: AreaService,
     private dialog: MatDialog,
     private visiblityEventService: VisibilityEventService
@@ -309,7 +312,7 @@ export class MapCompComponent implements OnInit {
       target: "map",
       view: new View({
         center: transform([8.50965, 48.65851], "EPSG:4326", "EPSG:3857"),
-        zoom: 8,
+        zoom: 9,
         minZoom: 8,
       }),
       controls: [],
@@ -318,6 +321,17 @@ export class MapCompComponent implements OnInit {
     this.clickListenerRef = this.map.on("click", this.mapOnClick.bind(this));
     this.map.on("movestart", () => {
       this.zoomBeforeMove = this.map.getView().getZoom();
+    });
+    this.map.on("pointermove", function (evt) {
+      var hit = this.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+        var clusteredFeatures = feature.get("features");
+        return clusteredFeatures && clusteredFeatures.length == 1;
+      }, { hitTolerance: 3, layerFilter: this.sourceWaypointLayer });
+      if (hit) {
+        this.getTargetElement().style.cursor = 'pointer';
+      } else {
+        this.getTargetElement().style.cursor = '';
+      }
     });
     this.map.on("moveend", () => {
       this.updateWaypoints();
@@ -357,7 +371,7 @@ export class MapCompComponent implements OnInit {
     } else {
       return new Style({
         image: (originalFeature[0].style_ as Style).getImage(),
-        text: Styles.createTextStyleForWaypoint({ r: 0, g: 0, b: 0 }, "Institutionen: " + originalFeature.length, 9)
+        text: Styles.createTextStyleForWaypoint({ r: 0, g: 0, b: 0 }, "Institutionen: " + originalFeature.length, 10)
       });
     }
   }
@@ -381,6 +395,7 @@ export class MapCompComponent implements OnInit {
         promise.subscribe(
           (success) => {
             success.forEach((e) => {
+
               var waypoint = new Feature({
                 geometry: new Point(
                   transform([e.latitude, e.longitude], "EPSG:4326", "EPSG:3857")
@@ -406,6 +421,7 @@ export class MapCompComponent implements OnInit {
                   splitPoint = splitPoint - 1;
                 }
               }
+
               waypoint.setStyle(
                 Styles.getCombinedStyleForWaypoint(e, zoom, this.projectParam)
               );
@@ -435,13 +451,6 @@ export class MapCompComponent implements OnInit {
                       );
                     }
                   });
-                // this.sourceWaypointTextVector.getFeatures().forEach((element) => {
-                //   if ((element as any).id_ == e.id) {
-                //     (element as any).setStyle(
-                //       Styles.getTextStyleForWaypoint(e, zoom, this.projectParam)
-                //     );
-                //   }
-                // });
               }
             });
           },
@@ -457,19 +466,55 @@ export class MapCompComponent implements OnInit {
     this.existingWaypointAtGeometry = [];
   }
 
+  public createCircleExtent(pixel: Coordinate, zoom_level: number): Extent {
+    return boundingExtent([pixel, [pixel[0] - 10, pixel[1] - 10], [pixel[0] + 10, pixel[1] + 10]]);
+  }
+
   public mapOnClick(evt): void {
     const map: Map = evt.map as Map;
     var sourceVectorLayerBound = this.sourceWaypointLayer;
-    const point = map.forEachFeatureAtPixel(
-      evt.pixel,
+    const real_pixel = this.map.getCoordinateFromPixel(evt.pixel);
+    const extent = this.createCircleExtent(real_pixel, map.getView().getZoom());
+    // this.sourceWaypointVector.getFeatures().forEach(e => {
+    //   var pos =  e.getGeometry().getCoordinates();
+    //   console.log(pos);
+    //   var size = (e.getStyle() as Style).getImage().getImageSize();
+    //   var leftLower = [pos[0] - size[0] / 2, pos[1] - size[1] / 2];
+    //   var leftUpper = [pos[0] - size[0] / 2, pos[1] + size[1] / 2];
+    //   var rightUpper = [pos[0] + size[0] / 2, pos[1] - size[1] / 2];
+    //   var rightLower = [pos[0] + size[0] / 2, pos[1] + size[1] / 2];
+    //   var boundingBox = boundingExtent([leftLower, leftUpper, rightUpper, rightLower]);
+    //   if (containsCoordinate(boundingBox, real_pixel)) {
+    //     console.log("found");
+    //   }
+    // });
+    // console.log("RealPixel:"+real_pixel);
+    var point = undefined;
+    var foundClustered = false;
+    this.map.forEachFeatureAtPixel(evt.pixel,
       function (feature, layer) {
-        if (sourceVectorLayerBound != layer) {
-          return undefined;
+        var clusteredFeatures = feature.get("features");
+        if (clusteredFeatures.length == 1) {
+          point = clusteredFeatures[0];
+        } else if (clusteredFeatures.length > 1) {
+          foundClustered = true;
         }
-        return feature;
       },
-      { hitTolerance: 3 }
+      {
+        hitTolerance: 3,
+        checkWrapped: true,
+        layerFilter: (layerToTest) => layerToTest == sourceVectorLayerBound
+      }
     );
+    if (!point) {
+      if (foundClustered) {
+        this.toastrService.info("An dieser Stelle gibt es mehrere Institutionen! Bitte Karte vergrößern", "Schoolfinder");
+        return;
+      } else if (!UserService.isLoggedIn()) {
+        this.toastrService.info("An dieser Stelle gibt es keine eingetragenen Institutionen!", "Schoolfinder");
+      }
+    }
+    console.log(point);
     var latlong = toLonLat(evt.coordinate);
     if (UserService.isLoggedIn()) {
       this.addPointOverlayPlaceholder.clear();
