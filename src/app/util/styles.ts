@@ -14,33 +14,40 @@ export class Styles {
   public static getStyleForAreaInstitutionPoint(
     shortText: string,
     longText: string,
-    zoom: any
+    zoom: any,
+    textVisible: boolean
   ) {
     var textToSet = zoom <= 9 && shortText ? shortText : longText;
     var splitted = textToSet.split(" ");
-    textToSet = "";
-    for (let i = 0; i < splitted.length; i++) {
-      textToSet += splitted[i];
-      if (i != splitted.length - 1) {
-        textToSet += "\n";
-      }
+    textToSet = "Regionalstelle " + textToSet;
+    // for (let i = 0; i < splitted.length; i++) {
+    //   textToSet += splitted[i];
+    //   if (i != splitted.length - 1) {
+    //     textToSet += "\n";
+    //   }
+    // }
+    if (!textVisible) {
+      textToSet = "";
     }
     return new Style({
       text: new Text({
         text: textToSet,
-        offsetY: -20,
-        font: "bold italic " + 15 * 1.55 + "px/1.0 sans-serif",
-        stroke: new Stroke({
-          color: "white",
+        offsetY: -30,
+        font: "bold italic " + 15 * 1.55 + "px sans-serif",
+        // stroke: new Stroke({
+        // color: "white",
 
-        }),
+        // }),
+        backgroundFill: new Fill({
+          color: "white"
+        })
       }),
       // image: new Icon({
       //   scale: 0.01,
       //   src: "assets/logo/zsllogo.png",
       // }),
       image: new Circle({
-        radius: 6,
+        radius: 8,
         fill: new Fill({ color: "#ff0000" }),
         stroke: new Stroke({ color: "black" }),
       }),

@@ -98,12 +98,13 @@ export class CriteriaFilterComponent implements OnInit {
   streetname: string;
   housenumber: string;
   city: string = "";
-  institutionQueryParam: string = "";
+  userQuery: string = "";
   amount: number;
   exclusiveSearch: boolean = false;
   categoryName: string = "";
   step: number = -1;
   showRegionAreas: boolean = true;
+  selectedSearchType: number = 1;
 
   @Input()
   private projectParamId: number;
@@ -386,19 +387,46 @@ export class CriteriaFilterComponent implements OnInit {
     this.toastr.success(toastrMessage);
   }
 
-  public searchGeneral(): void {
+  public userSearch(): void {
     this.calculationEventService.emit(true);
-    var foundOsmEntity = this.citiesService
-      .searchGeneralInstitutionContentInDatabase(this.institutionQueryParam, 10)
-      .subscribe(
-        (result) => {
-          var dialogViewdata: SelectionDialogViewData[] =
-            this.convertOsmPoiEntityArrayToSelectionDialogViewDataArray(result);
-          this.renderResult(dialogViewdata);
-        },
-        (err) => this.errorOnRequest(err)
-      );
+    if (this.selectedSearchType == 1) {
+      var foundOsmEntity = this.citiesService
+        .searchGeneralInstitutionContentInDatabase(this.userQuery, 10)
+        .subscribe(
+          (result) => {
+            var dialogViewdata: SelectionDialogViewData[] =
+              this.convertOsmPoiEntityArrayToSelectionDialogViewDataArray(result);
+            this.renderResult(dialogViewdata);
+          },
+          (err) => this.errorOnRequest(err)
+        );
+    } else {
+      var foundOsmEntity = this.citiesService
+        .searchCityInOsmFile(this.userQuery, 10)
+        .subscribe(
+          (result) => {
+            var dialogViewdata: SelectionDialogViewData[] =
+              this.convertOsmPoiEntityArrayToSelectionDialogViewDataArray(result);
+            this.renderResult(dialogViewdata);
+          },
+          (err) => this.errorOnRequest(err)
+        );
+    }
   }
+
+  // public searchGeneral(): void {
+  //   this.calculationEventService.emit(true);
+  //   var foundOsmEntity = this.citiesService
+  //     .searchGeneralInstitutionContentInDatabase(this.institutionQueryParam, 10)
+  //     .subscribe(
+  //       (result) => {
+  //         var dialogViewdata: SelectionDialogViewData[] =
+  //           this.convertOsmPoiEntityArrayToSelectionDialogViewDataArray(result);
+  //         this.renderResult(dialogViewdata);
+  //       },
+  //       (err) => this.errorOnRequest(err)
+  //     );
+  // }
 
   public searchCity(): void {
     this.calculationEventService.emit(true);
@@ -431,41 +459,7 @@ export class CriteriaFilterComponent implements OnInit {
     return dialogViewdata;
   }
 
-  public showAllInstitutions(): void {
-    this.calculationEventService.emit(true);
-    var foundOsmEntity = this.schoolService
-      .getAllSchoolsOrderedByName()
-      .subscribe(
-        (result) => {
-          var dialogViewdata: SelectionDialogViewData[] = [];
-          result.forEach((e) => {
-            var subtitle = "Für weitere Informationen klicken";
-            if (subtitle.length > 0) {
-              subtitle = "";
-              e.personSchoolMapping.forEach((mapping) => {
-                subtitle += mapping.functionality.name + " & ";
-              });
-              subtitle = subtitle.substring(0, subtitle.length - 3);
-            }
-            //Seems like latlong are swapped for schools. be careful when fixing this
-            dialogViewdata.push(
-              new SelectionDialogViewData(
-                e.schoolName,
-                subtitle,
-                e.longitude,
-                e.latitude
-              )
-            );
-          });
-          this.showSelectDialog(
-            dialogViewdata,
-            "Alle eingetragenen Institutionen",
-            "Bitte wählen Sie die gesuchte Institution aus"
-          );
-        },
-        (err) => this.errorOnRequest(err)
-      );
-  }
+
 
   private errorOnRequest(err) {
     this.calculationEventService.emit(false);
@@ -535,9 +529,11 @@ export class CriteriaFilterComponent implements OnInit {
 
   private renderNewPositionInMainApp(result: SelectionDialogViewData) {
     this.calculationEventService.emit(false);
-    this.zoomEventService.emit(
-      new ZoomEventMessage(result.getLatitude(), result.getLongitude(), 17)
-    );
+    if (result) {
+      this.zoomEventService.emit(
+        new ZoomEventMessage(result.getLatitude(), result.getLongitude(), 17)
+      );
+    }
   }
 
   public searchExact(): void {

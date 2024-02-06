@@ -14,7 +14,8 @@ export class FeatureFactory{
         var institutionStyle = Styles.getStyleForAreaInstitutionPoint(
           name,
           name,
-          zoom
+          zoom,
+          false
         );
         institutionFeature.setStyle(institutionStyle);
         institutionFeature.setId(id + FeatureFactory.POINT);

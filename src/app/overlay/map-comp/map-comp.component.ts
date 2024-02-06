@@ -108,7 +108,7 @@ export class MapCompComponent implements OnInit {
   // sourceWaypointImageLayer: VectorLayer<any>;
   private clickListenerRef;
   private visibilityDataElement = new VisibilityDataElement();
-  private darkenLayer:DarkenLayer;
+  private darkenLayer: DarkenLayer;
   areaSelectionActive: boolean = false;
   institutionSelectionActive: boolean = false;
 
@@ -130,7 +130,7 @@ export class MapCompComponent implements OnInit {
     private dialog: MatDialog,
     visiblityEventService: VisibilityEventService
   ) {
-    this.darkenLayer =  new DarkenLayer(areaService);
+    this.darkenLayer = new DarkenLayer(areaService, this);
     this.visibilityDataElement.activeAreaStrategy = new AreaShowEventStrategy(
       this.areaService
     );
@@ -382,14 +382,14 @@ export class MapCompComponent implements OnInit {
 
   private styleFunctionText(feature, resolution) {
     const originalFeature = feature.get("features");
-    var hasOverlap = this.map.forEachFeatureAtPixel(this.map.getPixelFromCoordinate(feature.get("geometry").flatCoordinates), (featureAtThere) => {
-      return true;
-    }, { hitTolerance: 40, layerFilter: (layer) => this.sourceAreaTextLayer == layer });
-    if (hasOverlap) {
-      return new Style({
-        image: (originalFeature[0].style_ as Style).getImage(),
-      });
-    }
+    // var hasOverlap = this.map.forEachFeatureAtPixel(this.map.getPixelFromCoordinate(feature.get("geometry").flatCoordinates), (featureAtThere) => {
+    //   return true;
+    // }, { hitTolerance: 10, layerFilter: (layer) => this.sourceAreaTextLayer == layer });
+    // if (hasOverlap) {
+    //   return new Style({
+    //     image: (originalFeature[0].style_ as Style).getImage(),
+    //   });
+    // }
     if (feature.get("features").length == 1) {
       return originalFeature[0].style_;
     } else {

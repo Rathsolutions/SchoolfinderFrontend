@@ -10,7 +10,6 @@ export class DsgvoComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    new Map<any,any>();
   }
 
 }

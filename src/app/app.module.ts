@@ -27,6 +27,7 @@ import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import {MatRadioModule} from '@angular/material/radio'; 
 import {
   MAT_COLOR_FORMATS,
   NgxMatColorPickerModule,
@@ -92,6 +93,7 @@ import { DsgvoComponent } from './dsgvo/dsgvo.component';
     MatTableModule,
     MatListModule,
     MatProgressSpinnerModule,
+    MatRadioModule,
     NgxMatColorPickerModule,
     ToastrModule.forRoot(),
   ],

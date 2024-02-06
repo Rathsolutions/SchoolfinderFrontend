@@ -10,21 +10,28 @@
           <mat-expansion-panel-header>
             <mat-panel-title class="bigText"> Suche </mat-panel-title>
           </mat-expansion-panel-header>
-          <mat-form-field>
-            <mat-label>Allgemeine Suche</mat-label>
-            <input [(ngModel)]="institutionQueryParam" matInput />
-          </mat-form-field>
-          <div>
-            <button class="criteriaComponentButton" mat-raised-button color="primary" cdkFocusInitial
-              [disabled]="disabled" (click)="searchGeneral()">
-              Allgemeine Suche
-            </button>
+          <div *ngIf="!isAdmin()">
+            <mat-label id="search-kind">Art der Suche</mat-label>
+            <mat-radio-group aria-labelledby="search-kind" [(ngModel)]="selectedSearchType">
+              <mat-radio-button value="1">Allgemein</mat-radio-button>
+              <mat-radio-button value="2">Stadt</mat-radio-button>
+            </mat-radio-group>
+            <mat-form-field>
+              <mat-label>Suchbegriff eingeben</mat-label>
+              <input [(ngModel)]="userQuery" matInput />
+            </mat-form-field>
+            <div>
+              <button class="criteriaComponentButton" mat-raised-button color="primary" cdkFocusInitial
+                [disabled]="disabled" (click)="userSearch()">
+                Suche Starten
+              </button>
+            </div>
           </div>
           <mat-form-field *ngIf="isAdmin()">
             <mat-label>Schulname</mat-label>
             <input [(ngModel)]="schoolname" matInput />
           </mat-form-field>
-          <mat-form-field>
+          <mat-form-field *ngIf="isAdmin()">
             <mat-label>Stadtname</mat-label>
             <input [(ngModel)]="city" matInput />
           </mat-form-field>
@@ -49,7 +56,7 @@
             </button>
           </div>
           <div>
-            <button class="criteriaComponentButton" mat-raised-button color="primary" cdkFocusInitial
+            <button *ngIf="isAdmin()" class="criteriaComponentButton" mat-raised-button color="primary" cdkFocusInitial
               [disabled]="disabled" (click)="searchCity()">
               Suche nach Stadt
             </button>
@@ -89,10 +96,9 @@
             <i>{{ criteria.criteriaName }}</i>
           </div>
         </mat-expansion-panel>
-        <mat-expansion-panel *ngIf="isAdmin()" 
-          class="expansion-panel">
+        <mat-expansion-panel *ngIf="isAdmin()" class="expansion-panel">
           <mat-expansion-panel-header>
-            <mat-panel-title> Kategorieverwaltung </mat-panel-title>
+            <mat-panel-title class="bigText"> Kategorieverwaltung </mat-panel-title>
           </mat-expansion-panel-header>
           <mat-form-field *ngIf="isAdmin()">
             <mat-label>Existente Kategorien</mat-label>
@@ -117,7 +123,7 @@
             Kategorie erstellen
           </button>
         </mat-expansion-panel>
-        <mat-expansion-panel  class="expansion-panel">
+        <mat-expansion-panel class="expansion-panel">
           <mat-expansion-panel-header>
             <mat-panel-title class="bigText"> Anzeige </mat-panel-title>
           </mat-expansion-panel-header>
@@ -128,7 +134,7 @@
         <mat-expansion-panel *ngIf="isAdmin()" [expanded]="step === 4" (opened)="setStep(4)" hideToggle
           class="expansion-panel">
           <mat-expansion-panel-header>
-            <mat-panel-title> Regionalstellenbezirke </mat-panel-title>
+            <mat-panel-title class="bigText"> Regionalstellenbezirke </mat-panel-title>
           </mat-expansion-panel-header>
           <mat-form-field *ngIf="isAdmin()">
             <mat-label>Existente Regionalstellenbezirke</mat-label>
@@ -154,7 +160,7 @@
         cdkFocusInitial [disabled]="disabled" (click)="showAllInstitutions()">
         Übersicht
       </button> -->
-      <h1 class="settingsMenuText">Farblegende</h1>
+      <h1 class="settingsMenuText">Institutionsfarben</h1>
       <div class="colorLegendEntry" *ngFor="let color of allSchoolTypesForColorLegend">
         <div [style.color]="toRGBString(color)">
           {{ color.schoolTypeValue }}

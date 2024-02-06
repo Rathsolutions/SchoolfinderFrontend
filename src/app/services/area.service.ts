@@ -37,4 +37,8 @@ export class AreaService extends BaseService<AreaEntity> {
       .pipe();
   }
 
+  public findAreaInstitutionPointById(id: number): Observable<AreaEntity> {
+    return this.http.get<AreaEntity>(this.requestURL + "/search/findAreaInstitutionPointById", { params: { id: id } }).pipe();
+  }
+
 }
