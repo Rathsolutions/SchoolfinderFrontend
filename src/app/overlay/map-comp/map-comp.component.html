@@ -12,24 +12,19 @@
   </div>
 </div>
 
-<div
-  style="
+<div style="
     left: 50%;
     transform: translate(-50%, 0);
     position: fixed;
     display: block;
     top: 0%;
-  "
->
-  <button
-    *ngIf="areaSelectionActive"
-    mat-raised-button
-    color="primary"
-    (click)="removeLastSetDrawingPoint()"
-  >
+  ">
+  <button *ngIf="!areaSelectionActive" mat-raised-button color="primary" (click)="showAllInstitutions()">Öffne Übersicht</button>
+  <button *ngIf="areaSelectionActive" mat-raised-button color="primary" (click)="removeLastSetDrawingPoint()">
     Letzten gesetzten Punkt entfernen
   </button>
-  <button *ngIf="areaSelectionActive || institutionSelectionActive" mat-raised-button color="primary" (click)="abortDrawing()">
+  <button *ngIf="areaSelectionActive || institutionSelectionActive" mat-raised-button color="primary"
+    (click)="abortDrawing()">
     Abbrechen
   </button>
   <button *ngIf="areaSelectionActive" mat-raised-button color="primary" (click)="applyDrawing()">

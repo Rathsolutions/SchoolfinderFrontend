@@ -492,7 +492,7 @@ export class CriteriaFilterComponent implements OnInit {
 
   private showSelectDialog(result, headline: string, underline: string) {
     const dialog = this.dialog.open(SearchSelectionComponent, {
-      width: "250px",
+      panelClass: "searchSelectionComponent",
       data: { cardData: result, headline: headline, underheadline: underline },
     });
     dialog.afterClosed().subscribe((result) => {

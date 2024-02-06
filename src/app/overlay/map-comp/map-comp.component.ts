@@ -12,7 +12,7 @@ import { Attribution, MousePosition, OverviewMap } from "ol/control";
 import { Feature, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
-import Map, { MapObjectEventTypes } from "ol/Map";
+import * as OsmMap from "ol/Map";
 import Draw from "ol/interaction/Draw";
 import Projection from "ol/proj/Projection";
 import { Cluster, TileJSON, Vector, XYZ } from "ol/source";
@@ -54,13 +54,16 @@ import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 import olms from "ol-mapbox-style";
 import stylefunction from "ol-mapbox-style/dist/stylefunction";
 import GeoJSON from "ol/format/GeoJSON";
-import { Style, Text } from "ol/style";
+import { Image, Style, Text } from "ol/style";
 import { SchoolsDao } from "src/app/services/dao/schools.dao";
 import { Extent, boundingExtent, containsCoordinate, containsExtent } from "ol/extent";
 import { ToastrService } from "ngx-toastr";
 import BaseEvent from "ol/events/Event";
 import { EventTargetLike } from "ol/events/Target";
 import { DarkenLayer } from "./layer/darken-layer";
+import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
+import { SelectionDialogViewData } from "src/app/viewdata/SelectionDialogViewData";
+import { SearchSelectionComponent } from "src/app/dialogs/searchSelection.component";
 
 @Component({
   selector: "app-map-comp",
@@ -68,7 +71,7 @@ import { DarkenLayer } from "./layer/darken-layer";
   styleUrls: ["./map-comp.component.css"],
 })
 export class MapCompComponent implements OnInit {
-  private map: Map;
+  private map: OsmMap.default;
   private mapLayer: TileLayer<any>;
   private mapSource: XYZ;
 
@@ -116,8 +119,10 @@ export class MapCompComponent implements OnInit {
   constructor(
     private schoolsDao: SchoolsDao,
     private componentFactoryResolver: ComponentFactoryResolver,
+    private calculationEventService: CalculationEventService,
+    private schoolService: SchoolsService,
     saveEventService: MapUpdateEventService,
-    zoomEventService: ZoomToEventService,
+    private zoomEventService: ZoomToEventService,
     private areaSelectionService: AreaSelectionService,
     private toastrService: ToastrService,
     private areaService: AreaService,
@@ -288,8 +293,9 @@ export class MapCompComponent implements OnInit {
     this.sourceAreaTextVector = new VectorSource({});
     this.sourceWaypointVector = new VectorSource({});
     const clusterSource = new Cluster({
-      distance: 80,
+      distance: 100,
       source: this.sourceWaypointVector,
+
     });
     // const imageClusterSource = new Cluster({
     //   source: this.sourceWaypointImageVector
@@ -301,17 +307,16 @@ export class MapCompComponent implements OnInit {
     // });
     this.sourceWaypointLayer = new VectorLayer({
       source: clusterSource,
-      style: this.styleFunctionText,
-      // declutter: true,
+      style: this.styleFunctionText.bind(this),
     });
     this.sourceAreaImageLayer = new VectorLayer({
       source: this.sourceAreaImageVector,
     });
     this.sourceAreaTextLayer = new VectorLayer({
       source: this.sourceAreaTextVector,
-      declutter: true,
+      // declutter: true,
     });
-    this.map = new Map({
+    this.map = new OsmMap.default({
       target: "map",
       view: new View({
         center: transform([8.50965, 48.65851], "EPSG:4326", "EPSG:3857"),
@@ -371,16 +376,101 @@ export class MapCompComponent implements OnInit {
 
   private styleFunctionText(feature, resolution) {
     const originalFeature = feature.get("features");
+    var hasOverlap = this.map.forEachFeatureAtPixel(this.map.getPixelFromCoordinate(feature.get("geometry").flatCoordinates), (featureAtThere) => {
+      return true;
+    }, { hitTolerance: 40, layerFilter: (layer) => this.sourceAreaTextLayer == layer });
+    if (hasOverlap) {
+      return new Style({
+        image: (originalFeature[0].style_ as Style).getImage(),
+      });
+    }
     if (feature.get("features").length == 1) {
       return originalFeature[0].style_;
     } else {
+      var countMap = new Map<string, number>();
+      var imageMap = new Map<string, Image>();
+      (originalFeature as Feature[]).forEach(feature => {
+        var imgBase = (((feature.getStyle() as Style).getImage()) as any)["iconImage_"]["src_"] as string;
+        var key = imgBase;
+        if (countMap.has(imgBase)) {
+          countMap.set(key, countMap.get(key) + 1);
+        } else {
+          countMap.set(key, 1);
+          imageMap.set(key, ((feature.getStyle() as Style).getImage()));
+        }
+      });
+      var foundKey: string;
+      var foundAmount: number = 0;
+      for (var entry of countMap.entries()) {
+        if (foundAmount < entry[1]) {
+          foundAmount = entry[1];
+          foundKey = entry[0];
+        }
+      }
       return new Style({
-        image: (originalFeature[0].style_ as Style).getImage(),
+        image: imageMap.get(foundKey),
         text: Styles.createTextStyleForWaypoint({ r: 0, g: 0, b: 0 }, "Institutionen: " + originalFeature.length, 10)
       });
     }
   }
 
+  public showAllInstitutions(): void {
+    this.calculationEventService.emit(true);
+    var foundOsmEntity = this.schoolService
+      .getAllSchoolsOrderedByName()
+      .subscribe(
+        (result) => {
+          var dialogViewdata: SelectionDialogViewData[] = [];
+          result.forEach((e) => {
+            var subtitle = "Für weitere Informationen klicken";
+            if (subtitle.length > 0) {
+              subtitle = "";
+              e.personSchoolMapping.forEach((mapping) => {
+                subtitle += mapping.functionality.name + " & ";
+              });
+              subtitle = subtitle.substring(0, subtitle.length - 3);
+            }
+            //Seems like latlong are swapped for schools. be careful when fixing this
+            dialogViewdata.push(
+              new SelectionDialogViewData(
+                e.schoolName,
+                subtitle,
+                e.longitude,
+                e.latitude
+              )
+            );
+          });
+          this.showSelectDialog(
+            dialogViewdata,
+            "Alle eingetragenen Institutionen",
+            "Bitte wählen Sie die gesuchte Institution aus"
+          );
+        },
+        (err) => this.errorOnRequest(err)
+      );
+  }
+
+  private showSelectDialog(result, headline: string, underline: string) {
+    const dialog = this.dialog.open(SearchSelectionComponent, {
+      panelClass: "searchSelectionComponent",
+      data: { cardData: result, headline: headline, underheadline: underline },
+    });
+    dialog.afterClosed().subscribe((result) => {
+      this.renderNewPositionInMainApp(result);
+    });
+  }
+  private renderNewPositionInMainApp(result: SelectionDialogViewData) {
+    this.calculationEventService.emit(false);
+    this.zoomEventService.emit(
+      new ZoomEventMessage(result.getLatitude(), result.getLongitude(), 17)
+    );
+  }
+  private errorOnRequest(err) {
+    this.calculationEventService.emit(false);
+    this.toastrService.error(
+      "Es ist ein Fehler aufgetreten! Bitte kontaktieren Sie den Betreiber"
+    );
+  }
   public updateWaypoints(): void {
     var glbox = this.map.getView().calculateExtent(this.map.getSize());
     var zoom = this.map.getView().getZoom();
@@ -476,10 +566,8 @@ export class MapCompComponent implements OnInit {
   }
 
   public mapOnClick(evt): void {
-    const map: Map = evt.map as Map;
+    const map: OsmMap.default = evt.map as OsmMap.default;
     var sourceVectorLayerBound = this.sourceWaypointLayer;
-    const real_pixel = this.map.getCoordinateFromPixel(evt.pixel);
-    const extent = this.createCircleExtent(real_pixel, map.getView().getZoom());
     // this.sourceWaypointVector.getFeatures().forEach(e => {
     //   var pos =  e.getGeometry().getCoordinates();
     //   console.log(pos);
@@ -496,6 +584,7 @@ export class MapCompComponent implements OnInit {
     // console.log("RealPixel:"+real_pixel);
     var point = undefined;
     var foundClustered = false;
+    console.log(evt.pixel);
     this.map.forEachFeatureAtPixel(evt.pixel,
       function (feature, layer) {
         var clusteredFeatures = feature.get("features");
