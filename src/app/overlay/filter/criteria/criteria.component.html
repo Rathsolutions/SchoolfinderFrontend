@@ -6,7 +6,7 @@
       <div style="margin-top: 10px; align-self: center">
       </div>
       <mat-accordion>
-        <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle class="expansion-panel">
+        <mat-expansion-panel class="expansion-panel">
           <mat-expansion-panel-header>
             <mat-panel-title class="bigText"> Suche </mat-panel-title>
           </mat-expansion-panel-header>
@@ -56,7 +56,7 @@
           </div>
         </mat-expansion-panel>
         <!-- <hr /> -->
-        <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle class="expansion-panel">
+        <mat-expansion-panel class="expansion-panel">
           <mat-expansion-panel-header>
             <mat-panel-title class="bigText"> Filter </mat-panel-title>
           </mat-expansion-panel-header>
@@ -89,7 +89,7 @@
             <i>{{ criteria.criteriaName }}</i>
           </div>
         </mat-expansion-panel>
-        <mat-expansion-panel *ngIf="isAdmin()" [expanded]="step === 2" (opened)="setStep(2)" hideToggle
+        <mat-expansion-panel *ngIf="isAdmin()" 
           class="expansion-panel">
           <mat-expansion-panel-header>
             <mat-panel-title> Kategorieverwaltung </mat-panel-title>
@@ -117,7 +117,7 @@
             Kategorie erstellen
           </button>
         </mat-expansion-panel>
-        <mat-expansion-panel [expanded]="step === 3" (opened)="setStep(3)" hideToggle class="expansion-panel">
+        <mat-expansion-panel  class="expansion-panel">
           <mat-expansion-panel-header>
             <mat-panel-title class="bigText"> Anzeige </mat-panel-title>
           </mat-expansion-panel-header>

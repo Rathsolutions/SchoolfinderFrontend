@@ -108,6 +108,7 @@ export class MapCompComponent implements OnInit {
   // sourceWaypointImageLayer: VectorLayer<any>;
   private clickListenerRef;
   private visibilityDataElement = new VisibilityDataElement();
+  private darkenLayer:DarkenLayer;
   areaSelectionActive: boolean = false;
   institutionSelectionActive: boolean = false;
 
@@ -129,6 +130,7 @@ export class MapCompComponent implements OnInit {
     private dialog: MatDialog,
     visiblityEventService: VisibilityEventService
   ) {
+    this.darkenLayer =  new DarkenLayer(areaService);
     this.visibilityDataElement.activeAreaStrategy = new AreaShowEventStrategy(
       this.areaService
     );
@@ -136,6 +138,7 @@ export class MapCompComponent implements OnInit {
       res.performActionOnLayer(
         this.sourceAreaImageVector,
         this.sourceAreaTextVector,
+        [this.darkenLayer],
         this.map,
         this.visibilityDataElement
       );
@@ -147,6 +150,7 @@ export class MapCompComponent implements OnInit {
         this.visibilityDataElement.activeAreaStrategy.performActionOnLayer(
           this.sourceAreaImageVector,
           this.sourceAreaTextVector,
+          [this.darkenLayer],
           this.map,
           this.visibilityDataElement
         );
@@ -243,6 +247,7 @@ export class MapCompComponent implements OnInit {
         this.visibilityDataElement.activeAreaStrategy.performActionOnLayer(
           this.sourceAreaImageVector,
           this.sourceAreaTextVector,
+          [this.darkenLayer],
           this.map,
           this.visibilityDataElement
         );
@@ -347,6 +352,7 @@ export class MapCompComponent implements OnInit {
     this.visibilityDataElement.activeAreaStrategy.performActionOnLayer(
       this.sourceAreaImageVector,
       this.sourceAreaTextVector,
+      [this.darkenLayer],
       this.map,
       this.visibilityDataElement
     );
@@ -357,7 +363,7 @@ export class MapCompComponent implements OnInit {
     this.sourceAreaTextLayer.setZIndex(5);
     this.map.addLayer(this.mapLayer);
     this.map.addLayer(this.sourceAreaImageLayer);
-    new DarkenLayer(this.map, this.areaSelectionService, this.areaService);
+    this.darkenLayer.addToMap(this.map);
     this.map.addLayer(this.sourceWaypointLayer);
     // this.map.addLayer(this.sourceWaypointTextLayer);
     this.map.addLayer(this.sourceAreaTextLayer);

@@ -13,16 +13,20 @@ import { Fill, Style } from "ol/style";
 import { Color } from "@angular-material-components/color-picker";
 import { FeatureLike } from "ol/Feature";
 import { containsCoordinate } from "ol/extent";
+import { SchoolfinderLayer } from "./layer";
 
 const noFill = new Style({ fill: new Fill({ color: new Color(255, 255, 255, 0).toRgba() }) });
 const greyFill = new Style({ fill: new Fill({ color: new Color(255, 255, 255, 0.8).toRgba() }) });
-export class DarkenLayer {
+export class DarkenLayer implements SchoolfinderLayer {
     darkenLayer: VectorLayer<Vector<any>>;
     darkenSource: VectorSource<any>;
 
     currentSelected: FeatureLike;
 
-    constructor(map: Map, areaSelectionService: AreaSelectionService, areaService: AreaService) {
+    activated: boolean = false;
+    initialHit:boolean = true;
+
+    constructor(areaService: AreaService) {
         this.darkenSource = new VectorSource({
         });
         this.darkenLayer = new VectorLayer({
@@ -47,9 +51,15 @@ export class DarkenLayer {
 
         });
         this.darkenLayer.setZIndex(3);
+
+    }
+    addToMap(map: Map) {
         map.addLayer(this.darkenLayer);
         var instance = this;
         map.on("pointermove", (evt) => {
+            if (!instance.activated) {
+                    return;
+            }
             if (instance.currentSelected && !(instance.currentSelected as Feature).getGeometry().intersectsCoordinate(map.getCoordinateFromPixel(evt.pixel))) {
                 (instance.currentSelected as Feature).setStyle(noFill);
                 instance.currentSelected = undefined;
@@ -63,7 +73,20 @@ export class DarkenLayer {
                 }
                 instance.currentSelected = feature;
                 (feature as Feature).setStyle(greyFill);
-            }, { layerFilter: (layer) => layer == this.darkenLayer });
+            }, { layerFilter: (layer) => layer == instance.darkenLayer });
         });
     }
+    setActive(active: boolean) {
+        if(active){
+            this.darkenSource.getFeatures().forEach(feature=>{
+                feature.setStyle(noFill);
+            });
+        }else{
+            this.darkenSource.getFeatures().forEach(feature=>{
+                feature.setStyle(greyFill);
+            });            
+        }
+        this.activated = active;
+    }
+
 }
