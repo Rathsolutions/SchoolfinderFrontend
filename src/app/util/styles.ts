@@ -8,6 +8,7 @@ import { Coordinate } from "ol/coordinate";
 import { boundingExtent } from "ol/extent";
 import { fromExtent } from "ol/geom/Polygon";
 
+const TEXT_SIZE = 12;
 export class Styles {
   //Different Icon, maybe flag or google marker
   public static getStyleForAreaInstitutionPoint(
@@ -28,7 +29,7 @@ export class Styles {
       text: new Text({
         text: textToSet,
         offsetY: -20,
-        font: "bold italic " + 15 + "px/1.0 sans-serif",
+        font: "bold italic " + 15 * 1.55 + "px/1.0 sans-serif",
         stroke: new Stroke({
           color: "white",
 
@@ -47,18 +48,19 @@ export class Styles {
   }
 
   public static createTextStyleForWaypoint(color: any, textToSet: string, zoom: number) {
-    console.log(zoom);
     return new Text({
       fill: new Fill({
         color: "rgb(" + (color.r) + "," + (color.g) + "," + (color.b) + ")"
-
       }),
-      stroke: new Stroke({
-        color: "white"
-      }),
+      // stroke: new Stroke({
+      //   color: "white",
+      // }),
+      // backgroundFill: new Fill({
+      //   color: "rgba(" + (255) + "," + (255) + "," + (255) + ",0.4)"
+      // }),
       text: textToSet,
       offsetY: -25,
-      font: "bold italic " + 10 * 1.55 + "px/1.0 sans-serif",
+      font: "bold italic " + TEXT_SIZE * 1.55 + "px/1.0 sans-serif",
     });
   }
 

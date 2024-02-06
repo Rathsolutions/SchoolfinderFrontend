@@ -2,17 +2,13 @@
 <div style="display: flex; flex-direction: column;height:100%">
   <div class="borderContainer">
     <div style="display: flex; flex-direction: column">
-      <h1 class="settingsMenuText">Einstellungsmenü</h1>
+      <h1 class="settingsMenuText">Einstellungen</h1>
       <div style="margin-top: 10px; align-self: center">
-        <button id="showAllInstitutionsButton" class="criteriaComponentButton" mat-raised-button color="primary"
-          cdkFocusInitial [disabled]="disabled" (click)="showAllInstitutions()">
-          Zeige alle Institutionen
-        </button>
       </div>
       <mat-accordion>
         <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle class="expansion-panel">
           <mat-expansion-panel-header>
-            <mat-panel-title> Suche </mat-panel-title>
+            <mat-panel-title class="bigText"> Suche </mat-panel-title>
           </mat-expansion-panel-header>
           <mat-form-field>
             <mat-label>Allgemeine Suche</mat-label>
@@ -62,7 +58,7 @@
         <!-- <hr /> -->
         <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle class="expansion-panel">
           <mat-expansion-panel-header>
-            <mat-panel-title> Filter </mat-panel-title>
+            <mat-panel-title class="bigText"> Filter </mat-panel-title>
           </mat-expansion-panel-header>
           <mat-form-field>
             <mat-label>Filterkriterien</mat-label>
@@ -123,7 +119,7 @@
         </mat-expansion-panel>
         <mat-expansion-panel [expanded]="step === 3" (opened)="setStep(3)" hideToggle class="expansion-panel">
           <mat-expansion-panel-header>
-            <mat-panel-title> Anzeige </mat-panel-title>
+            <mat-panel-title class="bigText"> Anzeige </mat-panel-title>
           </mat-expansion-panel-header>
           <mat-slide-toggle [disabled]="disabled" (change)="toggleShowRegionAreas()" [(ngModel)]="showRegionAreas">
             Bezirke
@@ -151,15 +147,23 @@
   </div>
   <div class="borderContainer" style="margin-top: 20px">
     <div style="display: flex; flex-direction: column">
+      <div class="centeredDiv">
+        <h1 class="settingsMenuText">Institutionen</h1>
+      </div>
+      <button id="showAllInstitutionsButton" class="criteriaComponentButton" mat-raised-button color="primary"
+        cdkFocusInitial [disabled]="disabled" (click)="showAllInstitutions()">
+        Übersicht
+      </button>
       <h1 class="settingsMenuText">Farblegende</h1>
       <div class="colorLegendEntry" *ngFor="let color of allSchoolTypesForColorLegend">
         <div [style.color]="toRGBString(color)">
-          - {{ color.schoolTypeValue }}
+          {{ color.schoolTypeValue }}
         </div>
       </div>
     </div>
   </div>
-  <div style="display: flex;justify-content: space-between;height:100%; flex-direction: column; margin-left: 3%;align-items: center;align-self: stretch;">
+  <div
+    style="display: flex;justify-content: space-between;height:100%; flex-direction: column; margin-left: 3%;align-items: center;align-self: stretch;">
     <a style="margin-top: auto;margin-bottom: 10px;" href="datenschutz">Datenschutzerklärung</a>
   </div>
 </div>

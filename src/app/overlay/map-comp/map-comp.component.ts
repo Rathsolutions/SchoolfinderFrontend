@@ -12,7 +12,7 @@ import { Attribution, MousePosition, OverviewMap } from "ol/control";
 import { Feature, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
-import Map from "ol/Map";
+import Map, { MapObjectEventTypes } from "ol/Map";
 import Draw from "ol/interaction/Draw";
 import Projection from "ol/proj/Projection";
 import { Cluster, TileJSON, Vector, XYZ } from "ol/source";
@@ -58,6 +58,9 @@ import { Style, Text } from "ol/style";
 import { SchoolsDao } from "src/app/services/dao/schools.dao";
 import { Extent, boundingExtent, containsCoordinate, containsExtent } from "ol/extent";
 import { ToastrService } from "ngx-toastr";
+import BaseEvent from "ol/events/Event";
+import { EventTargetLike } from "ol/events/Target";
+import { DarkenLayer } from "./layer/darken-layer";
 
 @Component({
   selector: "app-map-comp",
@@ -113,13 +116,13 @@ export class MapCompComponent implements OnInit {
   constructor(
     private schoolsDao: SchoolsDao,
     private componentFactoryResolver: ComponentFactoryResolver,
-    private saveEventService: MapUpdateEventService,
-    private zoomEventService: ZoomToEventService,
+    saveEventService: MapUpdateEventService,
+    zoomEventService: ZoomToEventService,
     private areaSelectionService: AreaSelectionService,
     private toastrService: ToastrService,
     private areaService: AreaService,
     private dialog: MatDialog,
-    private visiblityEventService: VisibilityEventService
+    visiblityEventService: VisibilityEventService
   ) {
     this.visibilityDataElement.activeAreaStrategy = new AreaShowEventStrategy(
       this.areaService
@@ -344,14 +347,16 @@ export class MapCompComponent implements OnInit {
     );
     this.mapLayer.setZIndex(1);
     this.sourceAreaImageLayer.setZIndex(2);
-    this.sourceWaypointLayer.setZIndex(3);
+    this.sourceWaypointLayer.setZIndex(4);
     // this.sourceWaypointTextLayer.setZIndex(4);
     this.sourceAreaTextLayer.setZIndex(5);
     this.map.addLayer(this.mapLayer);
     this.map.addLayer(this.sourceAreaImageLayer);
+    new DarkenLayer(this.map, this.areaSelectionService, this.areaService);
     this.map.addLayer(this.sourceWaypointLayer);
     // this.map.addLayer(this.sourceWaypointTextLayer);
     this.map.addLayer(this.sourceAreaTextLayer);
+
   }
 
   private styleFunctionImage(feature, resolution) {

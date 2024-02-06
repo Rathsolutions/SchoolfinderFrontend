@@ -24,11 +24,20 @@ span.mat-slide-toggle-content {
 .borderContainer {
   display: flex;
   flex-direction: column;
-  border-style: solid;
+  /* border-style: solid; */
   margin-left: 3%;
 }
 .settingsMenuText {
   align-self: center;
+  font-weight: bold;
+  text-align: center;
+  font-size: 16pt;
+}
+.settingsMenuExplainationText{
+  text-align: center;
+  align-self: center;
+  align-content: center;
+  font-style: italic;
 }
 .expansion-panel {
   max-width: 100%;
@@ -39,5 +48,14 @@ button {
 
 .colorLegendEntry{
   margin-left: 10px;
-  font-size: 14pt;
+  margin-bottom: 10px;
+  font-size: 16pt;
+}
+
+.bigText{
+  font-size: 15pt;
+}
+
+.mediumText{
+  font-size:16pt;
 }
