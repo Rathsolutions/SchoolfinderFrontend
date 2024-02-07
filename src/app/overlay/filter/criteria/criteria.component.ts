@@ -75,6 +75,13 @@ import { AddAdditionalInformation } from "src/app/viewdata/additional-informatio
 import { AdditionalCategoryManagementComponentComponent as AdditionalCategoryTypeManagementComponentComponent } from "src/app/dialogs/category-management/additional-category-management-component/additional-category-management-component.component";
 import { SchoolTypeService } from "src/app/services/school-type.service";
 import { SchoolTypeDTO } from "src/app/entities/SchoolTypeDTO";
+import { Styles } from "src/app/util/styles";
+import { InstitutionLegendShowEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/InstitutionLegendShowEventStrategy";
+import { InstitutionLegendHideEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/InstitutionLegendHideEventStrategy";
+
+export enum SearchTypes {
+  ALLGEMEIN = "Allgemein", STADT = "Stadt"
+}
 
 @Component({
   selector: "criteria-filter-component",
@@ -82,6 +89,11 @@ import { SchoolTypeDTO } from "src/app/entities/SchoolTypeDTO";
   styleUrls: ["./criteria.component.css"],
 })
 export class CriteriaFilterComponent implements OnInit {
+
+  StyleInternal = Styles;
+
+  InternalSearchTypes = SearchTypes;
+
   @ViewChild("areaSelectionField")
   areaSelectionField: MatSelect;
   @ViewChild("categorySelectionField")
@@ -104,7 +116,8 @@ export class CriteriaFilterComponent implements OnInit {
   categoryName: string = "";
   step: number = -1;
   showRegionAreas: boolean = true;
-  selectedSearchType: number = 1;
+  showInstitutionLegend: boolean = true;
+  selectedSearchType: SearchTypes = SearchTypes.ALLGEMEIN;
 
   @Input()
   private projectParamId: number;
@@ -174,12 +187,6 @@ export class CriteriaFilterComponent implements OnInit {
   private setButtonsDisabled(val: boolean) {
     this.disabled = val;
     this.disableButtonsEvent.emit(val);
-  }
-
-  toRGBString(schoolType: SchoolTypeDTO) {
-    return (
-      "rgb(" + schoolType.r + "," + schoolType.g + "," + schoolType.b + ")"
-    );
   }
 
   private updateAllCriteriasList() {
@@ -389,7 +396,7 @@ export class CriteriaFilterComponent implements OnInit {
 
   public userSearch(): void {
     this.calculationEventService.emit(true);
-    if (this.selectedSearchType == 1) {
+    if (this.selectedSearchType == SearchTypes.ALLGEMEIN) {
       var foundOsmEntity = this.citiesService
         .searchGeneralInstitutionContentInDatabase(this.userQuery, 10)
         .subscribe(
@@ -586,6 +593,16 @@ export class CriteriaFilterComponent implements OnInit {
       strategyToExecute = new AreaShowEventStrategy(this.areaService);
     } else {
       strategyToExecute = new AreaHideEventStrategy();
+    }
+    this.visibilityEventService.emit(strategyToExecute);
+  }
+
+  public toggleShowInstitutionLegend() {
+    var strategyToExecute: VisibilityEventStrategy;
+    if (this.showInstitutionLegend) {
+      strategyToExecute = new InstitutionLegendShowEventStrategy();
+    } else {
+      strategyToExecute = new InstitutionLegendHideEventStrategy();
     }
     this.visibilityEventService.emit(strategyToExecute);
   }

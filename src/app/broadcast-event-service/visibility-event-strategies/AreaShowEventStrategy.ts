@@ -9,12 +9,14 @@ import { ColorParser } from "src/app/util/color-parser";
 import { FeatureFactory } from "src/app/util/FeatureFactory";
 import { Styles } from "src/app/util/styles";
 import { VisibilityEventService } from "../VisibilityEventService";
-import { VisibilityDataElement, VisibilityEventStrategy } from "./VisibilityEventStrategy";
+import { VisibilityDataElement, VisibilityEventStrategy, VisibilityEventType } from "./VisibilityEventStrategy";
 import { SchoolfinderLayer } from "src/app/overlay/map-comp/layer/layer";
 
 export class AreaShowEventStrategy implements VisibilityEventStrategy {
   constructor(private areaService: AreaService) {}
-
+  getEventType(): VisibilityEventType {
+    return VisibilityEventType.AREA;
+}
   performActionOnLayer(areaSource: VectorSource<any>, markerSource:VectorSource<any>, alternateSource:SchoolfinderLayer[], map:Map, visibilityDataElement:VisibilityDataElement) {
     areaSource.clear();
     markerSource.clear();

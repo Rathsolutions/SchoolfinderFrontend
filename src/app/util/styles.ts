@@ -33,7 +33,7 @@ export class Styles {
       text: new Text({
         text: textToSet,
         offsetY: -30,
-        font: "bold italic " + 15 * 1.55 + "px sans-serif",
+        font: "bold " + 15 * 1.55 + "px sans-serif",
         // stroke: new Stroke({
         // color: "white",
 
@@ -54,6 +54,12 @@ export class Styles {
     });
   }
 
+  public static toRGBString(schoolType: SchoolTypeDTO) {
+    return (
+      "rgb(" + schoolType.r + "," + schoolType.g + "," + schoolType.b + ")"
+    );
+  }
+
   public static createTextStyleForWaypoint(color: any, textToSet: string, zoom: number) {
     return new Text({
       fill: new Fill({
@@ -67,7 +73,7 @@ export class Styles {
       // }),
       text: textToSet,
       offsetY: -25,
-      font: "bold italic " + TEXT_SIZE * 1.55 + "px/1.0 sans-serif",
+      font: "bold " + TEXT_SIZE * 1.55 + "px/1.0 sans-serif",
     });
   }
 
@@ -149,7 +155,7 @@ export class Styles {
         }),
         text: "Institutionsanzahl: " + amountOfClusteredEntries,
         offsetY: -20,
-        font: "bold italic " + zoom * 1.55 + "px/1.0 sans-serif",
+        font: "bold " + zoom * 1.55 + "px/1.0 sans-serif",
       }),
       zIndex: 1
     });

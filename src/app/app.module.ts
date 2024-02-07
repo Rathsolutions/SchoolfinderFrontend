@@ -17,6 +17,7 @@ import { ToastrModule } from "ngx-toastr";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatDialogModule } from "@angular/material/dialog";
+import {MatDividerModule} from '@angular/material/divider'; 
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
@@ -48,6 +49,7 @@ import { AddAdditionalInformation } from "./viewdata/additional-information/add/
 import { AdditionalCategoryManagementComponentComponent } from './dialogs/category-management/additional-category-management-component/additional-category-management-component.component';
 import { ShowAdditionalInformation } from "./viewdata/additional-information/show/show-additional-information.component";
 import { DsgvoComponent } from './dsgvo/dsgvo.component';
+import { FooterComponent } from './overlay/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +73,7 @@ import { DsgvoComponent } from './dsgvo/dsgvo.component';
     ShowAdditionalInformation,
     AdditionalCategoryManagementComponentComponent,
     DsgvoComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,
@@ -94,6 +97,7 @@ import { DsgvoComponent } from './dsgvo/dsgvo.component';
     MatListModule,
     MatProgressSpinnerModule,
     MatRadioModule,
+    MatDividerModule,
     NgxMatColorPickerModule,
     ToastrModule.forRoot(),
   ],

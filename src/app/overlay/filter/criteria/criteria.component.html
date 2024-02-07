@@ -11,10 +11,10 @@
             <mat-panel-title class="bigText"> Suche </mat-panel-title>
           </mat-expansion-panel-header>
           <div *ngIf="!isAdmin()">
-            <mat-label id="search-kind">Art der Suche</mat-label>
+            <mat-label class="mediumText" id="search-kind">Art der Suche</mat-label>
             <mat-radio-group aria-labelledby="search-kind" [(ngModel)]="selectedSearchType">
-              <mat-radio-button value="1">Allgemein</mat-radio-button>
-              <mat-radio-button value="2">Stadt</mat-radio-button>
+              <mat-radio-button *ngFor="let searchType of InternalSearchTypes | keyvalue" [value]="searchType.value"
+                [name]="searchType.key">{{searchType.value}}</mat-radio-button>
             </mat-radio-group>
             <mat-form-field>
               <mat-label>Suchbegriff eingeben</mat-label>
@@ -83,9 +83,10 @@
             </mat-select>
           </mat-form-field>
           <div>
-            <mat-slide-toggle (change)="toggleSearchType()" [(ngModel)]="exclusiveSearch" [disabled]="disabled">
-              Inklusive Suche
+            <mat-slide-toggle aria-labelledby="inclusiveSearchLabel" (change)="toggleSearchType()"
+              [(ngModel)]="exclusiveSearch" [disabled]="disabled">
             </mat-slide-toggle>
+            <label id="inclusiveSearchLabel" class="matSlideLabel mat-slide-toggle-content">Inklusive Suche</label>
           </div>
           <strong *ngIf="selectedSchoolTypes.length > 0">Aktive Filter (Schulart):</strong>
           <div *ngFor="let type of selectedSchoolTypes">
@@ -127,9 +128,16 @@
           <mat-expansion-panel-header>
             <mat-panel-title class="bigText"> Anzeige </mat-panel-title>
           </mat-expansion-panel-header>
-          <mat-slide-toggle [disabled]="disabled" (change)="toggleShowRegionAreas()" [(ngModel)]="showRegionAreas">
-            Bezirke
-            anzeigen</mat-slide-toggle>
+          <mat-slide-toggle aria-labelledby="showRegionsLabel" [disabled]="disabled" (change)="toggleShowRegionAreas()"
+            [(ngModel)]="showRegionAreas">
+          </mat-slide-toggle>
+          <label id="showRegionsLabel" class="matSlideLabel mat-slide-toggle-content">Bezirke zeigen</label>
+          <div class="slide-toggle-spacer"></div>
+          <mat-slide-toggle aria-labelledby="showInstitutionLegendLabel" [disabled]="disabled" (change)="toggleShowInstitutionLegend()"
+            [(ngModel)]="showInstitutionLegend">
+          </mat-slide-toggle>
+          <label id="showInstitutionLegendLabel" class="matSlideLabel mat-slide-toggle-content">Legende zeigen</label>
+
         </mat-expansion-panel>
         <mat-expansion-panel *ngIf="isAdmin()" [expanded]="step === 4" (opened)="setStep(4)" hideToggle
           class="expansion-panel">
@@ -151,23 +159,16 @@
       </mat-accordion>
     </div>
   </div>
-  <div class="borderContainer" style="margin-top: 20px">
+  <!-- <div class="borderContainer" style="margin-top: 20px">
     <div style="display: flex; flex-direction: column">
-      <!-- <div class="centeredDiv">
-        <h1 class="settingsMenuText">Institutionen</h1>
-      </div> -->
-      <!-- <button id="showAllInstitutionsButton" class="criteriaComponentButton" mat-raised-button color="primary"
-        cdkFocusInitial [disabled]="disabled" (click)="showAllInstitutions()">
-        Übersicht
-      </button> -->
       <h1 class="settingsMenuText">Institutionsfarben</h1>
       <div class="colorLegendEntry" *ngFor="let color of allSchoolTypesForColorLegend">
-        <div [style.color]="toRGBString(color)">
+        <div [style.color]="StyleInternal.toRGBString(color)">
           {{ color.schoolTypeValue }}
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
   <div
     style="display: flex;justify-content: space-between;height:100%; flex-direction: column; margin-left: 3%;align-items: center;align-self: stretch;">
     <a style="margin-top: auto;margin-bottom: 10px;" href="datenschutz">Datenschutzerklärung</a>

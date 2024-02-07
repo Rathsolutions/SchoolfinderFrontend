@@ -19,7 +19,8 @@
     display: block;
     top: 0%;
   ">
-  <button *ngIf="!areaSelectionActive" mat-raised-button color="primary" (click)="showAllInstitutions()">Öffne Übersicht</button>
+  <button *ngIf="!areaSelectionActive" mat-raised-button color="primary" (click)="showAllInstitutions()">Öffne
+    Übersicht</button>
   <button *ngIf="areaSelectionActive" mat-raised-button color="primary" (click)="removeLastSetDrawingPoint()">
     Letzten gesetzten Punkt entfernen
   </button>
@@ -30,4 +31,8 @@
   <button *ngIf="areaSelectionActive" mat-raised-button color="primary" (click)="applyDrawing()">
     Bestätigen
   </button>
+</div>
+
+<div id="footer">
+  <app-footer [projectParamId]="projectParamId"></app-footer>
 </div>

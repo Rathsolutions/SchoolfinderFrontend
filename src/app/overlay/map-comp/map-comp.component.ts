@@ -49,7 +49,7 @@ import { Styles } from "src/app/util/styles";
 import { FeatureFactory } from "src/app/util/FeatureFactory";
 import { AreaShowEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/AreaShowEventStrategy";
 import { VisibilityEventService } from "src/app/broadcast-event-service/VisibilityEventService";
-import { VisibilityDataElement } from "src/app/broadcast-event-service/visibility-event-strategies/VisibilityEventStrategy";
+import { VisibilityDataElement, VisibilityEventType } from "src/app/broadcast-event-service/visibility-event-strategies/VisibilityEventStrategy";
 import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 import olms from "ol-mapbox-style";
 import stylefunction from "ol-mapbox-style/dist/stylefunction";
@@ -99,7 +99,7 @@ export class MapCompComponent implements OnInit {
   private projectParam: ProjectCategoryEntity;
 
   @Input()
-  private projectParamId: number;
+  projectParamId: number;
 
   // sourceWaypointImageVector: VectorSource<any>;
   sourceWaypointVector: VectorSource<any>;
@@ -135,6 +135,9 @@ export class MapCompComponent implements OnInit {
       this.areaService
     );
     visiblityEventService.register().subscribe((res) => {
+      if (res.getEventType() != VisibilityEventType.AREA) {
+        return;
+      }
       res.performActionOnLayer(
         this.sourceAreaImageVector,
         this.sourceAreaTextVector,
@@ -608,10 +611,11 @@ export class MapCompComponent implements OnInit {
     );
     if (!point) {
       if (foundClustered) {
-        this.toastrService.info("An dieser Stelle gibt es mehrere Institutionen! Bitte Karte vergrößern", "Schoolfinder");
+
+        // this.toastrService.info("An dieser Stelle gibt es mehrere Institutionen! Bitte Karte vergrößern", "Schoolfinder");
         return;
-      } else if (!UserService.isLoggedIn()) {
-        this.toastrService.info("An dieser Stelle gibt es keine eingetragenen Institutionen!", "Schoolfinder");
+        // } else if (!UserService.isLoggedIn()) {
+        // this.toastrService.info("An dieser Stelle gibt es keine eingetragenen Institutionen!", "Schoolfinder");
       }
     }
     console.log(point);

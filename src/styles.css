@@ -2,18 +2,22 @@ html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-.contentHeaderPanel{
-  width: 30%; 
+
+.contentHeaderPanel {
+  width: 30%;
 }
-.shownContentText{
+
+.shownContentText {
   max-width: 50%;
-  width:50%;
+  width: 50%;
   word-wrap: break-word;
 }
+
 .subheadline {
   flex-grow: 1;
   /* align-self: flex-start; */
@@ -23,18 +27,46 @@ body {
   font-weight: bold;
   word-wrap: break-word;
 }
-.expansionsPanelHeaderTitle{
+
+.expansionsPanelHeaderTitle {
   /* max-width:30%; */
 }
+
 .entrySet {
   display: flex;
   flex-direction: row;
 }
 
-
+.ol-attribution {
+  text-align:right;
+  top:.5em;
+  bottom: inherit;
+  right:.5em;
+  max-width:calc(100% - 1.3em);
+  
+}
 .searchSelectionComponent {
   width: 40%;
 }
+
+.mdc-button{
+  font-size:18px
+}
+
+.settingsMenuText {
+  align-self: center;
+  font-weight: bold !important;
+  text-align: center;
+  font-size: 16pt;
+}
+
+@media only screen and (max-width: 760px) {
+  .mdc-button{
+    font-size:14px
+  }
+  
+}
+
 
 @media only screen and (max-width: 760px) {
   .searchSelectionComponent {

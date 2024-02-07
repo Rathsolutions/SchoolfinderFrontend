@@ -2,7 +2,7 @@ import { Map } from "ol";
 import VectorLayer from "ol/layer/Vector";
 import { Source } from "ol/source";
 import VectorSource from "ol/source/Vector";
-import { VisibilityDataElement, VisibilityEventStrategy } from "./VisibilityEventStrategy";
+import { VisibilityDataElement, VisibilityEventStrategy, VisibilityEventType } from "./VisibilityEventStrategy";
 import { SchoolfinderLayer } from "src/app/overlay/map-comp/layer/layer";
 
 export class AreaHideEventStrategy implements VisibilityEventStrategy {
@@ -10,6 +10,9 @@ export class AreaHideEventStrategy implements VisibilityEventStrategy {
     primarySource.clear();
     secondarySource.clear();
     visibilityDataElement.activeAreaStrategy = this;
-    alternateSource.forEach(el=>el.setActive(false));
+    alternateSource.forEach(el => el.setActive(false));
+  }
+  getEventType(): VisibilityEventType {
+    return VisibilityEventType.AREA;
   }
 }

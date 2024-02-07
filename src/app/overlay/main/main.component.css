@@ -79,7 +79,6 @@ hiddenDiv {
   right: 0;
   bottom: 0;
   z-index: 2;
-  cursor: pointer;
 }
 .backgroundOverlayDiv {
   position: fixed;

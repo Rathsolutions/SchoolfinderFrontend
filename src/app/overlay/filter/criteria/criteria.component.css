@@ -34,13 +34,6 @@ span.mat-slide-toggle-content {
   margin-left: 3%;
 }
 
-.settingsMenuText {
-  align-self: center;
-  font-weight: bold;
-  text-align: center;
-  font-size: 16pt;
-}
-
 .settingsMenuExplainationText {
   text-align: center;
   align-self: center;
@@ -52,14 +45,11 @@ span.mat-slide-toggle-content {
   max-width: 100%;
 }
 
+.slide-toggle-spacer{
+  height: 20px;
+}
 button {
   white-space: pre-wrap !important;
-}
-
-.colorLegendEntry {
-  margin-left: 10px;
-  margin-bottom: 10px;
-  font-size: 16pt;
 }
 
 .bigText {
@@ -67,5 +57,13 @@ button {
 }
 
 .mediumText {
-  font-size: 16pt;
+  font-size: 12pt;
+}
+
+.matSlideLabel {
+  font-size: 18px;
+  vertical-align: top;
+  display: inline-block;
+  line-height: 22px;
+
 }
