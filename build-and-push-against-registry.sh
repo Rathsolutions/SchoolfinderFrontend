@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 docker login docker.anmirliegts.net
 podman manifest rm docker.anmirliegts.net/rathsolutions/schuglemapstwofrontend
 podman build --format docker --manifest docker.anmirliegts.net/rathsolutions/schuglemapstwofrontend --platform linux/amd64 --platform linux/arm64 .
