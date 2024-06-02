@@ -186,4 +186,9 @@ export class Styles {
       }),
     ];
   }
+
+  public static hasTouch() {
+    return matchMedia("(pointer: coarse)").matches;
+  }
+  
 }

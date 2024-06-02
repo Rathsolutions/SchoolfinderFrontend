@@ -56,7 +56,7 @@ import stylefunction from "ol-mapbox-style/dist/stylefunction";
 import GeoJSON from "ol/format/GeoJSON";
 import { Image, Style, Text } from "ol/style";
 import { SchoolsDao } from "src/app/services/dao/schools.dao";
-import { Extent, boundingExtent, containsCoordinate, containsExtent } from "ol/extent";
+import { Extent, boundingExtent, containsCoordinate, containsExtent, createEmpty, extend } from "ol/extent";
 import { ToastrService } from "ngx-toastr";
 import BaseEvent from "ol/events/Event";
 import { EventTargetLike } from "ol/events/Target";
@@ -64,6 +64,7 @@ import { DarkenLayer } from "./layer/darken-layer";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
 import { SelectionDialogViewData } from "src/app/viewdata/SelectionDialogViewData";
 import { SearchSelectionComponent } from "src/app/dialogs/searchSelection.component";
+import TextBuilder from "ol/render/canvas";
 
 @Component({
   selector: "app-map-comp",
@@ -341,7 +342,7 @@ export class MapCompComponent implements OnInit {
     this.map.on("pointermove", function (evt) {
       var hit = this.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
         var clusteredFeatures = feature.get("features");
-        return clusteredFeatures && clusteredFeatures.length == 1;
+        return clusteredFeatures;
       }, { hitTolerance: 3, layerFilter: this.sourceWaypointLayer });
       if (hit) {
         this.getTargetElement().style.cursor = 'pointer';
@@ -593,14 +594,24 @@ export class MapCompComponent implements OnInit {
     // console.log("RealPixel:"+real_pixel);
     var point = undefined;
     var foundClustered = false;
-    console.log(evt.pixel);
     this.map.forEachFeatureAtPixel(evt.pixel,
       function (feature, layer) {
-        var clusteredFeatures = feature.get("features");
+        var clusteredFeatures: Feature[] = feature.get("features");
         if (clusteredFeatures.length == 1) {
           point = clusteredFeatures[0];
         } else if (clusteredFeatures.length > 1) {
           foundClustered = true;
+          var extent = createEmpty();
+          for (var i = 0; i < clusteredFeatures.length; i++) {
+            extend(extent, clusteredFeatures[i].getGeometry().getExtent());
+          }
+          // clusteredFeatures.forEach((f)=> extend(extent, f.getGeometry().getExtent()));
+          // console.log(extent);
+          // extent[0] = extent[0] - 10000;
+          // extent[1] = extent[1] - 10000;
+          // extent[2] = extent[2] - 10000;
+          // extent[3] = extent[3] - 10000;
+          map.getView().fit(extent, { duration: 1000, padding: [150, 150, 150, 150] });
         }
       },
       {

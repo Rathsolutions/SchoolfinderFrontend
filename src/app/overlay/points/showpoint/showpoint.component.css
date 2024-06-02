@@ -9,7 +9,9 @@
     box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-.institutionImage {}
+.institutionImage {
+    width: 100%;
+}
 
 @media only screen and (max-width: 1000px) {
     .gradient {

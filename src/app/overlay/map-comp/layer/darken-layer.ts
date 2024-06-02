@@ -29,6 +29,8 @@ export class DarkenLayer implements SchoolfinderLayer {
     activated: boolean = false;
     initialHit: boolean = true;
 
+    toogleForTouch: boolean = false;
+
     areaInstitutionList: Map<number, string> = new Map();
     hiddenList: string[] = [];
 
@@ -63,14 +65,12 @@ export class DarkenLayer implements SchoolfinderLayer {
     addToMap(map: OsmMap.default) {
         map.addLayer(this.darkenLayer);
         var instance = this;
-        map.on("pointermove", (evt) => {
+        var visibilityFunction = (evt) => {
             if (!instance.activated) {
                 return;
             }
             if (instance.currentSelected && !(instance.currentSelected as Feature).getGeometry().intersectsCoordinate(map.getCoordinateFromPixel(evt.pixel))) {
-                instance.mapComp.sourceAreaTextVector.getFeatureById(instance.currentSelected.getId() + FeatureFactory.POINT).setStyle(Styles.getStyleForAreaInstitutionPoint("", "", 9, false));
-                (instance.currentSelected as Feature).setStyle(noFill);
-                instance.currentSelected = undefined;
+                resetCurrentSelected();
             }
             map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
                 var curAreaText = instance.mapComp.sourceAreaTextVector.getFeatureById(feature.getId() + FeatureFactory.POINT);
@@ -99,7 +99,34 @@ export class DarkenLayer implements SchoolfinderLayer {
             // map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
             //     (feature as Feature).setStyle()
             // }, { layerFilter: (layer) => layer == this.mapComp.source });
-        });
+        };
+        if (!Styles.hasTouch()) {
+            map.on("pointermove", visibilityFunction);
+        } else {
+            map.addEventListener("click", (evt: any) => {
+                var cancel = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+                    return true;
+                }, { hitTolerance: 0, layerFilter: (layer) => layer == this.mapComp.sourceWaypointLayer });
+                if (cancel) {
+                    return;
+                }
+                map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+                    if (instance.currentSelected == feature && instance.toogleForTouch) {
+                        instance.toogleForTouch = false;
+                        resetCurrentSelected();
+                    } else {
+                        instance.toogleForTouch = true;
+                        visibilityFunction(evt);
+                    }
+                }, { hitTolerance: 0, layerFilter: (layer) => layer == instance.darkenLayer });
+            });
+        }
+
+        function resetCurrentSelected() {
+            instance.mapComp.sourceAreaTextVector.getFeatureById(instance.currentSelected.getId() + FeatureFactory.POINT).setStyle(Styles.getStyleForAreaInstitutionPoint("", "", 9, false));
+            (instance.currentSelected as Feature).setStyle(noFill);
+            instance.currentSelected = undefined;
+        }
     }
     setActive(active: boolean) {
         if (active) {

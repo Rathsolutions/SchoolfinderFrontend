@@ -2,7 +2,7 @@
     <div id="footerInner">
         <h1 class="settingsMenuText">Institutionsfarben</h1>
         <div class="institutionsContainer">
-            <div class="colorLegendEntry" *ngFor="let color of allSchoolTypesForColorLegend">
+            <div class="colorLegendEntry bigText" *ngFor="let color of allSchoolTypesForColorLegend">
                 <div [style.color]="StyleInternal.toRGBString(color)">
                     {{ color.schoolTypeValue }}
                 </div>
