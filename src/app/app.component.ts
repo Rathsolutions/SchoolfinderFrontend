@@ -9,5 +9,4 @@ import { Component, AfterViewInit } from '@angular/core';
 export class AppComponent implements AfterViewInit {
   ngAfterViewInit(): void {
   }
-
 }

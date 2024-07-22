@@ -2,6 +2,7 @@ import {
   Component,
   ComponentFactoryResolver,
   ElementRef,
+  HostListener,
   Input,
   OnInit,
   Output,
@@ -373,7 +374,10 @@ export class MapCompComponent implements OnInit {
     this.map.addLayer(this.sourceAreaTextLayer);
 
   }
-
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.map.updateSize();
+  }
   private styleFunctionImage(feature, resolution) {
     const originalFeature = feature.get("features");
     if (feature.get("features").length == 1) {
