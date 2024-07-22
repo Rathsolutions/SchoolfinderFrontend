@@ -52,7 +52,9 @@ export abstract class AbstractPersonViewData {
         this.phonenumber.setValue(result.phoneNumber);
         this.newPointForm.patchValue({ phonenumber: result.phoneNumber });
       },
-      (error) => console.log(error)
+      (error) => {
+        // console.log(error); 
+      }
     );
   }
 

@@ -560,7 +560,7 @@ export class MapCompComponent implements OnInit {
             });
           },
           (error) => {
-            console.log(error);
+            // console.log(error);
           }
         ));
   }
@@ -629,7 +629,7 @@ export class MapCompComponent implements OnInit {
         // this.toastrService.info("An dieser Stelle gibt es keine eingetragenen Institutionen!", "Schoolfinder");
       }
     }
-    console.log(point);
+    // console.log(point);
     var latlong = toLonLat(evt.coordinate);
     if (UserService.isLoggedIn()) {
       this.addPointOverlayPlaceholder.clear();

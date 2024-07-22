@@ -33,7 +33,6 @@ export class FooterComponent implements OnInit {
       this.updateColorLegend(this.allSchoolTypesForColorLegend);
     });
     this.visibilityEventService.register().subscribe(res => {
-      console.log("got event");
       if (res.getEventType() != VisibilityEventType.INSTITUTION_LEGEND) {
         return;
       }
