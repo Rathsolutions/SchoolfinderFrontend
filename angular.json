@@ -69,18 +69,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "schoolfinder:build"
+            "buildTarget": "schoolfinder:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "schoolfinder:build:production"
+              "buildTarget": "schoolfinder:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "schoolfinder:build"
+            "buildTarget": "schoolfinder:build"
           }
         },
         "test": {

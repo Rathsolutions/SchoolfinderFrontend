@@ -52,9 +52,6 @@ import { AreaShowEventStrategy } from "src/app/broadcast-event-service/visibilit
 import { VisibilityEventService } from "src/app/broadcast-event-service/VisibilityEventService";
 import { VisibilityDataElement, VisibilityEventType } from "src/app/broadcast-event-service/visibility-event-strategies/VisibilityEventStrategy";
 import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
-import olms from "ol-mapbox-style";
-import stylefunction from "ol-mapbox-style/dist/stylefunction";
-import GeoJSON from "ol/format/GeoJSON";
 import { Image, Style, Text } from "ol/style";
 import { SchoolsDao } from "src/app/services/dao/schools.dao";
 import { Extent, boundingExtent, containsCoordinate, containsExtent, createEmpty, extend } from "ol/extent";
@@ -65,7 +62,6 @@ import { DarkenLayer } from "./layer/darken-layer";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
 import { SelectionDialogViewData } from "src/app/viewdata/SelectionDialogViewData";
 import { SearchSelectionComponent } from "src/app/dialogs/searchSelection.component";
-import TextBuilder from "ol/render/canvas";
 
 @Component({
   selector: "app-map-comp",
