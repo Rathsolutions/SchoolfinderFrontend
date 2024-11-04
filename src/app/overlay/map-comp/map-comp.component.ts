@@ -374,8 +374,8 @@ export class MapCompComponent implements OnInit {
     this.map.addLayer(this.sourceAreaTextLayer);
 
   }
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
+  @HostListener('window:resize')
+  onResize() {
     this.map.updateSize();
   }
   private styleFunctionImage(feature, resolution) {

@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -9,4 +9,5 @@ import { Component, AfterViewInit } from '@angular/core';
 export class AppComponent implements AfterViewInit {
   ngAfterViewInit(): void {
   }
+
 }
