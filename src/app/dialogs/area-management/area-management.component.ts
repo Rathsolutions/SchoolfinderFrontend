@@ -68,7 +68,7 @@ export class AreaManagementComponent
     var reader = new FileReader();
     reader.readAsBinaryString(file);
     reader.onloadend = () => {
-      var feature = new GeoJSON().readFeature(reader.result.toString());
+      var feature = new GeoJSON().readFeature(reader.result.toString())[0]; //We only accept single feature geometry files
       this.data.area = [];
       (feature
         .getGeometry() as Polygon)
