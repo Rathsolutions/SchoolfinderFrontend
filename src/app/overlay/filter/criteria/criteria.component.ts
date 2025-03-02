@@ -61,7 +61,6 @@ import { AreaEntity } from "src/app/entities/AreaEntity";
 import { AreaService } from "src/app/services/area.service";
 import { AreaManagementComponent } from "src/app/dialogs/area-management/area-management.component";
 import { Coordinate } from "ol/coordinate";
-import { Color } from "@angular-material-components/color-picker";
 import { ColorParser } from "src/app/util/color-parser";
 import { AbstractCategoryEntity } from "src/app/entities/AbstractCategoryEntity";
 import { VisibilityEventService } from "src/app/broadcast-event-service/VisibilityEventService";
@@ -78,6 +77,7 @@ import { SchoolTypeDTO } from "src/app/entities/SchoolTypeDTO";
 import { Styles } from "src/app/util/styles";
 import { InstitutionLegendShowEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/InstitutionLegendShowEventStrategy";
 import { InstitutionLegendHideEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/InstitutionLegendHideEventStrategy";
+import { Rgba } from "ngx-color-picker";
 
 export enum SearchTypes {
   ALLGEMEIN = "Allgemein", STADT = "Stadt"
@@ -248,7 +248,7 @@ export class CriteriaFilterComponent implements OnInit {
       res.areaPolygon.forEach((e) => {
         areaCoordinates.push([e.latitude, e.longitude]);
       });
-      var color: Color = ColorParser.parseRgbaString(res.color);
+      var color: string = ColorParser.rgbaToString(ColorParser.parseRgbaString(res.color));
       this.dialog
         .open(AreaManagementComponent, {
           data: {

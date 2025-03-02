@@ -1,4 +1,3 @@
-import { Color } from "@angular-material-components/color-picker";
 import { Circle, Fill, Icon, Stroke, Style, Text } from "ol/style";
 import { ProjectCategoryEntity } from "../entities/ProjectEntity";
 import { SchoolPersonEntity } from "../entities/SchoolPersonEntity";
@@ -7,6 +6,8 @@ import { Polygon } from "ol/geom";
 import { Coordinate } from "ol/coordinate";
 import { boundingExtent } from "ol/extent";
 import { fromExtent } from "ol/geom/Polygon";
+import { Rgba } from "ngx-color-picker";
+import { ColorParser } from "./color-parser";
 
 const TEXT_SIZE = 12;
 export class Styles {
@@ -161,11 +162,10 @@ export class Styles {
     });
   }
 
-
-  public static getDrawStyle(color: Color): Style[] {
+  public static getDrawStyle(color: Rgba): Style[] {
     var colorRgb = "rgba(255,255,255,0.4)";
     if (color) {
-      colorRgb = color.toRgba();
+      colorRgb = ColorParser.rgbaToString(color);
     }
     var fill = new Fill({
       color: colorRgb,
@@ -190,5 +190,5 @@ export class Styles {
   public static hasTouch() {
     return matchMedia("(pointer: coarse)").matches;
   }
-  
+
 }

@@ -40,7 +40,6 @@ import {
   AreaManagementData,
 } from "src/app/dialogs/area-management/area-management.component";
 import { unByKey } from "ol/Observable";
-import { Color } from "@angular-material-components/color-picker";
 import { AreaService } from "src/app/services/area.service";
 import { Coordinate } from "ol/coordinate";
 import { Position } from "src/app/entities/Position";
@@ -172,7 +171,7 @@ export class MapCompComponent implements OnInit {
       this.drawInstance = new Draw({
         source: this.sourceAreaImageVector,
         type: 'Polygon',
-        style: Styles.getDrawStyle(res.color),
+        style: Styles.getDrawStyle(ColorParser.parseRgbaString(res.color)),
       });
       this.sourceAreaImageVector.getFeatures().forEach((e) => {
         if (e.getId() == res.id) {

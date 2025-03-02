@@ -99,7 +99,7 @@
         </mat-expansion-panel>
         <mat-expansion-panel *ngIf="isAdmin()" class="expansion-panel">
           <mat-expansion-panel-header>
-            <mat-panel-title class="bigText"> Kategorieverwaltung </mat-panel-title>
+            <mat-panel-title class="bigText"> Kategorien </mat-panel-title>
           </mat-expansion-panel-header>
           <mat-form-field *ngIf="isAdmin()">
             <mat-label>Existente Kategorien</mat-label>
@@ -133,16 +133,15 @@
           </mat-slide-toggle>
           <label id="showRegionsLabel" class="matSlideLabel mat-slide-toggle-content">Bezirke zeigen</label>
           <div class="slide-toggle-spacer"></div>
-          <mat-slide-toggle aria-labelledby="showInstitutionLegendLabel" [disabled]="disabled" (change)="toggleShowInstitutionLegend()"
-            [(ngModel)]="showInstitutionLegend">
+          <mat-slide-toggle aria-labelledby="showInstitutionLegendLabel" [disabled]="disabled"
+            (change)="toggleShowInstitutionLegend()" [(ngModel)]="showInstitutionLegend">
           </mat-slide-toggle>
           <label id="showInstitutionLegendLabel" class="matSlideLabel mat-slide-toggle-content">Legende zeigen</label>
 
         </mat-expansion-panel>
-        <mat-expansion-panel *ngIf="isAdmin()" [expanded]="step === 4" (opened)="setStep(4)" hideToggle
-          class="expansion-panel">
+        <mat-expansion-panel *ngIf="isAdmin()" class="expansion-panel">
           <mat-expansion-panel-header>
-            <mat-panel-title class="bigText"> Regionalstellenbezirke </mat-panel-title>
+            <mat-panel-title class="bigText"> Regionalstellen</mat-panel-title>
           </mat-expansion-panel-header>
           <mat-form-field *ngIf="isAdmin()">
             <mat-label>Existente Regionalstellenbezirke</mat-label>
@@ -153,7 +152,7 @@
             </mat-select>
           </mat-form-field>
           <button mat-raised-button color="primary" #workOnCategoryButton [disabled]="disabled" (click)="createArea()">
-            Regionalstellenbezirk erstellen
+            Bezirk erstellen
           </button>
         </mat-expansion-panel>
       </mat-accordion>

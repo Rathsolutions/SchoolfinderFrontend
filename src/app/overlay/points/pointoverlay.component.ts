@@ -22,8 +22,6 @@ import { SchoolsService } from "../../services/schools.service";
 import { PersonsService } from "../../services/persons.service";
 import { AbstractPersonViewData } from "../../viewdata/AbstractPersonViewData";
 import { SchoolPersonEntity } from "src/app/entities/SchoolPersonEntity";
-import { Color } from "@angular-material-components/color-picker";
-import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 import { AbstractAdditionalInformation } from "src/app/viewdata/additional-information/AbstractAdditionalInformation";
 
 @Directive()
@@ -90,7 +88,7 @@ export abstract class PointOverlay implements AfterViewInit, OnDestroy {
     this.schoolId = result.id;
     this.shortSchoolName.setValue(result.shortSchoolName);
     this.schoolName.setValue(result.schoolName);
-    if(result.schoolType){
+    if (result.schoolType) {
       this.kind.setValue(result.schoolType.schoolTypeValue);
     }
     this.address.setValue(result.address);

@@ -11,15 +11,15 @@ import * as OsmMap from "ol/Map";
 import { ColorParser } from "src/app/util/color-parser";
 import { Styles } from "src/app/util/styles";
 import { Fill, Style } from "ol/style";
-import { Color } from "@angular-material-components/color-picker";
 import { FeatureLike } from "ol/Feature";
 import { containsCoordinate } from "ol/extent";
 import { SchoolfinderLayer } from "./layer";
 import { FeatureFactory } from "src/app/util/FeatureFactory";
 import { AreaEntity } from "src/app/entities/AreaEntity";
+import { Rgba } from "ngx-color-picker";
 
-const noFill = new Style({ fill: new Fill({ color: new Color(255, 255, 255, 0).toRgba() }) });
-const greyFill = new Style({ fill: new Fill({ color: new Color(255, 255, 255, 0.8).toRgba() }) });
+const noFill = new Style({ fill: new Fill({ color: ColorParser.rgbaToString(new Rgba(255, 255, 255, 0)) }) });
+const greyFill = new Style({ fill: new Fill({ color: ColorParser.rgbaToString(new Rgba(255, 255, 255, 0.8)) }) });
 export class DarkenLayer implements SchoolfinderLayer {
     darkenLayer: VectorLayer<Vector<any>>;
     darkenSource: VectorSource<any>;

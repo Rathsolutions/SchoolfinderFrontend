@@ -9,10 +9,6 @@ import { AreaSelectionService } from "../../broadcast-event-service/AreaSelectio
 import { Coordinate } from "ol/coordinate";
 import { AbstractControl, FormControl, Validators } from "@angular/forms";
 import { ThemePalette } from "@angular/material/core";
-import {
-  Color,
-  NgxMatColorPickerInput,
-} from "@angular-material-components/color-picker";
 import { Position } from "src/app/entities/Position";
 import { AreaService } from "src/app/services/area.service";
 import { Observable } from "rxjs";
@@ -21,6 +17,8 @@ import GeoJSON from "ol/format/GeoJSON";
 import { transform } from "ol/proj";
 import { CriteriaListEntriesChangedService } from "src/app/broadcast-event-service/CriteriaListEntriesChangedService";
 import { Polygon } from "ol/geom";
+import { ColorPickerComponent, Rgba } from "ngx-color-picker";
+import { Styles } from "src/app/util/styles";
 
 @Component({
   selector: "app-area-management",
@@ -28,14 +26,7 @@ import { Polygon } from "ol/geom";
   styleUrls: ["./area-management.component.css"],
 })
 export class AreaManagementComponent
-  extends AbstractManagement<AreaManagementComponent, AreaManagementData>
-  implements OnInit {
-  @ViewChild("picker") pickerInput: NgxMatColorPickerInput;
-
-  public colorCtr: AbstractControl = new FormControl("", [
-    Validators.required,
-    Validators.pattern("^#[0-9A-Fa-f]{6}$"),
-  ]);
+  extends AbstractManagement<AreaManagementComponent, AreaManagementData> {
 
   public color: ThemePalette = "primary";
   public touchUi = false;
@@ -61,10 +52,6 @@ export class AreaManagementComponent
     this.persistStrategy.setServiceInstance(areaService);
   }
 
-  ngOnInit(): void {
-    this.colorCtr.setValue(this.data.color);
-    this.colorCtr.valueChanges.subscribe((res) => (this.data.color = res));
-  }
   setAreaInstitutionPosition() {
     this.toastrService.info("Bitte wählen Sie den Standort der Regionalstelle");
     this.areaSelectionService.emitAreaInstitutionEvent(this.data);
@@ -138,7 +125,7 @@ export class AreaManagementComponent
     }
     area.id = this.data.id;
     area.name = this.data.name;
-    area.color = this.data.color.toRgba();
+    area.color = this.data.color;
     var areaInstitutionPosition = new Position();
     areaInstitutionPosition.latitude = this.data.areaInstitutionPosition[0];
     areaInstitutionPosition.longitude = this.data.areaInstitutionPosition[1];
@@ -167,7 +154,7 @@ export interface AreaManagementData {
   id: number;
   areaInstitutionPosition: Coordinate;
   area: Coordinate[];
-  color: Color;
+  color: string;
   persistStrategy: PersistStrategy<AreaEntity>;
   callbackFunction: () => void;
 }

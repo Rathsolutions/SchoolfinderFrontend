@@ -17,7 +17,7 @@ import { ToastrModule } from "ngx-toastr";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatDialogModule } from "@angular/material/dialog";
-import {MatDividerModule} from '@angular/material/divider'; 
+import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
@@ -28,15 +28,13 @@ import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import {MatRadioModule} from '@angular/material/radio'; 
-import {
-  MAT_COLOR_FORMATS,
-  NgxMatColorPickerModule,
-  NGX_MAT_COLOR_FORMATS,
-} from "@angular-material-components/color-picker";
+import { MatRadioModule } from '@angular/material/radio';
 import { MainComponent } from "./overlay/main/main.component";
 import { MatTableModule } from "@angular/material/table";
 import { MatListModule } from "@angular/material/list";
+import { MatIconModule } from '@angular/material/icon'
+import { ColorPickerModule } from "ngx-color-picker";
+
 import { BarrierFree } from "./overlay/barrierfree/barrierfree.component";
 import { MapCompComponent } from "./overlay/map-comp/map-comp.component";
 import { ShowPersonComponent } from "./viewdata/viewonly-person/showperson.component";
@@ -50,6 +48,7 @@ import { AdditionalCategoryManagementComponentComponent } from './dialogs/catego
 import { ShowAdditionalInformation } from "./viewdata/additional-information/show/show-additional-information.component";
 import { DsgvoComponent } from './dsgvo/dsgvo.component';
 import { FooterComponent } from './overlay/footer/footer.component';
+import { NgxColorsModule } from "ngx-colors";
 
 @NgModule({
   declarations: [
@@ -98,10 +97,11 @@ import { FooterComponent } from './overlay/footer/footer.component';
     MatProgressSpinnerModule,
     MatRadioModule,
     MatDividerModule,
-    NgxMatColorPickerModule,
+    MatIconModule,
+    ColorPickerModule,
+    NgxColorsModule,
     ToastrModule.forRoot(),
   ],
-  providers: [{ provide: MAT_COLOR_FORMATS, useValue: NGX_MAT_COLOR_FORMATS }],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

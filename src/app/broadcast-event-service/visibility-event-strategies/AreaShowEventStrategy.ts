@@ -1,16 +1,14 @@
-import { Color } from "@angular-material-components/color-picker";
 import { Feature, Map } from "ol";
 import { Coordinate } from "ol/coordinate";
 import { Polygon } from "ol/geom";
-import { Source } from "ol/source";
 import VectorSource from "ol/source/Vector";
 import { AreaService } from "src/app/services/area.service";
 import { ColorParser } from "src/app/util/color-parser";
 import { FeatureFactory } from "src/app/util/FeatureFactory";
 import { Styles } from "src/app/util/styles";
-import { VisibilityEventService } from "../VisibilityEventService";
 import { VisibilityDataElement, VisibilityEventStrategy, VisibilityEventType } from "./VisibilityEventStrategy";
 import { SchoolfinderLayer } from "src/app/overlay/map-comp/layer/layer";
+import { Rgba } from "ngx-color-picker";
 
 export class AreaShowEventStrategy implements VisibilityEventStrategy {
   constructor(private areaService: AreaService) {}
@@ -30,7 +28,7 @@ export class AreaShowEventStrategy implements VisibilityEventStrategy {
         var polygon = new Feature({
           geometry: geometry,
         });
-        var color: Color = ColorParser.parseRgbaString(e.color);
+        var color: Rgba = ColorParser.parseRgbaString(e.color);
         polygon.setStyle(Styles.getDrawStyle(color));
         polygon.setId(e.id);
         areaSource.addFeature(polygon);
