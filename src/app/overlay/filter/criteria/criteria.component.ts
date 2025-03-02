@@ -84,9 +84,10 @@ export enum SearchTypes {
 }
 
 @Component({
-  selector: "criteria-filter-component",
-  templateUrl: "./criteria.component.html",
-  styleUrls: ["./criteria.component.css"],
+    selector: "criteria-filter-component",
+    templateUrl: "./criteria.component.html",
+    styleUrls: ["./criteria.component.css"],
+    standalone: false
 })
 export class CriteriaFilterComponent implements OnInit {
 

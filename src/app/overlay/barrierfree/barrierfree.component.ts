@@ -6,9 +6,10 @@ import { PersonEntity } from "src/app/entities/PersonEntity";
 import { PersonFunctionality } from "src/app/entities/PersonFunctionalityEntity";
 
 @Component({
-  selector: "barrierfree-component",
-  templateUrl: "./barrierfree.component.html",
-  styleUrls: ["./barrierfree.component.css"],
+    selector: "barrierfree-component",
+    templateUrl: "./barrierfree.component.html",
+    styleUrls: ["./barrierfree.component.css"],
+    standalone: false
 })
 export class BarrierFree {
   displayedColumns: string[] = ["name", "arContent", "makerspaceContent"];

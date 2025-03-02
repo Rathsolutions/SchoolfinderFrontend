@@ -63,9 +63,10 @@ import { SelectionDialogViewData } from "src/app/viewdata/SelectionDialogViewDat
 import { SearchSelectionComponent } from "src/app/dialogs/searchSelection.component";
 
 @Component({
-  selector: "app-map-comp",
-  templateUrl: "./map-comp.component.html",
-  styleUrls: ["./map-comp.component.css"],
+    selector: "app-map-comp",
+    templateUrl: "./map-comp.component.html",
+    styleUrls: ["./map-comp.component.css"],
+    standalone: false
 })
 export class MapCompComponent implements OnInit {
   private map: OsmMap.default;

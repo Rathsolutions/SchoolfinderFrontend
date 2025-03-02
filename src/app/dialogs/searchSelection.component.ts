@@ -9,7 +9,8 @@ import { SelectionDialogViewData } from '../viewdata/SelectionDialogViewData';
 @Component({
     selector: 'search-selection-component',
     templateUrl: './searchSelection.component.html',
-    styleUrls: ['./searchSelection.component.scss']
+    styleUrls: ['./searchSelection.component.scss'],
+    standalone: false
 })
 export class SearchSelectionComponent implements OnInit {
 

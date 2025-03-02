@@ -26,9 +26,10 @@ import { CriteriaService } from "../../../../services/criteria.service";
 import { AddPointOverlay } from "../addpointoverlay.component";
 
 @Component({
-  selector: "addcriteria-component",
-  templateUrl: "./addcriteria.component.html",
-  styleUrls: ["./addcriteria.component.css"],
+    selector: "addcriteria-component",
+    templateUrl: "./addcriteria.component.html",
+    styleUrls: ["./addcriteria.component.css"],
+    standalone: false
 })
 export class AddCriteriaComponent implements RemoveableComponent {
   criteriaName: FormControl = new FormControl("");

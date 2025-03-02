@@ -15,9 +15,10 @@ import { SchoolPersonEntity } from "src/app/entities/SchoolPersonEntity";
 import { UrlUtils } from "../../../util/url-utils";
 
 @Component({
-  selector: "show-additional-information-component",
-  templateUrl: "./show-additional-information.component.html",
-  styleUrls: ["./show-additional-information.component.css"],
+    selector: "show-additional-information-component",
+    templateUrl: "./show-additional-information.component.html",
+    styleUrls: ["./show-additional-information.component.css"],
+    standalone: false
 })
 export class ShowAdditionalInformation
   implements AbstractAdditionalInformation {

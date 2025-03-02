@@ -32,9 +32,10 @@ import { ShowAdditionalInformation } from "src/app/viewdata/additional-informati
 import { SchoolPersonEntity } from "src/app/entities/SchoolPersonEntity";
 
 @Component({
-  selector: "showpoint-component",
-  templateUrl: "./showpoint.component.html",
-  styleUrls: ["./showpoint.component.css"],
+    selector: "showpoint-component",
+    templateUrl: "./showpoint.component.html",
+    styleUrls: ["./showpoint.component.css"],
+    standalone: false
 })
 export class ShowPointOverlay
   extends PointOverlay

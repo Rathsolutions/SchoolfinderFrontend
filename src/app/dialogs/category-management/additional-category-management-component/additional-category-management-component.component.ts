@@ -12,9 +12,10 @@ import { PersistStrategy } from "src/app/services/persistStrategy/PersistStrateg
 import { AbstractManagement } from "../abstract-management";
 
 @Component({
-  selector: "app-additional-category-management-component",
-  templateUrl: "./additional-category-management-component.component.html",
-  styleUrls: ["./additional-category-management-component.component.css"],
+    selector: "app-additional-category-management-component",
+    templateUrl: "./additional-category-management-component.component.html",
+    styleUrls: ["./additional-category-management-component.component.css"],
+    standalone: false
 })
 export class AdditionalCategoryManagementComponentComponent
   extends AbstractManagement<

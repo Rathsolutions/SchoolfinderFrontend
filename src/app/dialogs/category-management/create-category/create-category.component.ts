@@ -11,9 +11,10 @@ import { PersonCategoryManagementComponent } from "../person-category-management
 import { SchoolCategoryManagementComponent } from "../school-category-management/school-category-management.component";
 
 @Component({
-  selector: "app-create-category",
-  templateUrl: "./create-category.component.html",
-  styleUrls: ["./create-category.component.css"],
+    selector: "app-create-category",
+    templateUrl: "./create-category.component.html",
+    styleUrls: ["./create-category.component.css"],
+    standalone: false
 })
 export class CreateCategoryComponent
   extends AbstractManagement<CreateCategoryComponent, { persistStrategy: null }>

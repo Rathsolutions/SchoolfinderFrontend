@@ -10,9 +10,10 @@ import { Subject } from "rxjs";
 import { RemoveableComponent } from "../RemoveableComponent";
 
 @Component({
-  selector: "addperson-overlay-component",
-  templateUrl: "./addperson.component.html",
-  styleUrls: ["./addperson.component.css"],
+    selector: "addperson-overlay-component",
+    templateUrl: "./addperson.component.html",
+    styleUrls: ["./addperson.component.css"],
+    standalone: false
 })
 export class AddPersonComponent extends AbstractPersonViewData implements RemoveableComponent{
   functionalityName: string = "Auszufüllende";

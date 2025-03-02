@@ -10,9 +10,10 @@ import { ProjectCategoryService } from "src/app/services/project-category.servic
 import { AbstractManagement } from "../abstract-management";
 
 @Component({
-  selector: "app-person-category-management",
-  templateUrl: "./person-category-management.component.html",
-  styleUrls: ["./person-category-management.component.css"],
+    selector: "app-person-category-management",
+    templateUrl: "./person-category-management.component.html",
+    styleUrls: ["./person-category-management.component.css"],
+    standalone: false
 })
 export class PersonCategoryManagementComponent
   extends AbstractManagement<

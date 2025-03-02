@@ -37,9 +37,10 @@ import { MapCompComponent } from "../map-comp/map-comp.component";
 import { ProjectCategoryService } from "src/app/services/project-category.service";
 import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 @Component({
-  selector: "main-component",
-  templateUrl: "./main.component.html",
-  styleUrls: ["./main.component.css"],
+    selector: "main-component",
+    templateUrl: "./main.component.html",
+    styleUrls: ["./main.component.css"],
+    standalone: false
 })
 export class MainComponent implements AfterViewInit, OnInit {
   @ViewChild("xInput") xInput: ElementRef;

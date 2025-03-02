@@ -3,9 +3,10 @@ import { Component } from "@angular/core";
 import { UrlUtils } from "src/app/util/url-utils";
 import { AbstractPersonViewData } from "../AbstractPersonViewData";
 @Component({
-  selector: "showperson-overlay-component",
-  templateUrl: "./showperson.component.html",
-  styleUrls: ["./showperson.component.css"],
+    selector: "showperson-overlay-component",
+    templateUrl: "./showperson.component.html",
+    styleUrls: ["./showperson.component.css"],
+    standalone: false
 })
 export class ShowPersonComponent extends AbstractPersonViewData {
 

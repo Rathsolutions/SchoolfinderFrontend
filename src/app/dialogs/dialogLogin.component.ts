@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 @Component({
     selector: 'dialogLogin',
     templateUrl: './dialogLogin.component.html',
+    standalone: false
 })
 export class DialogLogin {
 

@@ -21,9 +21,10 @@ import { ColorPickerComponent, Rgba } from "ngx-color-picker";
 import { Styles } from "src/app/util/styles";
 
 @Component({
-  selector: "app-area-management",
-  templateUrl: "./area-management.component.html",
-  styleUrls: ["./area-management.component.css"],
+    selector: "app-area-management",
+    templateUrl: "./area-management.component.html",
+    styleUrls: ["./area-management.component.css"],
+    standalone: false
 })
 export class AreaManagementComponent
   extends AbstractManagement<AreaManagementComponent, AreaManagementData> {

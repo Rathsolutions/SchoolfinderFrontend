@@ -14,9 +14,10 @@ import { InformationType } from "src/app/entities/InformationType";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 
 @Component({
-  selector: "add-additional-information-component",
-  templateUrl: "./add-additional-information.component.html",
-  styleUrls: ["./add-additional-information.component.css"],
+    selector: "add-additional-information-component",
+    templateUrl: "./add-additional-information.component.html",
+    styleUrls: ["./add-additional-information.component.css"],
+    standalone: false
 })
 export class AddAdditionalInformation
   implements RemoveableComponent, AbstractAdditionalInformation

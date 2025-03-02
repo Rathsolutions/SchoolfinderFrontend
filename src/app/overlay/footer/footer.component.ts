@@ -9,9 +9,10 @@ import { SchoolTypeService } from 'src/app/services/school-type.service';
 import { Styles } from 'src/app/util/styles';
 
 @Component({
-  selector: 'app-footer',
-  templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.css']
+    selector: 'app-footer',
+    templateUrl: './footer.component.html',
+    styleUrls: ['./footer.component.css'],
+    standalone: false
 })
 export class FooterComponent implements OnInit {
 

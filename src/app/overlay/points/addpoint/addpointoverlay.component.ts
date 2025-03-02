@@ -48,9 +48,10 @@ import { CalculationEventService } from "src/app/broadcast-event-service/Calcula
 
 
 @Component({
-  selector: "addpointeroverlay-component",
-  templateUrl: "./addpointoverlay.component.html",
-  styleUrls: ["./addpointoverlay.component.css"],
+    selector: "addpointeroverlay-component",
+    templateUrl: "./addpointoverlay.component.html",
+    styleUrls: ["./addpointoverlay.component.css"],
+    standalone: false
 })
 export class AddPointOverlay
   extends PointOverlay
