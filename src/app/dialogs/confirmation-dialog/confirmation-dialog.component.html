@@ -1,0 +1,9 @@
+<!--Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE-->
+<h1 mat-dialog-title>Bestätigung</h1>
+<div mat-dialog-content>
+  <p>{{nameOfDeletion}} wird gelöscht. Sind Sie sicher?</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="false">Abbruch</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Löschen</button>
+</div>

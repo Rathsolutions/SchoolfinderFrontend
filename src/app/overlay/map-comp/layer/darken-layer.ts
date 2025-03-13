@@ -17,6 +17,7 @@ import { SchoolfinderLayer } from "./layer";
 import { FeatureFactory } from "src/app/util/FeatureFactory";
 import { AreaEntity } from "src/app/entities/AreaEntity";
 import { Rgba } from "ngx-color-picker";
+import { UserService } from "src/app/services/user.service";
 
 const noFill = new Style({ fill: new Fill({ color: ColorParser.rgbaToString(new Rgba(255, 255, 255, 0)) }) });
 const greyFill = new Style({ fill: new Fill({ color: ColorParser.rgbaToString(new Rgba(255, 255, 255, 0.8)) }) });
@@ -135,7 +136,11 @@ export class DarkenLayer implements SchoolfinderLayer {
             });
         } else {
             this.darkenSource.getFeatures().forEach(feature => {
-                feature.setStyle(greyFill);
+                if (UserService.isLoggedIn()) {
+                    feature.setStyle(noFill);
+                } else {
+                    feature.setStyle(greyFill);
+                }
             });
         }
         this.activated = active;

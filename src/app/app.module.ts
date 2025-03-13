@@ -49,6 +49,7 @@ import { ShowAdditionalInformation } from "./viewdata/additional-information/sho
 import { DsgvoComponent } from './dsgvo/dsgvo.component';
 import { FooterComponent } from './overlay/footer/footer.component';
 import { NgxColorsModule } from "ngx-colors";
+import { ConfirmationDialogComponent } from "./dialogs/confirmation-dialog/confirmation-dialog.component";
 
 @NgModule({ declarations: [
         AppComponent,
@@ -57,6 +58,7 @@ import { NgxColorsModule } from "ngx-colors";
         DialogLogin,
         AddPointOverlay,
         ShowPointOverlay,
+        ConfirmationDialogComponent,
         AddCriteriaComponent,
         CriteriaFilterComponent,
         SearchSelectionComponent,

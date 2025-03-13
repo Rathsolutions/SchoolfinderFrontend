@@ -45,13 +45,15 @@ import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
 import { AddAdditionalInformation } from "src/app/viewdata/additional-information/add/add-additional-information.component";
 import { RemoveableComponent } from "src/app/viewdata/RemoveableComponent";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
+import { MatDialog } from "@angular/material/dialog";
+import { ConfirmationDialogComponent } from "src/app/dialogs/confirmation-dialog/confirmation-dialog.component";
 
 
 @Component({
-    selector: "addpointeroverlay-component",
-    templateUrl: "./addpointoverlay.component.html",
-    styleUrls: ["./addpointoverlay.component.css"],
-    standalone: false
+  selector: "addpointeroverlay-component",
+  templateUrl: "./addpointoverlay.component.html",
+  styleUrls: ["./addpointoverlay.component.css"],
+  standalone: false
 })
 export class AddPointOverlay
   extends PointOverlay
@@ -91,6 +93,7 @@ export class AddPointOverlay
     private projectCategoryService: ProjectCategoryService,
     private saveEventService: MapUpdateEventService,
     private schoolTypeService: SchoolTypeService,
+    private dialog: MatDialog,
     private calculationEventService: CalculationEventService
   ) {
     super(schoolService, personsService);
@@ -203,23 +206,33 @@ export class AddPointOverlay
   }
 
   deleteCurrent(): void {
-    this.calculationEventService.emit(true);
-    this.schoolService.deleteSchool(this.schoolId).subscribe(
-      (result) => {
-        this.toastr.success(
+    this.dialog.open(ConfirmationDialogComponent, { data: this.schoolName.value }).afterClosed().subscribe(res => {
+      if (!res) {
+        this.toastr.info(
           "Die Institution '" +
           this.schoolName.value +
-          "' wurde erfolgreich gelöscht!"
+          "' wurde nicht gelöscht!"
         );
-        this.setVisible(false);
-        this.saveEventService.emit(true);
-        this.calculationEventService.emit(false);
-      },
-      (err) => {
-        this.calculationEventService.emit(false);
-        this.toastr.error("Es ist ein Fehler aufgetreten!");
+        return;
       }
-    );
+      this.calculationEventService.emit(true);
+      this.schoolService.deleteSchool(this.schoolId).subscribe(
+        (result) => {
+          this.toastr.success(
+            "Die Institution '" +
+            this.schoolName.value +
+            "' wurde erfolgreich gelöscht!"
+          );
+          this.setVisible(false);
+          this.saveEventService.emit(true);
+          this.calculationEventService.emit(false);
+        },
+        (err) => {
+          this.calculationEventService.emit(false);
+          this.toastr.error("Es ist ein Fehler aufgetreten!");
+        }
+      );
+    })
   }
 
   async onSubmit() {
