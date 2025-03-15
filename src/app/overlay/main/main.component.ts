@@ -128,12 +128,18 @@ export class MainComponent implements AfterViewInit, OnInit {
           );
         },
         (error) => {
-          if (error.status === 401) {
+          if (error.status === 401 || error.status === 403) {
             this.toastr.error(
               "Die Zugangsdaten sind leider invalide!",
               "Error"
             );
-          } else {
+          } else if(error.status == 429){
+            this.toastr.error(
+              "Zu viele Anfragen! Sie wurden gesperrt. Zum entsperren bitten den Serveradministrator kontaktieren",
+              "Error"
+            );
+          }
+           else {
             this.toastr.error(
               "Ein Problem ist aufgetreten! Bitte kontaktieren Sie den Serveradministrator",
               "Error"

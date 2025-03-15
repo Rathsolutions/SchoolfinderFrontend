@@ -281,6 +281,11 @@ export class AddPointOverlay
     }
     Promise.all(promisesToWait)
       .then((res) => {
+        if (this.kind.invalid) {
+          this.calculationEventService.emit(false);
+          this.toastr.error("Bitte eine Schulart auswählen!");
+          return;
+        }
         if (allPersonViewInstances.length <= 0) {
           this.calculationEventService.emit(false);
           this.toastr.error("Bitte mindestens eine Ansprechperson eintragen!");
