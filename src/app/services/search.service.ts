@@ -7,13 +7,15 @@ import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { OsmPOIEntity } from '../entities/OsmPOIEntity';
 import { CookieService } from 'ngx-cookie-service';
+import { NgcCookieConsentService } from 'ngx-cookieconsent';
+import { ToastrService } from 'ngx-toastr';
 @Injectable({
     providedIn: 'root'
 })
 export class SearchService extends BaseService<CriteriaEntity> {
     constructor(
-        http: HttpClient, cookieService: CookieService) {
-        super(http, cookieService, "finder");
+        http: HttpClient, cookieService: CookieService, ccService: NgcCookieConsentService, toastrService: ToastrService) {
+        super(http, cookieService, ccService, toastrService, "finder");
     }
 
     public searchGeneralInstitutionContentInDatabase(queryString: string, amount: number): Observable<OsmPOIEntity[]> {

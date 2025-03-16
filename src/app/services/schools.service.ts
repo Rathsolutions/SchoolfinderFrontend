@@ -10,23 +10,29 @@ import { CriteriaEntity } from "../entities/CriteriaEntity";
 import { ProjectCategoryEntity } from "../entities/ProjectEntity";
 import { SchoolTypeDTO } from "../entities/SchoolTypeDTO";
 import { CookieService } from "ngx-cookie-service";
+import { NgcCookieConsentService } from "ngx-cookieconsent";
+import { ToastrService } from "ngx-toastr";
 
 @Injectable({
   providedIn: "root",
 })
 export class SchoolsService extends BaseService<SchoolPersonEntity> {
-  constructor(http: HttpClient, cookieService: CookieService) {
-    super(http, cookieService, "schools");
+  constructor(http: HttpClient, cookieService: CookieService, ccService: NgcCookieConsentService, toastrService: ToastrService) {
+    super(http, cookieService, ccService, toastrService, "schools");
   }
 
   public putNewSchool(
     school: SchoolPersonEntity
   ): Observable<SchoolPersonEntity> {
+    const httpOptions = this.getCredentialHttpOptionsAndCheckConsent();
+    if (!httpOptions) {
+      return;
+    }
     return this.http
       .put<SchoolPersonEntity>(
         this.requestURL + "/create/addNewSchool",
         school,
-        BaseService.HTTP_OPTIONS
+        httpOptions
       )
       .pipe(catchError(this.handleError(this.entity + ":addNewSchool")));
   }
@@ -34,17 +40,25 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
   public patchSchool(
     school: SchoolPersonEntity
   ): Observable<SchoolPersonEntity> {
+    const httpOptions = this.getCredentialHttpOptionsAndCheckConsent();
+    if (!httpOptions) {
+      return;
+    }
     return this.http
       .patch<SchoolPersonEntity>(
         this.requestURL + "/edit/alterSchool",
         school,
-        BaseService.HTTP_OPTIONS
+        httpOptions
       )
       .pipe(catchError(this.handleError(this.entity + ":alterSchool")));
   }
 
   public deleteSchool(id: number): Observable<String> {
-    var credentials = BaseService.HTTP_OPTIONS;
+    const httpOptions = this.getCredentialHttpOptionsAndCheckConsent();
+    if (!httpOptions) {
+      return;
+    }
+    var credentials = httpOptions;
     return this.http.delete<String>(this.requestURL + "/delete/deleteSchool", {
       params: {
         schoolId: id.toString(),
@@ -139,7 +153,11 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
     cityname: string,
     amount: number
   ): Observable<OsmPOIEntity[]> {
-    var credentials = BaseService.HTTP_OPTIONS;
+    const httpOptions = this.getCredentialHttpOptionsAndCheckConsent();
+    if (!httpOptions) {
+      return;
+    }
+    var credentials = httpOptions;
     return this.http.get<OsmPOIEntity[]>(
       this.requestURL + "/search/findNotRegisteredSchoolsByName",
       {

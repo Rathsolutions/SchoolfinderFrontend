@@ -3,6 +3,8 @@ import { environment } from '../../environments/environment';
 
 import { HttpClient, HttpHeaders, HttpXsrfTokenExtractor } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
+import { NgcCookieConsentService } from 'ngx-cookieconsent';
+import { ToastrService } from 'ngx-toastr';
 
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -14,12 +16,20 @@ export class BaseService<T> {
   protected password = null;
   protected static loggedIn = false;
 
-  static HTTP_OPTIONS = {
+  private static HTTP_OPTIONS = {
     withCredentials: true,
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
     })
   };
+
+  protected getCredentialHttpOptionsAndCheckConsent() {
+    if (!this.ccService.hasConsented()) {
+      this.toastrService.error("Sie müssen technische Cookies akzeptieren, um diese Funktion zu nutzen!")
+      return null;
+    }
+    return BaseService.HTTP_OPTIONS;
+  }
 
   protected setUserAndPassword(username: string, password: string) {
     this.username = username;
@@ -40,6 +50,8 @@ export class BaseService<T> {
   constructor(
     protected http: HttpClient,
     protected cookieService: CookieService,
+    private ccService: NgcCookieConsentService,
+    private toastrService: ToastrService,
     protected entity
   ) {
     this.requestURL = BASE_URL + entity;

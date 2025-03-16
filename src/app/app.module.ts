@@ -34,6 +34,7 @@ import { MatTableModule } from "@angular/material/table";
 import { MatListModule } from "@angular/material/list";
 import { MatIconModule } from '@angular/material/icon'
 import { ColorPickerModule } from "ngx-color-picker";
+import { NgcCookieConsentConfig, NgcCookieConsentModule } from 'ngx-cookieconsent';
 
 import { BarrierFree } from "./overlay/barrierfree/barrierfree.component";
 import { MapCompComponent } from "./overlay/map-comp/map-comp.component";
@@ -51,6 +52,34 @@ import { FooterComponent } from './overlay/footer/footer.component';
 import { NgxColorsModule } from "ngx-colors";
 import { ConfirmationDialogComponent } from "./dialogs/confirmation-dialog/confirmation-dialog.component";
 import { CookieService } from "ngx-cookie-service";
+
+const cookieConfig: NgcCookieConsentConfig = {
+    cookie: {
+        domain: window.location.hostname,
+    },
+    palette: {
+        popup: {
+            background: '#000'
+        },
+        button: {
+            background: '#f1d600'
+        }
+    },
+    content: {
+        message: "Diese Webseite nutzt technische Cookies, um zu funktionieren",
+        link: "Weitere Informationen",
+        href: "https://rathsolutions.de/privacy-policy",
+        allow: "Erlauben",
+        deny: "Verbieten",
+        policy: "Cookie Einstellungen",
+
+    },
+    law: {
+        countryCode: "DE"
+    },
+    theme: 'classic',
+    type: 'opt-out'
+};
 
 @NgModule({
     declarations: [
@@ -101,6 +130,8 @@ import { CookieService } from "ngx-cookie-service";
         MatIconModule,
         ColorPickerModule,
         NgxColorsModule,
-        ToastrModule.forRoot()], providers: [CookieService, provideHttpClient(withInterceptorsFromDi(), withXsrfConfiguration({ cookieName: 'XSRF-TOKEN', headerName: 'X-XSRF-TOKEN' }))]
+        ToastrModule.forRoot(),
+        NgcCookieConsentModule.forRoot(cookieConfig)
+    ], providers: [CookieService, provideHttpClient(withInterceptorsFromDi(), withXsrfConfiguration({ cookieName: 'XSRF-TOKEN', headerName: 'X-XSRF-TOKEN' }))]
 })
 export class AppModule { }

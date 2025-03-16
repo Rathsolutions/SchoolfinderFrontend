@@ -10,13 +10,15 @@ import { CriteriaEntity } from "../entities/CriteriaEntity";
 import { ProjectCategoryEntity } from "../entities/ProjectEntity";
 import { SchoolTypeDTO } from "../entities/SchoolTypeDTO";
 import { CookieService } from "ngx-cookie-service";
+import { NgcCookieConsentService } from "ngx-cookieconsent";
+import { ToastrService } from "ngx-toastr";
 
 @Injectable({
   providedIn: "root",
 })
 export class SchoolTypeService extends BaseService<SchoolTypeDTO> {
-  constructor(http: HttpClient, cookieService: CookieService) {
-    super(http, cookieService, "schoolType");
+  constructor(http: HttpClient, cookieService: CookieService, ccService: NgcCookieConsentService, toastrService: ToastrService) {
+    super(http, cookieService, ccService, toastrService, "schoolType");
   }
 
   public findSchoolTypesUsedAtLeastOnce(): Observable<SchoolTypeDTO[]> {
