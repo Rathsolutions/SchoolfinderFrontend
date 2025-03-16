@@ -29,7 +29,9 @@
               "./node_modules/ngx-toastr/toastr.css",
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "node_modules/cookieconsent/build/cookieconsent.min.css",
-              "src/styles.css"
+              "src/styles.css",
+              "src/assets/ol.css",
+              "src/assets/robotoConfig.css"
             ],
             "scripts": [
               "node_modules/cookieconsent/build/cookieconsent.min.js"
