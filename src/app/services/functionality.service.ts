@@ -3,12 +3,13 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { FunctionalityEntity } from "../entities/FunctionalityEntity";
 import { BaseService } from "./base.service";
+import { CookieService } from "ngx-cookie-service";
 @Injectable({
   providedIn: "root",
 })
 export class FunctionalityService extends BaseService<FunctionalityEntity> {
-  constructor(http: HttpClient) {
-    super(http, "functionality");
+  constructor(http: HttpClient,cookieService: CookieService) {
+    super(http, cookieService,"functionality");
   }
 
   public findByName(name: string): Observable<FunctionalityEntity> {

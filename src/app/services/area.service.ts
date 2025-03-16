@@ -5,13 +5,14 @@ import { Observable } from 'rxjs';
 import { AreaEntity } from '../entities/AreaEntity';
 import { OsmPOIEntity } from '../entities/OsmPOIEntity';
 import { BaseService } from './base.service';
+import { CookieService } from 'ngx-cookie-service';
 @Injectable({
   providedIn: 'root'
 })
 export class AreaService extends BaseService<AreaEntity> {
   constructor(
-    http: HttpClient) {
-    super(http, "area");
+    http: HttpClient, cookieService: CookieService) {
+    super(http, cookieService, "area");
   }
 
   public findByName(name: string): Observable<AreaEntity> {

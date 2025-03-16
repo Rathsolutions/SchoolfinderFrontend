@@ -5,14 +5,15 @@ import { CriteriaEntity } from '../entities/CriteriaEntity';
 import { HttpClient, HttpXsrfTokenExtractor } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class CriteriaService extends BaseService<CriteriaEntity> {
     constructor(
-        http: HttpClient) {
-        super(http, "criterias");
+        http: HttpClient, cookieService: CookieService) {
+        super(http, cookieService, "criterias");
     }
 
     public getPossibleCriterias(criteria: string, amount: number): Observable<CriteriaEntity[]> {

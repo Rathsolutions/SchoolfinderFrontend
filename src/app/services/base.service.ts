@@ -2,6 +2,7 @@
 import { environment } from '../../environments/environment';
 
 import { HttpClient, HttpHeaders, HttpXsrfTokenExtractor } from '@angular/common/http';
+import { CookieService } from 'ngx-cookie-service';
 
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -28,6 +29,8 @@ export class BaseService<T> {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         'Authorization': 'Basic ' + btoa(this.username + ':' + this.password),
+        'X-XSRF-TOKEN': this.cookieService.get("XSRF-TOKEN")
+
       })
     };
   }
@@ -36,6 +39,7 @@ export class BaseService<T> {
 
   constructor(
     protected http: HttpClient,
+    protected cookieService: CookieService,
     protected entity
   ) {
     this.requestURL = BASE_URL + entity;

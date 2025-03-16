@@ -1,7 +1,7 @@
 //Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi, withXsrfConfiguration } from "@angular/common/http";
 import { AppRoutingModule } from "./app-routing.module";
 
 import { AppComponent } from "./app.component";
@@ -50,8 +50,10 @@ import { DsgvoComponent } from './dsgvo/dsgvo.component';
 import { FooterComponent } from './overlay/footer/footer.component';
 import { NgxColorsModule } from "ngx-colors";
 import { ConfirmationDialogComponent } from "./dialogs/confirmation-dialog/confirmation-dialog.component";
+import { CookieService } from "ngx-cookie-service";
 
-@NgModule({ declarations: [
+@NgModule({
+    declarations: [
         AppComponent,
         BarrierFree,
         MainComponent,
@@ -99,5 +101,6 @@ import { ConfirmationDialogComponent } from "./dialogs/confirmation-dialog/confi
         MatIconModule,
         ColorPickerModule,
         NgxColorsModule,
-        ToastrModule.forRoot()], providers: [provideHttpClient(withInterceptorsFromDi())] })
+        ToastrModule.forRoot()], providers: [CookieService, provideHttpClient(withInterceptorsFromDi(), withXsrfConfiguration({ cookieName: 'XSRF-TOKEN', headerName: 'X-XSRF-TOKEN' }))]
+})
 export class AppModule { }

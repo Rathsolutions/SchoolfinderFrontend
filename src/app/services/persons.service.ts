@@ -7,13 +7,14 @@ import { catchError } from "rxjs/operators";
 import { Observable } from "rxjs";
 import { PersonEntity } from "../entities/PersonEntity";
 import { PersonFunctionality, PersonFunctionalityEntity } from "../entities/PersonFunctionalityEntity";
+import { CookieService } from "ngx-cookie-service";
 
 @Injectable({
   providedIn: "root",
 })
 export class PersonsService extends BaseService<PersonEntity> {
-  constructor(http: HttpClient) {
-    super(http, "persons");
+  constructor(http: HttpClient,cookieService: CookieService) {
+    super(http, cookieService,"persons");
   }
 
   public putNewPerson(person: PersonEntity): Observable<PersonEntity> {

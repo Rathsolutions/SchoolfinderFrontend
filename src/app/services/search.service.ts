@@ -6,16 +6,17 @@ import { HttpClient, HttpXsrfTokenExtractor } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { OsmPOIEntity } from '../entities/OsmPOIEntity';
+import { CookieService } from 'ngx-cookie-service';
 @Injectable({
     providedIn: 'root'
 })
 export class SearchService extends BaseService<CriteriaEntity> {
     constructor(
-        http: HttpClient) {
-        super(http, "finder");
+        http: HttpClient, cookieService: CookieService) {
+        super(http, cookieService, "finder");
     }
 
-    public searchGeneralInstitutionContentInDatabase(queryString:string, amount:number):Observable<OsmPOIEntity[]>{
+    public searchGeneralInstitutionContentInDatabase(queryString: string, amount: number): Observable<OsmPOIEntity[]> {
         return this.http.get<OsmPOIEntity[]>(this.requestURL + "/search/findGeneralInstitutionContentInDatabase", {
             params: {
                 query: queryString,
@@ -24,7 +25,7 @@ export class SearchService extends BaseService<CriteriaEntity> {
         });
     }
 
-    public searchCityInOsmFile(cityname: string, amount:number): Observable<OsmPOIEntity[]> {
+    public searchCityInOsmFile(cityname: string, amount: number): Observable<OsmPOIEntity[]> {
         return this.http.get<OsmPOIEntity[]>(this.requestURL + "/search/findCityByName", {
             params: {
                 name: cityname,
@@ -33,7 +34,7 @@ export class SearchService extends BaseService<CriteriaEntity> {
         });
     }
 
-    public searchCityAndStreetInOsmFile(cityname:string, street:string, housenumber:string, amount:number): Observable<OsmPOIEntity[]>{
+    public searchCityAndStreetInOsmFile(cityname: string, street: string, housenumber: string, amount: number): Observable<OsmPOIEntity[]> {
         return this.http.get<OsmPOIEntity[]>(this.requestURL + "/search/findCityStreetPositionByName", {
             params: {
                 city: cityname,

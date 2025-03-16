@@ -9,13 +9,14 @@ import { Observable } from "rxjs";
 import { CriteriaEntity } from "../entities/CriteriaEntity";
 import { ProjectCategoryEntity } from "../entities/ProjectEntity";
 import { SchoolTypeDTO } from "../entities/SchoolTypeDTO";
+import { CookieService } from "ngx-cookie-service";
 
 @Injectable({
   providedIn: "root",
 })
 export class SchoolTypeService extends BaseService<SchoolTypeDTO> {
-  constructor(http: HttpClient) {
-    super(http, "schoolType");
+  constructor(http: HttpClient, cookieService: CookieService) {
+    super(http, cookieService, "schoolType");
   }
 
   public findSchoolTypesUsedAtLeastOnce(): Observable<SchoolTypeDTO[]> {

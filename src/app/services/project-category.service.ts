@@ -8,12 +8,13 @@ import { Observable } from "rxjs";
 import { OsmPOIEntity } from "../entities/OsmPOIEntity";
 import { ProjectCategoryEntity } from "../entities/ProjectEntity";
 import { SchoolPersonEntity } from "../entities/SchoolPersonEntity";
+import { CookieService } from "ngx-cookie-service";
 @Injectable({
   providedIn: "root",
 })
 export class ProjectCategoryService extends BaseService<ProjectCategoryEntity> {
-  constructor(http: HttpClient) {
-    super(http, "project");
+  constructor(http: HttpClient, cookieService: CookieService) {
+    super(http, cookieService, "project");
   }
 
   public findProjectById(id: number): Observable<ProjectCategoryEntity> {

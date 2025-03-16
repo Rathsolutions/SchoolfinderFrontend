@@ -7,12 +7,13 @@ import { AreaEntity } from "../entities/AreaEntity";
 import { InformationType } from "../entities/InformationType";
 import { OsmPOIEntity } from "../entities/OsmPOIEntity";
 import { BaseService } from "./base.service";
+import { CookieService } from "ngx-cookie-service";
 @Injectable({
   providedIn: "root",
 })
 export class InformationTypeService extends BaseService<InformationType> {
-  constructor(http: HttpClient) {
-    super(http, "informationType");
+  constructor(http: HttpClient, cookieService: CookieService) {
+    super(http, cookieService, "informationType");
   }
 
   public findByValue(name: string): Observable<InformationType> {

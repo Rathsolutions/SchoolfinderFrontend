@@ -5,14 +5,15 @@ import { UserEntity } from '../entities/UserEntity';
 import { HttpClient, HttpXsrfTokenExtractor } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService extends BaseService<UserEntity> {
   constructor(
-    http: HttpClient) {
-    super(http, "users");
+    http: HttpClient, cookieService: CookieService) {
+    super(http, cookieService, "users");
   }
 
   public login(username: string, password: string): Observable<UserEntity> {

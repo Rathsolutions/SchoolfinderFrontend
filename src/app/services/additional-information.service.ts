@@ -6,12 +6,13 @@ import { AdditionalInformationDTO } from "../entities/AdditionalInformationEntit
 import { AreaEntity } from "../entities/AreaEntity";
 import { OsmPOIEntity } from "../entities/OsmPOIEntity";
 import { BaseService } from "./base.service";
+import { CookieService } from "ngx-cookie-service";
 @Injectable({
   providedIn: "root",
 })
 export class AdditionalInformationService extends BaseService<AdditionalInformationDTO> {
-  constructor(http: HttpClient) {
-    super(http, "additional-information");
+  constructor(http: HttpClient, cookieService: CookieService) {
+    super(http, cookieService, "additional-information");
   }
 
 

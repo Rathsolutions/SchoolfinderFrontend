@@ -9,13 +9,14 @@ import { Observable } from "rxjs";
 import { CriteriaEntity } from "../entities/CriteriaEntity";
 import { ProjectCategoryEntity } from "../entities/ProjectEntity";
 import { SchoolTypeDTO } from "../entities/SchoolTypeDTO";
+import { CookieService } from "ngx-cookie-service";
 
 @Injectable({
   providedIn: "root",
 })
 export class SchoolsService extends BaseService<SchoolPersonEntity> {
-  constructor(http: HttpClient) {
-    super(http, "schools");
+  constructor(http: HttpClient, cookieService: CookieService) {
+    super(http, cookieService, "schools");
   }
 
   public putNewSchool(
@@ -85,7 +86,7 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
     }
     return this.http.get<SchoolPersonEntity[]>(
       this.requestURL +
-        "/search/findAllSchoolsInBoundsHavingCriteriasAndProjectWithoutProjectIconInResponse",
+      "/search/findAllSchoolsInBoundsHavingCriteriasAndProjectWithoutProjectIconInResponse",
       {
         params: paramsObj,
       }
@@ -122,7 +123,7 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
   ) {
     return this.http.get<number>(
       this.requestURL +
-        "/search/findPersonFunctionalityForPersonAndSchoolAndFunctionality",
+      "/search/findPersonFunctionalityForPersonAndSchoolAndFunctionality",
       {
         params: {
           schoolId: schoolId.toString(),
