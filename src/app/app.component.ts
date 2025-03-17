@@ -10,8 +10,15 @@ import { NgcCookieConsentService } from 'ngx-cookieconsent';
 
 export class AppComponent implements AfterViewInit {
   constructor(private ccService: NgcCookieConsentService) {
+    this.ccService.statusChange$.subscribe(sub => {
+      this.ccService.close(false)
+    })
+
   }
   ngAfterViewInit(): void {
+    if (this.ccService.hasAnswered) {
+      this.ccService.toggleRevokeButton(false)
+    }
   }
 
 }

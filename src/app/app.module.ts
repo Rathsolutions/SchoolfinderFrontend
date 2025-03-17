@@ -75,10 +75,10 @@ const cookieConfig: NgcCookieConsentConfig = {
 
     },
     law: {
-        countryCode: "DE"
+        // countryCode: "DE"
     },
-    animateRevokable: true,
-    position: "top-right",
+    revokable: false,
+    // position: "top-right",
     theme: 'classic',
     type: 'opt-out'
 };

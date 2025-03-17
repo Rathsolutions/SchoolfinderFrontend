@@ -78,6 +78,7 @@ import { Styles } from "src/app/util/styles";
 import { InstitutionLegendShowEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/InstitutionLegendShowEventStrategy";
 import { InstitutionLegendHideEventStrategy } from "src/app/broadcast-event-service/visibility-event-strategies/InstitutionLegendHideEventStrategy";
 import { Rgba } from "ngx-color-picker";
+import { NgcCookieConsentService } from "ngx-cookieconsent";
 
 export enum SearchTypes {
   ALLGEMEIN = "Allgemein", STADT = "Stadt"
@@ -144,7 +145,8 @@ export class CriteriaFilterComponent implements OnInit {
     private dialog: MatDialog,
     private visibilityEventService: VisibilityEventService,
     private criteriaListEntriesChangedService: CriteriaListEntriesChangedService,
-    private schoolTypeService: SchoolTypeService
+    private schoolTypeService: SchoolTypeService,
+    private ccService: NgcCookieConsentService
   ) { }
   ngOnInit(): void {
     this.updateAllCriteriasList();
@@ -606,5 +608,9 @@ export class CriteriaFilterComponent implements OnInit {
       strategyToExecute = new InstitutionLegendHideEventStrategy();
     }
     this.visibilityEventService.emit(strategyToExecute);
+  }
+
+  openBanner(){
+    this.ccService.open();
   }
 }
