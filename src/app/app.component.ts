@@ -9,7 +9,8 @@ import { NgcCookieConsentService } from 'ngx-cookieconsent';
 })
 
 export class AppComponent implements AfterViewInit {
-  constructor(private ccService: NgcCookieConsentService) { }
+  constructor(private ccService: NgcCookieConsentService) {
+  }
   ngAfterViewInit(): void {
   }
 

@@ -34,7 +34,7 @@ import { MatTableModule } from "@angular/material/table";
 import { MatListModule } from "@angular/material/list";
 import { MatIconModule } from '@angular/material/icon'
 import { ColorPickerModule } from "ngx-color-picker";
-import { NgcCookieConsentConfig, NgcCookieConsentModule } from 'ngx-cookieconsent';
+import { NgcCookieConsentConfig, NgcCookieConsentModule, NgcLocationOptions } from 'ngx-cookieconsent';
 
 import { BarrierFree } from "./overlay/barrierfree/barrierfree.component";
 import { MapCompComponent } from "./overlay/map-comp/map-comp.component";
@@ -77,6 +77,8 @@ const cookieConfig: NgcCookieConsentConfig = {
     law: {
         countryCode: "DE"
     },
+    animateRevokable: true,
+    position: "top-right",
     theme: 'classic',
     type: 'opt-out'
 };
