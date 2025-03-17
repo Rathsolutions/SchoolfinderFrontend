@@ -90,7 +90,7 @@ export class BaseService<T> {
   }
 
   public findAll(): Observable<T[]> {
-    return this.http.get<T[]>(this.requestURL + "/search/findAll", this.getCredentialHttpOptionsAndCheckConsent())
+    return this.http.get<T[]>(this.requestURL + "/search/findAll", BaseService.HTTP_OPTIONS)
       .pipe(
         catchError(this.handleListError(this.entity + ':findAll'))
       );
