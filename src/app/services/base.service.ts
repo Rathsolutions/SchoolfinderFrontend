@@ -37,6 +37,7 @@ export class BaseService<T> {
       };
     }
     if (!this.ccService.hasConsented()) {
+      this.ccService.open();
       this.toastrService.error("Sie müssen technische Cookies akzeptieren, um diese Funktion zu nutzen!")
       return null;
     }
