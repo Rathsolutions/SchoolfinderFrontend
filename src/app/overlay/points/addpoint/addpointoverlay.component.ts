@@ -1,52 +1,43 @@
 //Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE
 import {
-  ComponentFactoryResolver,
-  Component,
-  ComponentRef,
-  Type,
-  OnDestroy,
   AfterViewInit,
-  ViewChild,
-  ElementRef,
-  Input,
-  Inject,
+  Component,
+  ComponentFactoryResolver,
+  ComponentRef,
+  OnDestroy,
   OnInit,
-  ViewContainerRef,
+  Type,
+  ViewChild,
+  ViewContainerRef
 } from "@angular/core";
 import {
+  FormBuilder,
   FormControl,
   FormGroup,
-  FormBuilder,
-  Validators,
-  AbstractControl,
 } from "@angular/forms";
 import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
 
 import { SchoolsService } from "../../../services/schools.service";
 
-import { SchoolTypeService } from "../../../services/school-type.service";
-import { PersonsService } from "../../../services/persons.service";
-import { PersonEntity } from "../../../entities/PersonEntity";
-import { AddCriteriaComponent } from "./criteria/addcriteria.component";
-import { SchoolPersonEntity } from "../../../entities/SchoolPersonEntity";
-import { SchoolTypeDTO } from "../../../entities/SchoolTypeDTO";
-import { PersonFunctionalityEntity } from "../../../entities/PersonFunctionalityEntity";
-import { PointOverlay } from "../pointoverlay.component";
-import { AbstractPersonViewData } from "../../../viewdata/AbstractPersonViewData";
-import { AddPersonComponent } from "../../../viewdata/editable-person/addperson.component";
-import { CriteriaEntity } from "src/app/entities/CriteriaEntity";
-import { MainComponent } from "src/app/overlay/main/main.component";
 import { ThemePalette } from "@angular/material/core";
+import { MatDialog } from "@angular/material/dialog";
+import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
 import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
-import { ProjectCategoryService } from "src/app/services/project-category.service";
+import { ConfirmationDialogComponent } from "src/app/dialogs/confirmation-dialog/confirmation-dialog.component";
 import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
+import { ProjectCategoryService } from "src/app/services/project-category.service";
 import { AddAdditionalInformation } from "src/app/viewdata/additional-information/add/add-additional-information.component";
 import { RemoveableComponent } from "src/app/viewdata/RemoveableComponent";
-import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
-import { MatDialog } from "@angular/material/dialog";
-import { ConfirmationDialogComponent } from "src/app/dialogs/confirmation-dialog/confirmation-dialog.component";
+import { PersonFunctionalityEntity } from "../../../entities/PersonFunctionalityEntity";
+import { SchoolPersonEntity } from "../../../entities/SchoolPersonEntity";
+import { SchoolTypeDTO } from "../../../entities/SchoolTypeDTO";
+import { PersonsService } from "../../../services/persons.service";
+import { SchoolTypeService } from "../../../services/school-type.service";
+import { AbstractPersonViewData } from "../../../viewdata/AbstractPersonViewData";
+import { AddPersonComponent } from "../../../viewdata/editable-person/addperson.component";
+import { PointOverlay } from "../pointoverlay.component";
+import { AddCriteriaComponent } from "./criteria/addcriteria.component";
 
 
 @Component({
@@ -92,7 +83,7 @@ export class AddPointOverlay
     private componentFactoryResolver: ComponentFactoryResolver,
     private projectCategoryService: ProjectCategoryService,
     private saveEventService: MapUpdateEventService,
-    private schoolTypeService: SchoolTypeService,
+    schoolTypeService: SchoolTypeService,
     private dialog: MatDialog,
     private calculationEventService: CalculationEventService
   ) {

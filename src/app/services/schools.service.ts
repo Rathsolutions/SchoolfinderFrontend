@@ -72,7 +72,7 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
     rightLatBound: number,
     topLongBound: number,
     bottomLongBound: number,
-    projectId: number,
+    projectIds: number[],
     criterias: CriteriaEntity[],
     schoolTypes: SchoolTypeDTO[],
     exclusiveSearch: boolean
@@ -94,8 +94,8 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
       criteriaNumbers: criteriasIds,
       exclusiveSearch: exclusiveSearch.toString(),
     };
-    if (projectId) {
-      (paramsObj as any).projectId = projectId;
+    if (projectIds && projectIds.length >= 1 && projectIds[0] !== undefined) {
+      (paramsObj as any).projectIds = projectIds;
     }
     return this.http.get<SchoolPersonEntity[]>(
       this.requestURL +

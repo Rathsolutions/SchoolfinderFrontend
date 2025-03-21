@@ -95,9 +95,9 @@ export class BaseService<T> {
     [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean>;
   }) {
     var parm = new HttpParams();
-    parm.appendAll(params)
+    parm = parm.appendAll(params)
     if (Globals.activeProject) {
-      parm.append(
+      parm = parm.append(
         "projectId", Globals.activeProject
       )
     }

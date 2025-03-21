@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { CriteriaSelectionEventService } from 'src/app/broadcast-event-service/CriteriaSelectionChangedEventService';
 import { MapUpdateEventService } from 'src/app/broadcast-event-service/MapUpdateEventService';
 import { VisibilityEventService } from 'src/app/broadcast-event-service/VisibilityEventService';
 import { InstitutionLegendHideEventStrategy } from 'src/app/broadcast-event-service/visibility-event-strategies/InstitutionLegendHideEventStrategy';
@@ -9,10 +10,10 @@ import { SchoolTypeService } from 'src/app/services/school-type.service';
 import { Styles } from 'src/app/util/styles';
 
 @Component({
-    selector: 'app-footer',
-    templateUrl: './footer.component.html',
-    styleUrls: ['./footer.component.css'],
-    standalone: false
+  selector: 'app-footer',
+  templateUrl: './footer.component.html',
+  styleUrls: ['./footer.component.css'],
+  standalone: false
 })
 export class FooterComponent implements OnInit {
 
@@ -26,10 +27,13 @@ export class FooterComponent implements OnInit {
   allSchoolTypesForColorLegend: SchoolTypeDTO[] = [];
 
 
-  constructor(private schoolTypeService: SchoolTypeService, private mapUpdateEventService: MapUpdateEventService, private visibilityEventService: VisibilityEventService
+  constructor(private schoolTypeService: SchoolTypeService, private mapUpdateEventService: MapUpdateEventService, private criteriaSelectionEventService: CriteriaSelectionEventService, private visibilityEventService: VisibilityEventService
   ) { }
   ngOnInit(): void {
     this.updateColorLegend(this.allSchoolTypesForColorLegend);
+    this.criteriaSelectionEventService.register().subscribe(() => {
+      this.updateColorLegend(this.allSchoolTypesForColorLegend);
+    })
     this.mapUpdateEventService.register().subscribe(() => {
       this.updateColorLegend(this.allSchoolTypesForColorLegend);
     });

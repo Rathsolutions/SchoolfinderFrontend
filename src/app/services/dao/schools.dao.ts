@@ -47,15 +47,17 @@ export class SchoolsDao {
         rightLatBound: number,
         topLongBound: number,
         bottomLongBound: number,
-        projectId: number,
+        projectIds: number[],
         criterias: CriteriaEntity[],
         schoolTypes: SchoolTypeDTO[],
         exclusiveSearch: boolean
     ): Promise<Observable<SchoolPersonEntity[]>> {
         if (this.allFoundProjectsCache.size <= 0) {
-            if (projectId) {
-                var curProject = await this.projectService.findProjectById(projectId).toPromise();
-                this.allFoundProjectsCache.set(curProject.id, curProject.icon);
+            if (projectIds.length >= 1 && projectIds[0] !== undefined) {
+                for (let i = 0; i < projectIds.length; i++) {
+                    var curProject = await this.projectService.findProjectById(projectIds[i]).toPromise();
+                    this.allFoundProjectsCache.set(curProject.id, curProject.icon);
+                }
             } else {
                 var allProjects = await this.projectService.findAll().toPromise();
                 allProjects.forEach(project => {
@@ -63,7 +65,7 @@ export class SchoolsDao {
                 });
             }
         }
-        return this.schoolsService.getSchoolsByBoundsAndCriteriasAndSchoolTypesAndProject(leftLatBound, rightLatBound, topLongBound, bottomLongBound, projectId, criterias, schoolTypes, exclusiveSearch)
+        return this.schoolsService.getSchoolsByBoundsAndCriteriasAndSchoolTypesAndProject(leftLatBound, rightLatBound, topLongBound, bottomLongBound, projectIds, criterias, schoolTypes, exclusiveSearch)
             .pipe(map(schoolPersonEntities => {
                 schoolPersonEntities.forEach(schoolPersonEntity => {
                     schoolPersonEntity.projects.forEach(async project => {

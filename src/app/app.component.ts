@@ -12,7 +12,6 @@ import { NgcCookieConsentService } from 'ngx-cookieconsent';
 export class AppComponent implements AfterViewInit {
   constructor(private ccService: NgcCookieConsentService, cookieService:CookieService) {
     this.ccService.statusChange$.subscribe(sub => {
-      var internalCookieService = cookieService;
       if(sub.status === "deny"){
         cookieService.delete("XSRF-TOKEN")
       }

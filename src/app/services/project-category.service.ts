@@ -53,4 +53,10 @@ export class ProjectCategoryService extends BaseService<ProjectCategoryEntity> {
       }
     );
   }
+
+  public findAllActiveProjects(): Observable<ProjectCategoryEntity[]> {
+    return this.http.get<ProjectCategoryEntity[]>(
+      this.requestURL + "/search/findAllActiveProjects"
+    );
+  }
 }

@@ -85,10 +85,10 @@ export enum SearchTypes {
 }
 
 @Component({
-    selector: "criteria-filter-component",
-    templateUrl: "./criteria.component.html",
-    styleUrls: ["./criteria.component.css"],
-    standalone: false
+  selector: "criteria-filter-component",
+  templateUrl: "./criteria.component.html",
+  styleUrls: ["./criteria.component.css"],
+  standalone: false
 })
 export class CriteriaFilterComponent implements OnInit {
 
@@ -106,8 +106,10 @@ export class CriteriaFilterComponent implements OnInit {
   allAdditionalInformationTypes: InformationType[];
   allPersonCategories: FunctionalityEntity[] = [];
   allInstitutionCategories: ProjectCategoryEntity[] = [];
+  allUsedInstitutionCategories: ProjectCategoryEntity[] = [];
   selectedCriterias: CriteriaEntity[] = [];
   selectedSchoolTypes: SchoolTypeDTO[] = [];
+  selectedProjectTypes: ProjectCategoryEntity[] = [];
   schoolname: string;
   streetname: string;
   housenumber: string;
@@ -126,7 +128,6 @@ export class CriteriaFilterComponent implements OnInit {
   @Output() disableButtonsEvent = new EventEmitter<boolean>();
   disabled: boolean = false;
 
-  allSchoolTypesForColorLegend: SchoolTypeDTO[] = [];
   allSchoolTypesForFiltering: SchoolTypeDTO[] = [];
 
   constructor(
@@ -158,10 +159,11 @@ export class CriteriaFilterComponent implements OnInit {
       this.updateAllAreasList();
       this.updateAllCategoriesList();
     });
-    this.updateColorLegend(this.allSchoolTypesForColorLegend);
     this.updateColorLegend(this.allSchoolTypesForFiltering);
     this.mapUpdateEventService.register().subscribe(() => {
-      this.updateColorLegend(this.allSchoolTypesForColorLegend);
+      this.updateColorLegend(this.allSchoolTypesForFiltering);
+      this.updateAllCriteriasList();
+      this.updateAllCategoriesList();
     });
   }
 
@@ -193,7 +195,14 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   private updateAllCriteriasList() {
+    this.selectedCriterias = [];
+    this.selectedProjectTypes = [];
+    this.selectedSchoolTypes = [];
     this.allCriterias = [];
+    this.allUsedInstitutionCategories = [];
+    this.projectCategoryService.findAllActiveProjects().subscribe((res) => {
+      res.forEach((e) => this.allUsedInstitutionCategories.push(e))
+    })
     this.criteriaService.getAllCriterias().subscribe((result) => {
       result.forEach((e) => this.allCriterias.push(e));
     });
@@ -546,16 +555,8 @@ export class CriteriaFilterComponent implements OnInit {
     }
   }
 
-  public searchExact(): void {
-    if (!this.isAdmin()) {
-    } else {
-    }
-  }
-
-  public resetClicked() {
-    this.selectedCriterias = [];
-    this.mapUpdateEventService.emit(true);
-    this.toggleShowRegionAreas();
+  public projectCategorySelectChange(val) {
+    this.selectChange(val, this.selectedProjectTypes);
   }
 
   public schoolTypeSelectChange(val) {
@@ -573,7 +574,7 @@ export class CriteriaFilterComponent implements OnInit {
     } else {
       matchingArray.splice(elementFoundIdx, 1);
     }
-    this.mapUpdateEventService.emit(true);
+    this.criteriaSelectionEventService.emit(this.selectedCriterias);
     this.toggleShowRegionAreas();
   }
 
@@ -586,7 +587,7 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   toggleSearchType() {
-    this.mapUpdateEventService.emit(true);
+    this.criteriaSelectionEventService.emit(this.selectedCriterias);
     this.toggleShowRegionAreas();
   }
 
@@ -610,7 +611,11 @@ export class CriteriaFilterComponent implements OnInit {
     this.visibilityEventService.emit(strategyToExecute);
   }
 
-  openBanner(){
+  openBanner() {
     this.ccService.open();
+  }
+
+  isAllProjectView() {
+    return this.projectParamId === undefined;
   }
 }

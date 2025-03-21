@@ -94,7 +94,7 @@ export class MainComponent implements AfterViewInit, OnInit {
       var projectParam = params.get("projectId");
       if (projectParam) {
         this.projectParam = parseInt(projectParam);
-        Globals.activeProject = projectParam;
+        Globals.activeProject = this.projectParam;
         this.projectCategoryService.read(this.projectParam).subscribe(res => {
           this.projectInstance = res;
         });

@@ -1,3 +1,3 @@
 export class Globals {
-    public static activeProject;
+    public static activeProject: number | undefined;
 }

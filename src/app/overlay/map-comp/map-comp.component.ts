@@ -61,12 +61,13 @@ import { DarkenLayer } from "./layer/darken-layer";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
 import { SelectionDialogViewData } from "src/app/viewdata/SelectionDialogViewData";
 import { SearchSelectionComponent } from "src/app/dialogs/searchSelection.component";
+import { CriteriaSelectionEventService } from "src/app/broadcast-event-service/CriteriaSelectionChangedEventService";
 
 @Component({
-    selector: "app-map-comp",
-    templateUrl: "./map-comp.component.html",
-    styleUrls: ["./map-comp.component.css"],
-    standalone: false
+  selector: "app-map-comp",
+  templateUrl: "./map-comp.component.html",
+  styleUrls: ["./map-comp.component.css"],
+  standalone: false
 })
 export class MapCompComponent implements OnInit {
   private map: OsmMap.default;
@@ -119,10 +120,11 @@ export class MapCompComponent implements OnInit {
     private schoolsDao: SchoolsDao,
     private componentFactoryResolver: ComponentFactoryResolver,
     private calculationEventService: CalculationEventService,
+    criteriaSelectionEventService: CriteriaSelectionEventService,
     private schoolService: SchoolsService,
     saveEventService: MapUpdateEventService,
     private zoomEventService: ZoomToEventService,
-    private areaSelectionService: AreaSelectionService,
+    areaSelectionService: AreaSelectionService,
     private toastrService: ToastrService,
     private areaService: AreaService,
     private dialog: MatDialog,
@@ -144,18 +146,11 @@ export class MapCompComponent implements OnInit {
         this.visibilityDataElement
       );
     });
+    criteriaSelectionEventService.register().subscribe((res) => {
+      this.performMapUpdate(res);
+    })
     saveEventService.register().subscribe((res) => {
-      if (res) {
-        this.resetAllWaypoint();
-        this.updateWaypoints();
-        this.visibilityDataElement.activeAreaStrategy.performActionOnLayer(
-          this.sourceAreaImageVector,
-          this.sourceAreaTextVector,
-          [this.darkenLayer],
-          this.map,
-          this.visibilityDataElement
-        );
-      }
+      this.performMapUpdate(res);
     });
     zoomEventService.register().subscribe((res) => {
       this.map
@@ -233,6 +228,20 @@ export class MapCompComponent implements OnInit {
       this.map.addInteraction(this.drawInstance);
     });
   }
+  private performMapUpdate(res?) {
+    if (res) {
+      this.resetAllWaypoint();
+      this.updateWaypoints();
+      this.visibilityDataElement.activeAreaStrategy.performActionOnLayer(
+        this.sourceAreaImageVector,
+        this.sourceAreaTextVector,
+        [this.darkenLayer],
+        this.map,
+        this.visibilityDataElement
+      );
+    }
+  }
+
 
   private finalizeDrawing(res: AreaManagementData): void {
     this.dialog
@@ -492,7 +501,7 @@ export class MapCompComponent implements OnInit {
         box[2],
         box[1],
         box[3],
-        this.projectParamId,
+        this.criteriasObject.selectedProjectTypes.length == 0 ? this.projectParamId !== undefined ? [this.projectParamId] : [] : this.criteriasObject.selectedProjectTypes.map(el => el.id),
         this.criteriasObject.selectedCriterias,
         this.criteriasObject.selectedSchoolTypes,
         this.criteriasObject.exclusiveSearch
