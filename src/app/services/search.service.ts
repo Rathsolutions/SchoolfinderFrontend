@@ -2,13 +2,14 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
 import { CriteriaEntity } from '../entities/CriteriaEntity';
-import { HttpClient, HttpXsrfTokenExtractor } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpXsrfTokenExtractor } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { OsmPOIEntity } from '../entities/OsmPOIEntity';
 import { CookieService } from 'ngx-cookie-service';
 import { NgcCookieConsentService } from 'ngx-cookieconsent';
 import { ToastrService } from 'ngx-toastr';
+import { Globals } from '../util/globals';
 @Injectable({
     providedIn: 'root'
 })
@@ -20,10 +21,10 @@ export class SearchService extends BaseService<CriteriaEntity> {
 
     public searchGeneralInstitutionContentInDatabase(queryString: string, amount: number): Observable<OsmPOIEntity[]> {
         return this.http.get<OsmPOIEntity[]>(this.requestURL + "/search/findGeneralInstitutionContentInDatabase", {
-            params: {
+            params: this.buildParams({
                 query: queryString,
                 amount: amount.toString()
-            }
+            })
         });
     }
 

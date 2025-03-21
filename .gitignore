@@ -45,3 +45,4 @@ yarn-error.log
 .notes.md
 baseline.json
 .angular/
+build-and-push-against-registry.sh

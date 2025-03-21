@@ -1,13 +1,14 @@
 //Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE
 import { environment } from '../../environments/environment';
 
-import { HttpClient, HttpHeaders, HttpXsrfTokenExtractor } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpXsrfTokenExtractor } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { NgcCookieConsentService } from 'ngx-cookieconsent';
 import { ToastrService } from 'ngx-toastr';
 
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Globals } from '../util/globals';
 
 const BASE_URL = environment.baseUrl;
 
@@ -88,6 +89,19 @@ export class BaseService<T> {
       console.error(error);
       return throwError(error);
     };
+  }
+
+  protected buildParams(params: {
+    [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean>;
+  }) {
+    var parm = new HttpParams();
+    parm.appendAll(params)
+    if (Globals.activeProject) {
+      parm.append(
+        "projectId", Globals.activeProject
+      )
+    }
+    return parm;
   }
 
   public findAll(): Observable<T[]> {

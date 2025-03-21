@@ -32,6 +32,6 @@ export class CriteriaService extends BaseService<CriteriaEntity> {
     }
 
     public getAllCriterias(): Observable<CriteriaEntity[]> {
-        return this.http.get<CriteriaEntity[]>(this.requestURL + "/search/getAllAvailableCriterias").pipe();
+        return this.http.get<CriteriaEntity[]>(this.requestURL + "/search/getAllAvailableCriterias", { params: this.buildParams({}) }).pipe();
     }
 }
