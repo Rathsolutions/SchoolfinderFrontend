@@ -8,25 +8,36 @@ import { Observable } from "rxjs";
 import { OsmPOIEntity } from "../entities/OsmPOIEntity";
 import { ProjectCategoryEntity } from "../entities/ProjectEntity";
 import { SchoolPersonEntity } from "../entities/SchoolPersonEntity";
+import { CookieService } from "ngx-cookie-service";
+import { NgcCookieConsentService } from "ngx-cookieconsent";
+import { ToastrService } from "ngx-toastr";
 @Injectable({
   providedIn: "root",
 })
 export class ProjectCategoryService extends BaseService<ProjectCategoryEntity> {
-  constructor(http: HttpClient) {
-    super(http, "project");
+  constructor(http: HttpClient, cookieService: CookieService, ccService: NgcCookieConsentService, toastrService: ToastrService) {
+    super(http, cookieService, ccService, toastrService, "project");
   }
 
   public findProjectById(id: number): Observable<ProjectCategoryEntity> {
+    const httpOptions = this.getCredentialHttpOptionsAndCheckConsent();
+    if (!httpOptions) {
+      return;
+    }
     return this.http.get<ProjectCategoryEntity>(
       this.requestURL + "/" + id,
-      BaseService.HTTP_OPTIONS
+      httpOptions
     );
   }
 
   public findProjectByName(name: string): Observable<ProjectCategoryEntity> {
+    const httpOptions = this.getCredentialHttpOptionsAndCheckConsent();
+    if (!httpOptions) {
+      return;
+    }
     return this.http.get<ProjectCategoryEntity>(
       this.requestURL + "/search/getProjectByName/" + name,
-      BaseService.HTTP_OPTIONS
+      httpOptions
     );
   }
 

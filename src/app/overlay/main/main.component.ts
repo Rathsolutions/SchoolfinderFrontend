@@ -36,6 +36,7 @@ import { ActivatedRoute } from "@angular/router";
 import { MapCompComponent } from "../map-comp/map-comp.component";
 import { ProjectCategoryService } from "src/app/services/project-category.service";
 import { ProjectCategoryEntity } from "src/app/entities/ProjectEntity";
+import { Globals } from "src/app/util/globals";
 @Component({
     selector: "main-component",
     templateUrl: "./main.component.html",
@@ -93,6 +94,7 @@ export class MainComponent implements AfterViewInit, OnInit {
       var projectParam = params.get("projectId");
       if (projectParam) {
         this.projectParam = parseInt(projectParam);
+        Globals.activeProject = projectParam;
         this.projectCategoryService.read(this.projectParam).subscribe(res => {
           this.projectInstance = res;
         });

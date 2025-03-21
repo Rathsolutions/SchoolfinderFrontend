@@ -7,15 +7,22 @@ import { AreaEntity } from "../entities/AreaEntity";
 import { InformationType } from "../entities/InformationType";
 import { OsmPOIEntity } from "../entities/OsmPOIEntity";
 import { BaseService } from "./base.service";
+import { CookieService } from "ngx-cookie-service";
+import { NgcCookieConsentService } from "ngx-cookieconsent";
+import { ToastrService } from "ngx-toastr";
 @Injectable({
   providedIn: "root",
 })
 export class InformationTypeService extends BaseService<InformationType> {
-  constructor(http: HttpClient) {
-    super(http, "informationType");
+  constructor(http: HttpClient, cookieService: CookieService, ccService: NgcCookieConsentService, toastrService: ToastrService) {
+    super(http, cookieService, ccService, toastrService, "informationType");
   }
 
   public findByValue(name: string): Observable<InformationType> {
+    const httpOptions = this.getCredentialHttpOptionsAndCheckConsent();
+    if (!httpOptions) {
+      return;
+    }
     return this.http
       .get<InformationType>(
         this.requestURL + "/search/findByName",
@@ -23,8 +30,8 @@ export class InformationTypeService extends BaseService<InformationType> {
           params: {
             name: name,
           },
-          withCredentials: BaseService.HTTP_OPTIONS.withCredentials,
-          headers: BaseService.HTTP_OPTIONS.headers,
+          withCredentials: httpOptions.withCredentials,
+          headers: httpOptions.headers,
         }
       )
       .pipe();

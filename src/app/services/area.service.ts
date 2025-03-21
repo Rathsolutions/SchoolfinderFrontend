@@ -5,16 +5,23 @@ import { Observable } from 'rxjs';
 import { AreaEntity } from '../entities/AreaEntity';
 import { OsmPOIEntity } from '../entities/OsmPOIEntity';
 import { BaseService } from './base.service';
+import { CookieService } from 'ngx-cookie-service';
+import { NgcCookieConsentService } from 'ngx-cookieconsent';
+import { ToastrService } from 'ngx-toastr';
 @Injectable({
   providedIn: 'root'
 })
 export class AreaService extends BaseService<AreaEntity> {
   constructor(
-    http: HttpClient) {
-    super(http, "area");
+    http: HttpClient, cookieService: CookieService, ccService: NgcCookieConsentService, toastrService: ToastrService) {
+    super(http, cookieService, ccService, toastrService, "area");
   }
 
   public findByName(name: string): Observable<AreaEntity> {
+    const httpOptions = this.getCredentialHttpOptionsAndCheckConsent();
+    if (!httpOptions) {
+      return;
+    }
     return this.http
       .get<AreaEntity>(
         this.requestURL + "/search/findByName",
@@ -22,8 +29,8 @@ export class AreaService extends BaseService<AreaEntity> {
           params: {
             name: name,
           },
-          withCredentials: BaseService.HTTP_OPTIONS.withCredentials,
-          headers: BaseService.HTTP_OPTIONS.headers,
+          withCredentials: httpOptions.withCredentials,
+          headers: httpOptions.headers,
         }
       )
       .pipe();

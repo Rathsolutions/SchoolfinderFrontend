@@ -1,7 +1,7 @@
 //Copyright 2020 Nico Rath Rathsolutions, licensed under GPLv3. For more information about the license have a look into the file LICENSE
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi, withXsrfConfiguration } from "@angular/common/http";
 import { AppRoutingModule } from "./app-routing.module";
 
 import { AppComponent } from "./app.component";
@@ -34,6 +34,7 @@ import { MatTableModule } from "@angular/material/table";
 import { MatListModule } from "@angular/material/list";
 import { MatIconModule } from '@angular/material/icon'
 import { ColorPickerModule } from "ngx-color-picker";
+import { NgcCookieConsentConfig, NgcCookieConsentModule, NgcLocationOptions } from 'ngx-cookieconsent';
 
 import { BarrierFree } from "./overlay/barrierfree/barrierfree.component";
 import { MapCompComponent } from "./overlay/map-comp/map-comp.component";
@@ -50,8 +51,40 @@ import { DsgvoComponent } from './dsgvo/dsgvo.component';
 import { FooterComponent } from './overlay/footer/footer.component';
 import { NgxColorsModule } from "ngx-colors";
 import { ConfirmationDialogComponent } from "./dialogs/confirmation-dialog/confirmation-dialog.component";
+import { CookieService } from "ngx-cookie-service";
 
-@NgModule({ declarations: [
+const cookieConfig: NgcCookieConsentConfig = {
+    cookie: {
+        domain: window.location.hostname,
+    },
+    palette: {
+        popup: {
+            background: '#000'
+        },
+        button: {
+            background: '#f1d600'
+        }
+    },
+    content: {
+        message: "Diese Webseite nutzt technische Cookies, um zu funktionieren",
+        link: "Weitere Informationen",
+        href: "https://rathsolutions.de/privacy-policy",
+        allow: "Erlauben",
+        deny: "Verbieten",
+        policy: "Cookie Einstellungen",
+
+    },
+    law: {
+        // countryCode: "DE"
+    },
+    revokable: false,
+    // position: "top-right",
+    theme: 'classic',
+    type: 'opt-out'
+};
+
+@NgModule({
+    declarations: [
         AppComponent,
         BarrierFree,
         MainComponent,
@@ -99,5 +132,8 @@ import { ConfirmationDialogComponent } from "./dialogs/confirmation-dialog/confi
         MatIconModule,
         ColorPickerModule,
         NgxColorsModule,
-        ToastrModule.forRoot()], providers: [provideHttpClient(withInterceptorsFromDi())] })
+        ToastrModule.forRoot(),
+        NgcCookieConsentModule.forRoot(cookieConfig)
+    ], providers: [CookieService, provideHttpClient(withInterceptorsFromDi(), withXsrfConfiguration({ cookieName: 'XSRF-TOKEN', headerName: 'X-XSRF-TOKEN' }))]
+})
 export class AppModule { }
