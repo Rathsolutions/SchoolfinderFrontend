@@ -7,7 +7,6 @@ import { HttpClient, HttpXsrfTokenExtractor } from "@angular/common/http";
 import { catchError } from "rxjs/operators";
 import { Observable } from "rxjs";
 import { CriteriaEntity } from "../entities/CriteriaEntity";
-import { ProjectCategoryEntity } from "../entities/ProjectEntity";
 import { SchoolTypeDTO } from "../entities/SchoolTypeDTO";
 import { CookieService } from "ngx-cookie-service";
 import { NgcCookieConsentService } from "ngx-cookieconsent";
