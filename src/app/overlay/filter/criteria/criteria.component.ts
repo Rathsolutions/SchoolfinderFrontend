@@ -219,6 +219,7 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   private updateAllCategoriesList() {
+    console.log("Update categories")
     this.allPersonCategories = [];
     this.allInstitutionCategories = [];
     this.allAdditionalInformationTypes = [];
@@ -367,7 +368,6 @@ export class CriteriaFilterComponent implements OnInit {
       );
     }
     this.categorySelectionField.writeValue(null);
-    this.updateAllCategoriesList();
   }
 
   public createCategory(): void {
