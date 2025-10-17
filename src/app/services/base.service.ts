@@ -119,7 +119,7 @@ export class BaseService<T> {
   }
 
   public read(id: number): Observable<T> {
-    return this.http.get<T>(this.requestURL + '/' + id, this.getCredentialHttpOptionsAndCheckConsent())
+    return this.http.get<T>(this.requestURL + '/' + id, BaseService.HTTP_OPTIONS)
       .pipe(
         catchError(this.handleError(this.entity + ':read'))
       );

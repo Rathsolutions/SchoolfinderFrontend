@@ -20,13 +20,9 @@ export class ProjectCategoryService extends BaseService<ProjectCategoryEntity> {
   }
 
   public findProjectById(id: number): Observable<ProjectCategoryEntity> {
-    const httpOptions = this.getCredentialHttpOptionsAndCheckConsent();
-    if (!httpOptions) {
-      return;
-    }
     return this.http.get<ProjectCategoryEntity>(
       this.requestURL + "/" + id,
-      httpOptions
+      BaseService.HTTP_OPTIONS
     );
   }
 
