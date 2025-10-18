@@ -20,6 +20,10 @@ const routes: Routes = [
     component: BarrierFree,
   },
   {
+    path: "barrierefrei/:projectId",
+    component: BarrierFree,
+  },
+  {
     path: "datenschutz",
     component: DsgvoComponent,
   }
