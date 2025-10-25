@@ -83,9 +83,6 @@ export class SchoolsDao {
     }
 
     public getAllSchoolsOrderedByNameWithFilters(filters?:CriteriaSelectionEventData): Observable<SchoolPersonEntity[]> {
-        if(!filters){
-            return this.schoolsService.getAllSchoolsOrderedByName();
-        }
         return this.schoolsService.getFilteredSchoolsOrderedByName(filters);
     }
 

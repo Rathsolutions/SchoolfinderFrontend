@@ -115,7 +115,7 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
   }
 
   public getFilteredSchoolsOrderedByName(filter:CriteriaSelectionEventData): Observable<SchoolPersonEntity[]> {
-    var params = {
+    var params = !filter ? {} : {
       projectId: Globals.activeProject ? [Globals.activeProject] : filter.projectCategories.map(e=>e.id),
       criteriaNumbers: filter.criterias.map(e=>e.id),
       schoolTypeIds: filter.schoolTypes.map(e=>e.id),
@@ -126,12 +126,6 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
     );
   }
 
-
-  public getAllSchoolsOrderedByName(): Observable<SchoolPersonEntity[]> {
-    return this.http.get<SchoolPersonEntity[]>(
-      this.requestURL + "/search/findAllSchoolsOrderedByName", { params: this.buildParams({}) }
-    );
-  }
 
   public getSchoolDetails(id: number): Observable<SchoolPersonEntity> {
     return this.http.get<SchoolPersonEntity>(
