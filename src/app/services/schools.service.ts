@@ -11,6 +11,8 @@ import { SchoolTypeDTO } from "../entities/SchoolTypeDTO";
 import { CookieService } from "ngx-cookie-service";
 import { NgcCookieConsentService } from "ngx-cookieconsent";
 import { ToastrService } from "ngx-toastr";
+import { CriteriaSelectionEventData } from "../broadcast-event-service/CriteriaSelectionChangedEventService";
+import { Globals } from "../util/globals";
 
 @Injectable({
   providedIn: "root",
@@ -111,6 +113,19 @@ export class SchoolsService extends BaseService<SchoolPersonEntity> {
       this.requestURL + "/search/findAllSchools"
     );
   }
+
+  public getFilteredSchoolsOrderedByName(filter:CriteriaSelectionEventData): Observable<SchoolPersonEntity[]> {
+    var params = {
+      projectId: Globals.activeProject ? [Globals.activeProject] : filter.projectCategories.map(e=>e.id),
+      criteriaNumbers: filter.criterias.map(e=>e.id),
+      schoolTypeIds: filter.schoolTypes.map(e=>e.id),
+      exclusiveSearch: filter.exclusive
+    };
+    return this.http.get<SchoolPersonEntity[]>(
+      this.requestURL + "/search/findFilteredSchoolsOrderedByName", { params: this.buildParams(params) }
+    );
+  }
+
 
   public getAllSchoolsOrderedByName(): Observable<SchoolPersonEntity[]> {
     return this.http.get<SchoolPersonEntity[]>(

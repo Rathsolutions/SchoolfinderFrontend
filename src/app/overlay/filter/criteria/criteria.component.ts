@@ -39,7 +39,7 @@ import {
 import { SearchSelectionComponent } from "../../..//dialogs/searchSelection.component";
 import { OsmPOIEntity } from "../../../entities/OsmPOIEntity";
 import { SelectionDialogViewData } from "src/app/viewdata/SelectionDialogViewData";
-import { CriteriaSelectionEventService } from "src/app/broadcast-event-service/CriteriaSelectionChangedEventService";
+import { CriteriaSelectionEventData, CriteriaSelectionEventService } from "src/app/broadcast-event-service/CriteriaSelectionChangedEventService";
 import {
   ZoomEventMessage,
   ZoomToEventService,
@@ -219,7 +219,6 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   private updateAllCategoriesList() {
-    console.log("Update categories")
     this.allPersonCategories = [];
     this.allInstitutionCategories = [];
     this.allAdditionalInformationTypes = [];
@@ -574,8 +573,17 @@ export class CriteriaFilterComponent implements OnInit {
     } else {
       matchingArray.splice(elementFoundIdx, 1);
     }
-    this.criteriaSelectionEventService.emit(this.selectedCriterias);
+    this.criteriaSelectionEventService.emit(this.buildCriteriaSelectionEventData());
     this.toggleShowRegionAreas();
+  }
+
+  private buildCriteriaSelectionEventData(): CriteriaSelectionEventData {
+    return {
+      criterias: this.selectedCriterias,
+      projectCategories: this.selectedProjectTypes,
+      schoolTypes: this.selectedSchoolTypes,
+      exclusive: this.exclusiveSearch
+    };
   }
 
   public trackItem(index: number, item: CriteriaEntity) {
@@ -587,7 +595,7 @@ export class CriteriaFilterComponent implements OnInit {
   }
 
   toggleSearchType() {
-    this.criteriaSelectionEventService.emit(this.selectedCriterias);
+    this.criteriaSelectionEventService.emit(this.buildCriteriaSelectionEventData());
     this.toggleShowRegionAreas();
   }
 

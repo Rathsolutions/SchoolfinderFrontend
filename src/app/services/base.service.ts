@@ -96,7 +96,7 @@ export class BaseService<T> {
   }) {
     var parm = new HttpParams();
     parm = parm.appendAll(params)
-    if (Globals.activeProject) {
+    if (Globals.activeProject && !parm.has("projectId")) {
       parm = parm.append(
         "projectId", Globals.activeProject
       )

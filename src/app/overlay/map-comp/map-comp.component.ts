@@ -61,7 +61,8 @@ import { DarkenLayer } from "./layer/darken-layer";
 import { CalculationEventService } from "src/app/broadcast-event-service/CalculationEventService";
 import { SelectionDialogViewData } from "src/app/viewdata/SelectionDialogViewData";
 import { SearchSelectionComponent } from "src/app/dialogs/searchSelection.component";
-import { CriteriaSelectionEventService } from "src/app/broadcast-event-service/CriteriaSelectionChangedEventService";
+import { CriteriaSelectionEventData, CriteriaSelectionEventService } from "src/app/broadcast-event-service/CriteriaSelectionChangedEventService";
+import { CriteriaEntity } from "src/app/entities/CriteriaEntity";
 
 @Component({
   selector: "app-map-comp",
@@ -115,13 +116,13 @@ export class MapCompComponent implements OnInit {
   sourceAreaImageVector: VectorSource<any>;
   sourceAreaTextVector: VectorSource<any>;
   sourceWaypointLayer: VectorLayer<Vector<any>>;
+  private activeFilters: CriteriaSelectionEventData;
 
   constructor(
     private schoolsDao: SchoolsDao,
     private componentFactoryResolver: ComponentFactoryResolver,
     private calculationEventService: CalculationEventService,
     criteriaSelectionEventService: CriteriaSelectionEventService,
-    private schoolService: SchoolsService,
     saveEventService: MapUpdateEventService,
     private zoomEventService: ZoomToEventService,
     areaSelectionService: AreaSelectionService,
@@ -147,6 +148,7 @@ export class MapCompComponent implements OnInit {
       );
     });
     criteriaSelectionEventService.register().subscribe((res) => {
+      this.activeFilters = res;
       this.performMapUpdate(res);
     })
     saveEventService.register().subscribe((res) => {
@@ -435,8 +437,8 @@ export class MapCompComponent implements OnInit {
 
   public showAllInstitutions(): void {
     this.calculationEventService.emit(true);
-    var foundOsmEntity = this.schoolService
-      .getAllSchoolsOrderedByName()
+    var foundOsmEntity = this.schoolsDao
+      .getAllSchoolsOrderedByNameWithFilters(this.activeFilters)
       .subscribe(
         (result) => {
           var dialogViewdata: SelectionDialogViewData[] = [];

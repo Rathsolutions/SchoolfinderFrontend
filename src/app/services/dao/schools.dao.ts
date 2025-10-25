@@ -11,6 +11,7 @@ import { SchoolTypeDTO } from "../../entities/SchoolTypeDTO";
 import { SchoolsService } from "../schools.service";
 import { ProjectCategoryService } from "../project-category.service";
 import { MapUpdateEventService } from "src/app/broadcast-event-service/MapUpdateEventService";
+import { CriteriaSelectionEventData } from "src/app/broadcast-event-service/CriteriaSelectionChangedEventService";
 
 @Injectable({
     providedIn: "root",
@@ -81,8 +82,11 @@ export class SchoolsDao {
         return this.schoolsService.getAllSchools();
     }
 
-    public getAllSchoolsOrderedByName(): Observable<SchoolPersonEntity[]> {
-        return this.schoolsService.getAllSchoolsOrderedByName();
+    public getAllSchoolsOrderedByNameWithFilters(filters?:CriteriaSelectionEventData): Observable<SchoolPersonEntity[]> {
+        if(!filters){
+            return this.schoolsService.getAllSchoolsOrderedByName();
+        }
+        return this.schoolsService.getFilteredSchoolsOrderedByName(filters);
     }
 
     public getSchoolDetails(id: number): Observable<SchoolPersonEntity> {
