@@ -9,6 +9,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from "@angular/core";
+import { defaults } from "ol/interaction";
 import { Attribution, MousePosition, OverviewMap } from "ol/control";
 import { Feature, View } from "ol";
 import TileLayer from "ol/layer/Tile";
@@ -398,8 +399,11 @@ export class MapCompComponent implements OnInit {
         zoom: 9,
         minZoom: 8,
       }),
+
       controls: [],
+      interactions: defaults({ onFocusOnly: false }),
     });
+
     this.map.addControl(new Attribution());
     this.clickListenerRef = this.map.on("click", this.mapOnClick.bind(this));
     this.map.on("movestart", () => {
