@@ -25,6 +25,12 @@
 }
 
 @media only screen and (max-width: 500px) {
+    .mobile-wrapper {
+        gap: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+
     #showPointComponentOverlayContainer {
         /* max-width: 350px; */
     }
@@ -35,15 +41,11 @@
     }
 }
 
-@media only screen and (min-width: 601px) {
-    /* #showPointComponentOverlayContainer {
-        width: 100%;
-        min-width: 600px;
-        max-width: 80vw;
+@media only screen and (min-width: 501px) {
+    .mobile-wrapper {
+        gap: 10px;
+        display: flex;
+        flex-direction: row;
     }
-    #pointOverlayWrapper {
-      min-width: 600px;
-      max-width: 80vw;
-  } */
 
 }
