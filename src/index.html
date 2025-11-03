@@ -11,14 +11,14 @@
   <link rel="stylesheet" type="text/css" href="assets/robotoConfig.css">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <script>
+      document.addEventListener('touchmove', function (event) {
+        if (event.target.tagName == "CANVAS") {
+          event.preventDefault();
+        }
+      }, { passive: false });
+    </script>
 </head>
-<script>
-  document.addEventListener('touchmove', function (event) {
-    if (event.target.tagName == "CANVAS") {
-      event.preventDefault();
-    }
-  }, { passive: false });
-</script>
 
 <body class="mat-typography" style="overflow: hidden">
   <app-root></app-root>

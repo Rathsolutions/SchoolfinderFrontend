@@ -1,10 +1,7 @@
-<style>
-  .map {
-    width: 100%;
-    height: 100%;
-  }
-</style>
-<div id="map" class="map"></div>
+@if(this.mapFocused){
+  <div id="focusOverlay"></div>
+}
+<div (focusout)="mapUnfocusedEvent($event)" (focusin)="mapFocusedEvent($event)" aria-label="Schulkarte. Zum Auswählen einer Institution mit + so lange zoomen bis diese alleine auf der Karte ist, dann die Leertaste nutzen" #mapDiv id="map" class="map" tabindex="0" (keydown)="keyboardPressedOnMap($event)"></div>
 <div id="pointOverlayWrapper" #pointOverlayWrapper>
   <div #addPointComponentOverlay id="addPointComponentOverlay"></div>
   <div id="showPointComponentOverlayContainer">
@@ -21,6 +18,7 @@
   ">
   <button *ngIf="!areaSelectionActive" mat-raised-button color="primary" (click)="showAllInstitutions()">Öffne
     Übersicht</button>
+  <button id="switchToAccessibleViewButton" *ngIf="!areaSelectionActive" mat-raised-button color="primary" (click)="switchToAccessibleView()"> Öffne Textuelle Ansicht</button>
   <button *ngIf="areaSelectionActive" mat-raised-button color="primary" (click)="removeLastSetDrawingPoint()">
     Letzten gesetzten Punkt entfernen
   </button>

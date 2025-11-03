@@ -8,6 +8,22 @@
     width: 100%;
 }
 
+.map {
+    width: 100%;
+    height: 100%;
+}
+
+#focusOverlay {
+    pointer-events: none;
+    z-index: 2;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    outline: 3px solid crimson;
+    outline-offset: -3px;
+
+}
+
 @media only screen and (max-width: 500px) {
     #showPointComponentOverlayContainer {
         /* max-width: 350px; */

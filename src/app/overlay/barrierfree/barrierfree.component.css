@@ -1,17 +1,26 @@
 #overallContent {
   height: 100%;
-  overflow:auto;
+  overflow: auto;
   /* margin-left: 20px; */
   /* margin-right: 30px; */
 }
-.contentMargin{
+
+.contentMargin {
   margin-top: 10px;
-  margin-bottom:10px;
+  margin-bottom: 10px;
 }
+
 .heading {
   text-align: center;
 }
-.functionalityDiv{
+
+#headliner{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.functionalityDiv {
   height: 50px;
   margin-top: 50px;
   color: grey;
@@ -20,15 +29,25 @@
   vertical-align: middle;
   display: table-cell;
 }
+
 .contentTable {
   display: flex;
   flex-wrap: nowrap;
 
   /* background-color: rgba(0, 0, 0, 0.3); */
-  margin-left: 10px;
   /* overflow: auto; */
   /* height: 90%; */
 }
+
+.card-element {
+  min-width: 300px;
+  margin: 10px
+}
+
+ul {
+  list-style-type: none;
+}
+
 table td,
 table th {
   padding: 2px 10px;

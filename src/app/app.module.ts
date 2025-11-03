@@ -52,6 +52,7 @@ import { FooterComponent } from './overlay/footer/footer.component';
 import { NgxColorsModule } from "ngx-colors";
 import { ConfirmationDialogComponent } from "./dialogs/confirmation-dialog/confirmation-dialog.component";
 import { CookieService } from "ngx-cookie-service";
+import { DialogModule } from "@angular/cdk/dialog";
 
 const cookieConfig: NgcCookieConsentConfig = {
     cookie: {
@@ -109,31 +110,30 @@ const cookieConfig: NgcCookieConsentConfig = {
         FooterComponent,
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
-        AppRoutingModule,
-        FontAwesomeModule,
-        FormsModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatSelectModule,
-        MatExpansionModule,
-        MatAutocompleteModule,
-        MatCardModule,
-        MatCheckboxModule,
-        MatSlideToggleModule,
-        MatTableModule,
-        MatListModule,
-        MatProgressSpinnerModule,
-        MatRadioModule,
-        MatDividerModule,
-        MatIconModule,
-        ColorPickerModule,
-        NgxColorsModule,
-        ToastrModule.forRoot(),
-        NgcCookieConsentModule.forRoot(cookieConfig)
-    ], providers: [CookieService, provideHttpClient(withInterceptorsFromDi(), withXsrfConfiguration({ cookieName: 'XSRF-TOKEN', headerName: 'X-XSRF-TOKEN' }))]
+    AppRoutingModule,
+    FontAwesomeModule,
+    FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatExpansionModule,
+    MatAutocompleteModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatSlideToggleModule,
+    MatTableModule,
+    MatListModule,
+    MatProgressSpinnerModule,
+    MatRadioModule,
+    MatDividerModule,
+    MatIconModule,
+    ColorPickerModule,
+    NgxColorsModule,
+    ToastrModule.forRoot(),
+    NgcCookieConsentModule.forRoot(cookieConfig), DialogModule], providers: [CookieService, provideHttpClient(withInterceptorsFromDi(), withXsrfConfiguration({ cookieName: 'XSRF-TOKEN', headerName: 'X-XSRF-TOKEN' }))]
 })
 export class AppModule { }

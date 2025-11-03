@@ -63,6 +63,8 @@ import { SelectionDialogViewData } from "src/app/viewdata/SelectionDialogViewDat
 import { SearchSelectionComponent } from "src/app/dialogs/searchSelection.component";
 import { CriteriaSelectionEventData, CriteriaSelectionEventService } from "src/app/broadcast-event-service/CriteriaSelectionChangedEventService";
 import { CriteriaEntity } from "src/app/entities/CriteriaEntity";
+import { Router } from "@angular/router";
+import { Globals } from "src/app/util/globals";
 
 @Component({
   selector: "app-map-comp",
@@ -71,9 +73,19 @@ import { CriteriaEntity } from "src/app/entities/CriteriaEntity";
   standalone: false
 })
 export class MapCompComponent implements OnInit {
+  mapFocused: boolean;
+
+  private static readonly SPACE = 32;
+  private static readonly ESCAPE = 27;
+  private static readonly ENTER = 13;
+
+
   private map: OsmMap.default;
   private mapLayer: TileLayer<any>;
   private mapSource: XYZ;
+
+  @ViewChild("mapDiv", { read: ViewContainerRef })
+  mapDiv: ViewContainerRef;
 
   @ViewChild("addPointComponentOverlay", { read: ViewContainerRef })
   addPointOverlayPlaceholder: ViewContainerRef;
@@ -129,6 +141,7 @@ export class MapCompComponent implements OnInit {
     private toastrService: ToastrService,
     private areaService: AreaService,
     private dialog: MatDialog,
+    private router: Router,
     visiblityEventService: VisibilityEventService
   ) {
     this.darkenLayer = new DarkenLayer(areaService, this);
@@ -230,6 +243,51 @@ export class MapCompComponent implements OnInit {
       this.map.addInteraction(this.drawInstance);
     });
   }
+
+  mapUnfocusedEvent($event: FocusEvent) {
+    if ($event.target == this.mapDiv.element.nativeElement) {
+      this.mapFocused = false;
+    }
+  }
+  mapFocusedEvent($event: FocusEvent) {
+    if ($event.target == this.mapDiv.element.nativeElement) {
+      this.mapFocused = true;
+    }
+
+  }
+
+  switchToAccessibleView() {
+    var url = '/barrierefrei';
+    if (Globals.activeProject) {
+      url += '/' + Globals.activeProject;
+    }
+    this.router.navigate([url])
+  }
+
+
+  keyboardPressedOnMap($event: KeyboardEvent) {
+    var pressedKey = $event.keyCode;
+    if (pressedKey == MapCompComponent.ESCAPE && this.showPointOverlayPlaceholder.length != 0) {
+      //Close open modal again
+      this.showPointOverlayPlaceholder.clear();
+      this.mapDiv.element.nativeElement.focus();
+    } else if (this.showPointOverlayPlaceholder.length != 0) {
+      return;
+    }
+    if (pressedKey != MapCompComponent.SPACE && pressedKey != MapCompComponent.ENTER) {
+      return;
+    }
+    var glbox = this.map.getView().calculateExtent(this.map.getSize());
+    var featuresInExtent = this.sourceWaypointVector.getFeaturesInExtent(glbox);
+    if (featuresInExtent.length != 1) {
+      return;
+    }
+    var featureToDetail = featuresInExtent[0];
+    this.showDetailedPointOverlayView(featureToDetail.getGeometry().getFlatCoordinates(), featureToDetail.getId());
+
+  }
+
+
   private performMapUpdate(res?) {
     if (res) {
       this.resetAllWaypoint();
@@ -361,6 +419,7 @@ export class MapCompComponent implements OnInit {
     this.map.on("moveend", () => {
       this.updateWaypoints();
     });
+
     this.visibilityDataElement.activeAreaStrategy.performActionOnLayer(
       this.sourceAreaImageVector,
       this.sourceAreaTextVector,
@@ -668,35 +727,37 @@ export class MapCompComponent implements OnInit {
         }
       });
     } else if (!UserService.isLoggedIn() && point && point.getId()) {
-      this.showPointOverlayPlaceholder.clear();
-      var compFactoryShowPoint =
-        this.componentFactoryResolver.resolveComponentFactory(ShowPointOverlay);
-      var componentShow =
-        this.showPointOverlayPlaceholder.createComponent(compFactoryShowPoint);
-      this.showPointOverlay = componentShow.instance;
-      var overlayMap = new Overlay({
-        element: this.pointOverlayWrapper.nativeElement,
-        position: evt.coordinate,
-      });
-      this.showPointOverlay
-        .loadNewSchool((point as any).getId())
-        .then((res) => {
-          var pixel = map.getPixelFromCoordinate(evt.coordinate);
-          pixel[0] += map.getSize()[0] / 3.2;
-          pixel[1] += map.getSize()[1] / 2.5;
-          var box = map.getCoordinateFromPixel(pixel);
-          // this.map.getView().fit(box,{
-          //   duration: 1000
-          // });
-          this.map.getView().animate({ center: box }, () => {
-            // this.map.getView().setCenter(box);
-          });
-        });
-      this.showPointOverlay.setVisible(true);
-      this.map.addOverlay(overlayMap);
+      this.showDetailedPointOverlayView(evt.coordinate, (point as any).getId());
     } else {
       this.showPointOverlayPlaceholder.clear();
       this.addPointOverlayPlaceholder.clear();
     }
+  }
+
+  private showDetailedPointOverlayView(position: Coordinate, pointId: number) {
+    this.showPointOverlayPlaceholder.clear();
+    var compFactoryShowPoint = this.componentFactoryResolver.resolveComponentFactory(ShowPointOverlay);
+    var componentShow = this.showPointOverlayPlaceholder.createComponent(compFactoryShowPoint);
+    this.showPointOverlay = componentShow.instance;
+    var overlayMap = new Overlay({
+      element: this.pointOverlayWrapper.nativeElement,
+      position: position,
+    });
+    this.showPointOverlay
+      .loadNewSchool(pointId)
+      .then((res) => {
+        var pixel = this.map.getPixelFromCoordinate(position);
+        pixel[0] += this.map.getSize()[0] / 3.2;
+        pixel[1] += this.map.getSize()[1] / 2.5;
+        var box = this.map.getCoordinateFromPixel(pixel);
+        // this.map.getView().fit(box,{
+        //   duration: 1000
+        // });
+        this.map.getView().animate({ center: box }, () => {
+          // this.map.getView().setCenter(box);
+        });
+      });
+    this.showPointOverlay.setVisible(true);
+    this.map.addOverlay(overlayMap);
   }
 }

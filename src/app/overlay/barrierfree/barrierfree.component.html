@@ -1,75 +1,84 @@
 <div id="overallContent">
   <div id="headliner" style="margin-bottom: 20px">
-    <h1 class="heading">Barrierefreie Übersicht</h1>
-    <h3 class="heading">
+    <h1 tabindex="0" class="heading">Barrierefreie Übersicht</h1>
+    <h2 tabindex="0" class="heading">
       Dies ist die barrierefreie Übersicht des Schoolfinders. Hier bekommen Sie
       eine reine textuelle Repräsentation der gebotenen Inhalte angezeigt
-    </h3>
+    </h2>
+    <button class="heading" mat-raised-button color="primary" (click)="switchToMainView()">Zurück zur interaktiven Karte</button>
   </div>
-  <div class="contentTable">
-    <mat-card *ngFor="let school of data" style="min-width: 300px; margin: 10px">
-      <mat-card-header>
-        <mat-card-title>{{ school.schoolName }}</mat-card-title>
-        <mat-card-subtitle>{{ getProjectList(school) }}</mat-card-subtitle>
-        <mat-card-subtitle>Zugehöriger Regionalstellenbezirk:
-          {{ school.correspondingAreaName }}</mat-card-subtitle>
-      </mat-card-header>
-      <div *ngIf="school.schoolPicture">
-        <img [src]="school.schoolPicture" [alt]="school.alternativePictureText" width="300px" />
-      </div>
-      <mat-card-content>
-        <mat-divider></mat-divider>
-        <div id="generalInformationDiv">
-          <div class="functionalityDiv">
-            Allgemeine Informationen
-          </div>
+  <ul class="contentTable">
+    <li *ngFor="let school of data; index as i" class="card-element" (focus)="focus($event, i)" (keydown)="keyPressedOnCard($event)">
+      <mat-card role="document" tabindex="0" [attr.aria-label]="formatCardName(school.schoolName)">
+        <mat-card-header>
+          <mat-card-title aria-label="Name der Institution">{{ school.schoolName }}</mat-card-title>
+          <mat-card-subtitle aria-label="Projektliste der Institution">{{ getProjectList(school)
+            }}</mat-card-subtitle>
+          <mat-card-subtitle aria-label="Regionalstellenbezirke der Institution">Zugehöriger
+            Regionalstellenbezirk:
+            {{ school.correspondingAreaName }}</mat-card-subtitle>
+        </mat-card-header>
+        <img *ngIf="school.schoolPicture" [src]="school.schoolPicture" [alt]="school.alternativePictureText"
+          width="300px" />
+        <mat-card-content>
           <mat-divider></mat-divider>
-          <div class="contentMargin">
-            <div *ngIf="school.schoolType" mat-line>
-              Schulart: {{school.schoolType.schoolTypeValue}}
+          <section tabindex="0" aria-label="Allgemeine Informationen" id="generalInformationDiv">
+            <h2 class="functionalityDiv">
+              Allgemeine Informationen
+            </h2>
+            <mat-divider></mat-divider>
+            <div class="contentMargin">
+              <p *ngIf="school.schoolType" mat-line>
+                Schulart: {{school.schoolType.schoolTypeValue}}
+              </p>
+              <p *ngIf="school.generalEmail" mat-line>Allgemeine E-Mail-Adresse: {{ school.generalEmail }}</p>
+              <p *ngIf="school.generalPhoneNumber" mat-line>Allgemeine Telefonnummer: {{ school.generalPhoneNumber }}
+              </p>
+              <p *ngIf="school.homepage" mat-line>Homepage: {{ school.homepage }}</p>
             </div>
-            <div *ngIf="school.generalEmail" mat-line>Allgemeine E-Mail-Adresse: {{ school.generalEmail }}</div>
-            <div *ngIf="school.generalPhoneNumber" mat-line>Allgemeine Telefonnummer: {{ school.generalPhoneNumber }}
-            </div>
-            <div *ngIf="school.homepage" mat-line>Homepage: {{ school.homepage }}</div>
-          </div>
-        </div>
-        <div *ngFor="let additional of additionalInformationList.get(school.id).keys()">
-          <mat-divider></mat-divider>
-          <div class="functionalityDiv">
-            {{additional}}
-          </div>
-          <mat-divider></mat-divider>
-          <div mat-line class="contentMargin additionalInformationContent"
-            *ngFor="let additionalValue of additionalInformationList.get(school.id).get(additional)">
-            - {{additionalValue}}
-          </div>
-        </div>
-        <div *ngFor="let person of school.personSchoolMapping">
-          <mat-divider></mat-divider>
-          <div class="functionalityDiv">
-            {{ person.functionality.name }}
-          </div>
-          <mat-divider></mat-divider>
-          <div class="contentMargin">
-            <div mat-line>
-              Name: {{ person.person.prename }} {{ person.person.lastname }}
-            </div>
-            <div mat-line>E-Mail: {{ person.person.email }}</div>
-            <div mat-line>Telefonnummer: {{ person.person.phoneNumber }}</div>
+          </section>
+          @for(additional of getAdditionalInformationList(school) | keyvalue; track additional.key){
+          <section tabindex="0" aria-label="Zusätzliche Informationen">
+            <mat-divider></mat-divider>
+            <h2 class="functionalityDiv">
+              {{additional.key}}
+            </h2>
+            <mat-divider></mat-divider>
+            <p mat-line class="contentMargin additionalInformationContent"
+              *ngFor="let additionalValue of additional.value">
+              - {{additionalValue}}
+            </p>
+          </section>
+          }
+          @for(person of school.personSchoolMapping; track person.mappingId){
+          <section>
+            <mat-divider></mat-divider>
+            <h2 tabindex="0" class="functionalityDiv">
+              {{ person.functionality.name }}
+            </h2>
+            <mat-divider></mat-divider>
+            <div class="contentMargin">
+              <p mat-line>
+                Name: {{ person.person.prename }} {{ person.person.lastname }}
+              </p>
+              <p mat-line>E-Mail: {{ person.person.email }}</p>
+              <p mat-line>Telefonnummer: {{ person.person.phoneNumber }}</p>
 
-            <div mat-line>Funktionalität: {{ person.institutionalFunctionality }}</div>
-            <div mat-line style="
+              <p mat-line>Funktionalität: {{ person.institutionalFunctionality }}</p>
+              <p mat-line style="
                 word-break: break-all;
                 word-wrap: break-word;
                 overflow: visible;
                 white-space: normal;
               ">
-              Spezifischer Inhalt: {{ person.description }}
+                Spezifischer Inhalt: {{ person.description }}
+              </p>
             </div>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
+          </section>
+          }
+
+        </mat-card-content>
+      </mat-card>
+    </li>
+  </ul>
 </div>
